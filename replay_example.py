@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # tools/replay_example.py
 import argparse
-from unified import UnifiedEvaluator
+from .. unified import UnifiedEvaluator
 
 EXAMPLES = {
     # You can add more canned examples here
