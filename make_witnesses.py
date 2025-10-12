@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # tools/make_witnesses.py
 import argparse, csv
-from .. unified import bfs_witnesses
+from unified import bfs_witnesses
 
 def main():
     ap = argparse.ArgumentParser()

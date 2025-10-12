@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # tools/check_rows.py
-from ..unified import indices, U_odd, BLOCK_FORMULAS, TOKEN_BLOCK, UnifiedEvaluator
+from unified import indices, U_odd, BLOCK_FORMULAS, TOKEN_BLOCK, UnifiedEvaluator
 
 def check_one_block(block: str, samples=200) -> int:
     """

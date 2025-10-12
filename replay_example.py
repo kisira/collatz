@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # tools/replay_example.py
 import argparse
-from .. unified import UnifiedEvaluator
+from unified import UnifiedEvaluator
 
 EXAMPLES = {
     # You can add more canned examples here
@@ -28,7 +28,7 @@ def main():
         print(f" {row['i']:>2d}. {row['token']:>6s} | x={row['x_before']:<8d}  "
               f"(s={row['s_before']}, j={row['j_before']}, m={row['m_before']})  "
               f"-> x'={row['x_after']}  | U(x')={row['U_of_after']} "
-              f\"{'OK' if row['forward_ok'] else 'FAIL'}\")
+              f"{'OK' if row['forward_ok'] else 'FAIL'}")
 
 if __name__ == "__main__":
     main()

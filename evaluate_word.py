@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # tools/evaluate_word.py
 import argparse, sys, csv
-from .. unified import UnifiedEvaluator
+from unified import UnifiedEvaluator
 
 def parse_word(s: str):
     # word like: psi,Omega,omega,psi
