@@ -1,8 +1,12 @@
  
 .
-├─ unified.py
+├─ collatz.tex
+├─ collatz.bbl
+├─ collatz.pdf
+├─ repo.txt
 ├─ requirements.txt
 └─ tools/
+   ├─ unified.py
    ├─ check_rows.py
    ├─ evaluate_word.py
    ├─ make_witnesses.py
