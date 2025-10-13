@@ -8,8 +8,8 @@ authors:
 # Replace with your repo URL:
 repository-code: "https://github.com/kisira/collatz"
 # Replace with your Zenodo DOI (concept DOI or versioned DOI):
-doi: 10.5281/zenodo.XXXXX
-url: "https://doi.org/10.5281/zenodo.XXXXX"
+doi: 10.5281/zenodo.17337982
+url: "https://doi.org/10.5281/zenodo.17337982"
 date-released: 2025-10-13
 keywords:
   - Collatz
@@ -25,5 +25,5 @@ preferred-citation:
     - family-names: Odero
       given-names: Agola Kisira
   year: 2025
-  doi: 10.5281/zenodo.XXXXX
-  url: "https://doi.org/10.5281/zenodo.XXXXX"
+  doi: 10.5281/zenodo.17337982
+  url: "https://doi.org/10.5281/zenodo.17337982"
