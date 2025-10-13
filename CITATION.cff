@@ -1,0 +1,34 @@
+
+---
+
+### `CITATION.cff`
+
+```yaml
+cff-version: 1.2.0
+message: "If you use this work, please cite the paper and the archived repository."
+title: "A Finite-State Inverse Calculus for the Odd Layer of the Collatz Map"
+authors:
+  - family-names: Odero
+    given-names: Agola Kisira
+# Replace with your repo URL:
+repository-code: "https://github.com/YOUR_ORG_OR_USER/YOUR_REPO"
+# Replace with your Zenodo DOI (concept DOI or versioned DOI):
+doi: 10.5281/zenodo.XXXXX
+url: "https://doi.org/10.5281/zenodo.XXXXX"
+date-released: 2025-10-12
+keywords:
+  - Collatz
+  - 3x+1
+  - 2-adic
+  - finite-state
+  - inverse calculus
+  - modular lifting
+preferred-citation:
+  type: article
+  title: "A Finite-State Inverse Calculus for the Odd Layer of the Collatz Map"
+  authors:
+    - family-names: Odero
+      given-names: Agola Kisira
+  year: 2025
+  doi: 10.5281/zenodo.XXXXX
+  url: "https://doi.org/10.5281/zenodo.XXXXX"

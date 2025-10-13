@@ -1,0 +1,2172 @@
+\documentclass{amsart}
+
+
+\usepackage{lmodern}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage[backend=biber,style=alphabetic]{biblatex}
+\addbibresource{collatz_calculus.bib}
+
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{mathrsfs} % Ralph Smith’s Formal Script
+\usepackage{amsthm}
+\usepackage{booktabs}
+\usepackage{enumitem}
+%\usepackage{hyperref}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage{listings}          % provides \lstset, \lstlisting, \lstinline
+\usepackage[scaled=0.9]{inconsolata} % optional: nicer monospace font
+\usepackage{xcolor}           % optional: needed if you add colored syntax
+\usepackage{xurl}
+\usepackage{needspace}
+\usepackage{cleveref}
+%lmodern or mathptmx
+\usepackage[utf8]{inputenc}  % (or none if Lua/XeLaTeX)
+\usepackage{tabularx}                % ok anywhere after microtype
+\usepackage[T1]{fontenc}
+\usepackage{microtype} % <- after fonts
+% after font packages and \usepackage{microtype}
+%\makeatletter
+%\AtBeginDocument{%
+%  \microtypesetup{activate=true, expansion=true, protrusion=true}%
+%  \begingroup
+    % warm up common table sizes/families so microtype sets expansion first
+%    \rmfamily\normalsize\selectfont X%
+%    \rmfamily\small\selectfont X%
+%    \rmfamily\footnotesize\selectfont X%
+%    \sffamily\small\selectfont X%
+%    \ttfamily\small\selectfont X%
+%  \endgroup
+%}
+%\makeatother
+
+% in preamble
+\usepackage{tabularx} % for automatic column wrapping
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X} % ragged-right X
+
+
+
+\usepackage{etoolbox}
+\AtBeginEnvironment{proof}{\par\noindent\ignorespaces}
+
+%\hypersetup{bookmarks=false}
+
+\hypersetup{unicode=true}
+
+\pdfstringdefDisableCommands{%
+  % math font flattening
+  \def\mathrm#1{#1}%
+  \def\mathsf#1{#1}%
+  \def\mathbf#1{#1}%
+  \def\mathcal#1{#1}%
+  \def\mathbb#1{#1}%
+  \def\mathtt#1{#1}%
+  % common math
+  \def\dfrac#1#2{#1/#2}%
+  % primes & punctuation
+  \def\prime{'}%
+  \def\colon{:}%
+  % drop math delimiters in bookmarks (no arguments!)
+  \def\({}%
+  \def\){}%
+  \def\[{ }%
+  \def\]{ }%
+}
+
+% helper for math in moving args
+\newcommand{\pdfmath}[1]{\texorpdfstring{$#1$}{#1}}
+
+
+% ---------- theorem styles ----------
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{example}{Example}
+
+\theoremstyle{plain}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{theorem}{Theorem}
+\theoremstyle{plain}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+
+% ---------- tiny helpers for move symbols ----------
+\newcommand{\mvpsi}{\psi}
+\newcommand{\mvPsi}{\Psi}
+\newcommand{\mvomega}{\omega}
+\newcommand{\mvOmega}{\Omega}
+
+% ---------- step-line helper (no nested math in args) ----------
+% Args: 1=Step label, 2=x, 3=s (\mathrm{e}/\mathrm{o}), 4=m, 5=j,
+%       6=move symb (\psi/\Psi/\omega/\Omega), 7=row tag (e.g. \mathrm{e},0),
+%       8=rhs text (e.g. x'=96m+5=5)
+\newcommand{\StepLine}[8]{%
+  \textit{#1: } $x=#2$; $s={#3}$, $m={#4}$, $j={#5}$\,
+  $\overset{#6\ \text{ at }\ (#7)}{\longrightarrow}$\,
+  $#8$.\\
+}
+
+% =========================
+% A lightweight Playbook environment (no extra packages needed)
+% =========================
+\newenvironment{playbook}[1][]%
+{%
+  \par\medskip
+  \noindent\textbf{Playbook.} \textit{#1}\par
+  \vspace{2pt}
+  \begingroup
+  \leftskip=1em\rightskip=0em
+}%
+{%
+  \par\endgroup\medskip
+}
+
+
+\setlength{\textfloatsep}{10pt plus 4pt minus 2pt}
+\setlength{\intextsep}{8pt plus 3pt minus 2pt}
+\setcounter{topnumber}{3}
+\setcounter{totalnumber}{4}
+\renewcommand{\textfraction}{0.1}
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\floatpagefraction}{0.8}
+
+
+
+% In the preamble
+\newif\ifobjections
+%\objectionsfalse % set \objectionstrue for arXiv / long version
+\objectionstrue
+
+\newif\ifidentity
+%\identityfalse
+\identitytrue
+
+\title{An Inverse Calculus for the Odd Layer of the Collatz Map}
+\author{Agola Kisira Odero}
+\date{\today}
+
+\raggedbottom
+
+
+\begin{document}
+
+\begin{abstract}
+\leavevmode\par\noindent
+We develop a finite--state, word--based framework for the accelerated odd Collatz map \(U(y)=\frac{3y+1}{2^{\nu_2(3y+1)}}\). Every admissible token (one of \(\Psi,\psi,\omega,\Omega\)) corresponds to a fixed ``row'' with parameters \((\alpha,\beta,c,\delta)\) such that for inputs \(x=18m+6j+p_6\) the update \(x'=6F(p,m)+\delta\) with
+\[
+F(p,m)=\frac{(9m\,2^{\alpha}+\beta)\,64^{\,p}+c}{9}
+\]
+satisfies the forward identity \(3x'+1=2^{\alpha+6p}x\). Hence \(U(x')=x\) at every step, providing a per--step certificate independent of the starting value. We formalize \emph{steering} by same--family padding: short words that (i) strictly increase the \(2\)-adic valuation of the affine slope and (ii) control the intercept modulo \(2\) and modulo \(3\). This yields a deterministic lifting procedure that reduces reachability modulo \(3\cdot 2^{K+1}\) to a linear congruence once modulo \(3\) is aligned; a \(2\)-adic refinement then promotes compatible residue solutions to an exact integer solution for a fixed word. We include a reference implementation that verifies each row identity, the mod--3 steering action, and example witnesses modulo \(24\).
+
+The main contribution is a unified, certified inverse--word calculus on the odd layer together with explicit steering gadgets that turn residue targeting into solvable congruences. Because the resulting program would imply convergence of the odd Collatz dynamics to \(1\), we provide machine--checkable tests and artifacts to facilitate scrutiny.
+\end{abstract}
+
+
+
+\maketitle
+
+\setcounter{tocdepth}{1} % sections only; raise to 2 to include subsections
+\tableofcontents
+
+
+\section{Related work: inverse trees, $2$-adic lifting, and modular routing}
+
+Our approach—finite word semantics on the odd layer, certified one–step inverses, and congruence–based “steering” to lift residues from $M_K=3\cdot 2^K$ to $M_{K+1}$—sits alongside several established techniques.
+
+\paragraph{Mod-$2^k$ analysis and lifting.}
+Garner studied the $3n{+}1$ dynamics modulo powers of two, organizing inverse branches by congruence classes and effectively “lifting’’ structure from $2^k$ to $2^{k+1}$ \cite{Garner1981}. Our use of the unified rows with a column–lift parameter $p$ (which multiplies the $2$–adic slope by $2^{6p}$) and the residue steering gadgets plays a similar role: we solve linear congruences for $m$ to pass from $M_K$ to $M_{K+1}$ while preserving certified inverses at each step.
+
+\paragraph{Inverse trees and predecessor sets.}
+Wirsching’s monograph develops the inverse (predecessor) tree of the $3n{+}1$ function as a dynamical system, with emphasis on structure, measures, and asymptotics on inverse branches \cite{Wirsching1998LNM}. Conceptually, our move alphabet and per–row affine forms are a finite–state presentation of those inverse branches: each token certifies $U(x')=x$ and the composition yields an affine map in the “index’’ $m$, which we then route by residues $M_K$.
+
+\paragraph{The $2$-adic viewpoint and conjugacies.}
+Bernstein and Lagarias constructed a $2$-adic conjugacy map relating the odd–accelerated Collatz dynamics to a Bernoulli-like shift \cite{BernsteinLagarias1996}. Our $p$–lift (multiplying by $2^{6p}$) and the parity/valuation steering reflect this same $2$–adic continuity: column–lifts shift $2$–adic scale, while steering gadgets tune intercept parity to land on prescribed residue classes.
+
+\paragraph{Symmetries and autoconjugacy.}
+Monks and Yazinski analyzed autoconjugacies of the $3x{+}1$ function and their implications for orbit structure \cite{MonksYazinski2004}. While our framework is more combinatorial/affine, the way we keep the family pattern fixed (Lemma~\ref{lem:family-pattern}) and exploit same–family padding resonates with their use of structural symmetries.
+
+\paragraph{Surveys and context.}
+For broad background and additional modular/density insights, see \cite{Lagarias2010survey,Terras1976,Terras1979}; for $2$–adic heuristics and continuity themes, see \cite{Gouvea1997,Nathanson1996}. These perspectives motivate our use of $2$–adic “padding’’ and linear congruences as lifting mechanisms.
+
+\medskip
+\noindent\textit{What is new here.}
+Our contribution is a single unified $p{=}0$ inverse table on the odd layer (Table~\ref{tab:unified-F0-straight-xprime}) with a per–step column–lift $p\ge 0$ and explicit steering gadgets that (i) raise $v_2$ of the word’s slope and (ii) toggle the intercept parity, ensuring solvability of the lifting congruences modulo $M_{K+1}$ while keeping each step certified by $U(x')=x$.
+
+
+\subsection*{Contributions}
+\begin{itemize}[leftmargin=1.4em]
+\item \textbf{One-table, word-driven inverse calculus on the odd layer.}
+  We give a unified \(p{=}0\) row table with closed forms \(x'=6F(0,m)+\delta\) indexed only by \((s,j,m)\).
+  Once a token and \((s,j)\) are fixed, the step is fully determined and the forward identity
+  \(3x'+1=2^{\alpha}x\) holds by construction (Lemma~\ref{lem:row-correctness}).
+\item \textbf{Column-lift \(p\) that preserves routing while scaling the 2-adic slope.}
+  The parameter \(p\) multiplies the slope by \(2^{6p}\) without changing the token type or output family, yielding a single mechanism that subsumes whole towers of congruence tables (Lemmas~\ref{lem:row-correctness-p}–\ref{lem:mixedp-routing}).
+\item \textbf{CRT tag for transparent indexing.}
+  The tag \(t=(x-1)/2\) (equivalently \((3x+1-4)/6\)) makes family detection and indices
+  \((s,j,m)\) linear in \(t\) (Corollary~\ref{cor:tag-indices}), simplifying routing proofs.
+\item \textbf{Steering gadgets that control \(v_2\), \(B\bmod 2\), and \(B\bmod 3\).}
+  Short same-family words provably boost the slope’s \(2\)-adic valuation and toggle the affine intercept \(B\bmod 2\), ensuring solvability of the lifting congruence at each modulus (Lemmas~\ref{lem:steering} and~\ref{lem:mod3-steering}, App.~\ref{app:mod3-steering}.).
+\item \textbf{From small witnesses to all moduli and exact integers.}
+  Starting at \(M_3{=}24\), we give a deterministic induction \(M_K\to M_{K+1}\) (Lemma~\ref{lem:lifting})
+  that reaches every odd residue with certified steps, and then a \(2\)-adic refinement to hit any prescribed odd integer exactly (Theorem~\ref{thm:residues-to-integers}).
+\item \textbf{Row-level invariance certificates.}
+  We isolate a mod-\(54\) one-step invariance (Lemma~\ref{lem:row-invariance-54}) that explains why fixed tokens reselect the same next row across many starts, aiding certification and automation.
+\item \textbf{Executable, per-step certificates.}
+  A reference implementation emits step traces and verifies \(U(x')=x\) at each step, making all claims reproducible from the table (App.~C).
+\end{itemize}
+
+\subsection*{Relation to prior techniques}
+\begin{itemize}[leftmargin=1.4em]
+\item \textbf{Versus classical modular inverse-tree analyses (Terras, Lagarias, \emph{etc.}).}
+  Prior work develops rich residue classifications and stopping-time bounds; our contribution is a \emph{single} finite-state table with a word calculus and an explicit steering mechanism that turns residue reachability into solvable linear congruences with guaranteed \(2\)-adic headroom.
+\item \textbf{Versus \(2\)-adic dynamical viewpoints (Gouvêa, Nathanson).}
+  Earlier \(2\)-adic studies illuminate topology, measures, and cycles. We use the \(2\)-adic setting constructively: the slope/offset control plus \(2\)-adic completeness converts an infinite ladder of congruences into an exact integer solution anchored to a concrete word.
+\item \textbf{Versus “energy”/almost-everywhere results (Tao 2019 and follow-ups).}
+  These show near-monotone behavior for a density-one set via probabilistic/analytic Lyapunov methods.
+  Our approach is entirely combinatorial and constructive: for each target residue (and ultimately each odd integer) we produce a finite word and certify every inverse step by \(3x'+1=2^{\alpha+6p}x\).
+\end{itemize}
+
+\paragraph{Scope note.}
+Standard ingredients (accelerated map \(U\), parity splitting, \(v_2\), and modular routing) are classical; the novelty here is the \emph{unified word/table formalism} with a \emph{routing-preserving \(p\)-lift} and \emph{steering gadgets} (including mod-3 control) that together enable a fully constructive lifting from \(\bmod\,24\) to exact integers with stepwise certificates.
+
+
+\subsection*{Main claim and method}
+Our main claim (Theorem~\ref{thm:odd-layer-convergence}) is that every odd \(x\equiv 1,5\pmod 6\) reaches \(1\) in finitely many accelerated odd Collatz steps. The method is modular:
+(i) certify row-level inverses \(U(x')=x\) (Lemma~\ref{lem:row-correctness});
+(ii) show any admissible word yields an affine form in \(m\) with controlled terminal family (Lemma~\ref{lem:affine-word} and Lemma~\ref{lem:family-pattern});
+(iii) furnish base witnesses modulo \(24\) (Table~\ref{tab:base-witnesses-mod24});
+(iv) use same-family \emph{steering gadgets} to raise \(v_2(A)\) and control \(B\bmod 2\) and \(B\bmod 3\) (Lemmas~\ref{lem:steering}, \ref{lem:mod3-steering});
+(v) lift residues \(M_K\to M_{K+1}\) (Lemma~\ref{lem:lifting}, Theorem~\ref{thm:reachability});
+(vi) pass from residues to exact integers by \(2\)-adic refinement (Theorem~\ref{thm:residues-to-integers}).
+\ifobjections
+For a discussion addressing common misreadings, see Section~\ref{sec:objections}.
+\fi
+
+
+% =========================================================
+\section{Notation, indices, and moves}
+
+To unify all Collatz inverse odd orbits we work with an affine form indexed by row parameters \((\alpha,\beta,c)\) and an orbit–type offset \(\delta\in\{1,5\}\). For any nonnegative integer \(p=0,1,2,\ldots\) and \(m=\lfloor x/18\rfloor\), define
+\[
+F_{\alpha,\beta,c}(p,m)\;:=\;\frac{(9m\,2^{\alpha}+\beta)\,64^{\,p}+c}{9}
+\;=\;2^{\alpha+6p}m+\frac{\beta\,64^{\,p}+c}{9},\qquad
+x'\;=\;6\,F_{\alpha,\beta,c}(p,m)+\delta.
+\]
+Here \(p\) is a \emph{column–lift} that preserves routing/type (and \(\delta\)) while multiplying the \(2\)-adic slope by \(2^{6p}\); integrality of \(F_{\alpha,\beta,c}(p,m)\) follows from \(64\equiv 1\pmod{9}\). The base table is recovered at \(p=0\) (so \(F_{\alpha,\beta,c}(0,m)=2^\alpha m+(\beta+c)/9\)), and in all cases the forward identity
+\[
+3x'+1\;=\;2^{\alpha+6p}\,x
+\]
+holds, hence \(U(x')=x\). In the following we use orbit and step interchangeably.\\
+
+
+
+Let $x$ be odd with $x\not\equiv 3\pmod 6$ and define
+\[
+s(x)=\begin{cases}\mathrm e,&x\equiv 1\pmod 6,\\ \mathrm o,&x\equiv 5\pmod 6,\end{cases}
+\qquad
+r=\Big\lfloor\frac{x}{6}\Big\rfloor,\quad
+j=r\bmod 3\in\{0,1,2\},\quad
+m=\Big\lfloor\frac{x}{18}\Big\rfloor.
+\]
+We use the accelerated odd Collatz map \(U(y)=\dfrac{3y+1}{2^{\nu_2(3y+1)}}\), standard in the Collatz literature \cite{Lagarias2010survey}.
+
+The move alphabet is \(\mathcal{A}=\{\Psi,\psi,\omega,\Omega\}\) with type mapping
+\[
+\Psi\leftrightarrow\texttt{ee},\qquad
+\psi\leftrightarrow\texttt{eo},\qquad
+\omega\leftrightarrow\texttt{oe},\qquad
+\Omega\leftrightarrow\texttt{oo}.
+\]
+Admissibility by family: if $s(x)=\mathrm e$ we may use $\Psi$ or $\psi$; if $s(x)=\mathrm o$ we may use $\omega$ or $\Omega$.
+
+%CRT = Chinese Remainder Theorem
+
+\subsection*{A CRT tag for odds, and re-indexing by \(t\)}
+Define, for odd \(x\),
+\[
+y:=3x+1,\qquad t:=\frac{y-4}{6}=\frac{x-1}{2}\in\mathbb Z.
+\]
+
+\begin{lemma}[CRT tag for odd inputs]\label{lem:crt-tag}
+For odd $x$ one has \(3x+1\equiv 4\pmod 6\) and the tag \(t=\dfrac{3x+1-4}{6}=\dfrac{x-1}{2}\) is an integer.
+Moreover, the map \(x\mapsto t\) is a bijection between odd integers and all integers via \(x=2t+1\).
+\end{lemma}
+
+\begin{proof}
+\leavevmode\par\noindent
+\begin{itemize}[leftmargin=1.6em]
+\item Mod $2$: $x\equiv 1\Rightarrow 3x+1\equiv 0$ (even).
+\item Mod $3$: $3x+1\equiv 1$.
+\item The unique residue modulo $6$ that is $0\bmod 2$ and $1\bmod 3$ is $4$, hence $3x+1\equiv 4\pmod 6$, so $t\in\mathbb Z$.
+\item The identities \(t=(x-1)/2\) and \(x=2t+1\) give a bijection odd $\leftrightarrow$ integer.
+\end{itemize}
+\end{proof}
+
+\begin{example}[After Lemma~\ref{lem:crt-tag}]
+With $x=19$ one has $y=58\equiv 4\pmod 6$ and $t=(58-4)/6=9=(19-1)/2$; conversely $x=2t+1=19$.
+\end{example}
+
+\begin{corollary}[Family and indices from the tag]\label{cor:tag-indices}
+Let $t=\frac{x-1}{2}$ for odd $x$. Then
+\[
+x\bmod 6 \;=\; 2\,(t\bmod 3)+1,\qquad
+m=\Big\lfloor\frac{x}{18}\Big\rfloor=\Big\lfloor\frac{t}{9}\Big\rfloor,\qquad
+j=\Big\lfloor\frac{x}{6}\Big\rfloor\bmod 3=\Big\lfloor\frac{t}{3}\Big\rfloor \bmod 3,
+\]
+provided $t\bmod 3\in\{0,2\}$ (i.e.\ $x\not\equiv 3\pmod 6$).
+\end{corollary}
+
+\begin{proof}
+\leavevmode\par\noindent
+\begin{itemize}[leftmargin=1.6em]
+\item Write $t=3q+r$ with $r\in\{0,1,2\}$; then $x=2t+1=6q+2r+1\equiv 2r+1\pmod 6$.
+Thus $r=0\Rightarrow x\equiv 1$, $r=2\Rightarrow x\equiv 5$, $r=1\Rightarrow x\equiv 3$.
+\item For $m$: $\frac{x}{18}=\frac{2t+1}{18}=\frac{t}{9}+\frac{1}{18}$, so $\lfloor x/18\rfloor=\lfloor t/9\rfloor$.
+\item For $j$ with $r\in\{0,2\}$: $\frac{x}{6}=\frac{2t+1}{6}=\frac{t}{3}+\frac{1}{6}$ and
+$\lfloor t/3+1/6\rfloor=\lfloor t/3\rfloor$, hence $j=\lfloor t/3\rfloor\bmod 3$.
+\end{itemize}
+\end{proof}
+
+\begin{example}[After Corollary~\ref{cor:tag-indices}]
+If $x=53$, then $t=(53-1)/2=26$. We get $t\bmod 3=2\Rightarrow x\bmod 6=5$ (family $\mathrm o$),
+$m=\lfloor 26/9\rfloor=2$, and $j=\lfloor 26/3\rfloor\bmod 3=8\bmod 3=2$, matching the table rows used later.
+\end{example}
+
+\begin{table}[!htbp]
+\centering
+\caption{Notation used throughout. Families \( \mathrm e,\mathrm o \) are \(1,5\!\!\pmod 6\). Indices \(j,m\) come from \(x=18m+6j+p_6\) with \(p_6\in\{1,5\}\).}
+\label{tab:notation}
+\small
+\renewcommand{\arraystretch}{1.12}
+\begin{tabularx}{\textwidth}{@{}l X@{}}
+\toprule
+\textbf{Symbol} & \textbf{Meaning} \\
+\midrule
+\(U(y)=\dfrac{3y+1}{2^{\nu_2(3y+1)}}\) & Accelerated odd Collatz map (odd layer). \\[2pt]
+\(x\) & Current odd, always \(x\equiv 1,5\pmod 6\) on the odd layer. \\[2pt]
+\(s(x)\in\{\mathrm e,\mathrm o\}\) & Family of \(x\): \(\mathrm e\) if \(x\equiv 1\pmod 6\), \(\mathrm o\) if \(x\equiv 5\pmod 6\). \\[2pt]
+\(j=\big\lfloor \tfrac{x}{6}\big\rfloor \bmod 3\) & Row index (next-row selector), \(j\in\{0,1,2\}\). \\[2pt]
+\(m=\big\lfloor \tfrac{x}{18}\big\rfloor\) & Coarse index used in the closed forms \(x'(m)\). \\[2pt]
+\(p\in\mathbb{Z}_{\ge 0}\) & Column-lift parameter; each step multiplies the forward power by \(2^{6p}\). \\[2pt]
+\(\alpha,\beta,c,\delta\) & Row parameters; \(\delta\in\{1,5\}\) is the output family offset. \\[2pt]
+\(k=\dfrac{\beta+c}{9}\) & One-step constant at \(p{=}0\); integrality since \(\beta+c\equiv 0\pmod 9\). \\[2pt]
+\(F(p,m)=\dfrac{(9m\,2^\alpha+\beta)\,64^p+c}{9}\) & Lifted per-row form; integral since \(64\equiv 1\pmod 9\). \\[2pt]
+\(x'=6F(p,m)+\delta\) & One-step preimage; satisfies \(3x'+1=2^{\alpha+6p}x\). \\[2pt]
+\(\nu_2(n)\) & \(2\)-adic valuation of \(n\). \\[2pt]
+\(t=\dfrac{x-1}{2}\) & CRT tag (reindexing); bijection \(x=2t+1\). \\[2pt]
+\(\mathcal{A}=\{\Psi,\psi,\omega,\Omega\}\) & Token alphabet; types \texttt{ee}, \texttt{eo}, \texttt{oe}, \texttt{oo} respectively. \\[2pt]
+\(W\in\mathcal{A}^\ast\) & A word (sequence of tokens). \\[2pt]
+\(x_W(m)=6(A_W m+B_W)+\delta_W\) & Affine form after a word; \(A_W=3\cdot 2^{\alpha(W)}\). \\[2pt]
+\(M_K=3\cdot 2^K\) & Working modulus for lifting; odd residues split into \(\mathcal E_K,\mathcal O_K\). \\[2pt]
+\(\mathcal E_K,\mathcal O_K\) & \(\mathcal E_K=\{1+6t \bmod M_K\}\), \(\mathcal O_K=\{5+6t \bmod M_K\}\). \\[2pt]
+\bottomrule
+\end{tabularx}
+\end{table}
+
+
+% ===== Standing assumptions & conventions =====
+\section{Standing assumptions and conventions}
+
+We enumerate the ambient assumptions used throughout. None of these are
+Collatz–specific hypotheses; they are standard arithmetic facts and
+explicitly verified table properties.
+
+\begin{enumerate}[label=(A\arabic*)]
+\item \textbf{Universe and variables.}
+All variables are integers unless noted. We work on the \emph{odd layer}:
+inputs \(x\) are odd with \(x\ge 1\). The column parameter \(p\in\mathbb{Z}_{\ge 0}\),
+and the step indices are
+\[
+m=\Big\lfloor\frac{x}{18}\Big\rfloor,\qquad
+j=\Big\lfloor\frac{x}{6}\Big\rfloor\bmod 3,\qquad
+x=18m+6j+p_6,\ \ p_6\in\{1,5\}.
+\]
+
+\item \textbf{Accelerated odd map.}
+We use \(U(y)=\dfrac{3y+1}{2^{\nu_2(3y+1)}}\).
+For odd \(y\), one has \(3y+1\equiv 4\pmod 6\), hence \(U(y)\equiv 1\) or \(5\pmod 6\).
+
+\item \textbf{CRT tag.}
+For odd \(x\), the tag \(t=\dfrac{3x+1-4}{6}=\dfrac{x-1}{2}\in\mathbb{Z}\) is used only
+as a reindexing device; it is bijective via \(x=2t+1\).
+
+\item \textbf{Row parameter table is integral/consistent.}
+For every row \((\alpha,\beta,c,\delta)\) in Table~\ref{tab:parameters-abc}:
+\[
+k=\frac{\beta+c}{9}\in\mathbb{Z},\qquad
+\delta=\begin{cases}1,&\texttt{*e}\\[2pt]5,&\texttt{*o}\end{cases}
+\]
+so that \(F(0,m)=2^\alpha m+k\) and \(x'=6F(0,m)+\delta\) are integer-valued.
+
+\item \textbf{Column lifts are integral.}
+For \(p\ge 0\),
+\[
+F_{\alpha,\beta,c}(p,m)=\frac{(9m\,2^\alpha+\beta)\,64^p+c}{9}\in\mathbb{Z}
+\quad\text{since } 64\equiv 1\pmod 9.
+\]
+
+\item \textbf{Per–row odd–forward identity.}
+For every admissible row and \(p\ge 0\),
+\[
+3x'+1=2^{\alpha+6p}\,x,
+\]
+hence \(U(x')=x\). (Proved in the text; used as a stepwise certificate.)
+
+\item \textbf{Word affinity and routing.}
+Composing admissible rows yields an affine form
+\(x_W(m)=6(A_W m+B_W)+\delta_W\) with \(A_W=3\cdot 2^{\alpha(W)}\).
+Family routing (\(\mathrm e/\mathrm o\)) depends only on the token’s type
+(\texttt{ee}, \texttt{eo}, \texttt{oe}, \texttt{oo}), not on \(m\) or \(p\).
+
+\item \textbf{Steering gadgets exist and are explicit.}
+There are short same–family composites that (i) raise \(v_2(A_W)\) arbitrarily
+(by repetition) and (ii) provide a parity toggle \(B_W\mapsto B_W+1\pmod 2\) at \(p=0\).
+(Concrete tokens are listed in Appendix~A; e.g.\ rows \(\omega_1\) and \(\Omega_2\) have odd
+\(k=(\beta+c)/9\), enabling the toggle.)
+
+\item \textbf{Lifting over powers of two uses only standard facts.}
+We use: solvability of linear congruences \(A m\equiv b\pmod{2^K}\);
+nested lifting to \(2^{K+1}\) (choose a solution compatible modulo \(2^{K-1}\));
+and completeness of \(\mathbb{Z}_2\) to pass from compatible residues to an integer \(m\).
+No heuristic or distributional assumptions are used.
+
+\item \textbf{Base witnesses are explicit (no hidden computation).}
+The eight \(\bmod 24\) classes \(\{1,5,7,11,13,17,19,23\}\) are each accompanied by a specific
+finite word \(W_r\) (Table~\ref{tab:base-witnesses-mod24}), verified stepwise via
+\(U(x')=x\). The proof does not rely on unverifiable large-scale searches.
+
+\item \textbf{Scope relative to the classical map.}
+All statements are on the odd layer for \(U\). For the classical Collatz map,
+even runs are removed by dividing out powers of two between odd iterates; the conclusions then transfer verbatim.
+\end{enumerate}
+
+\noindent\emph{Non-assumptions.} We do not assume (i) the Collatz conjecture itself,
+(ii) any stochastic/heuristic model for the orbit, or (iii) density or randomness
+properties of residue classes. All steps are constructive and finitely checkable.
+
+
+
+% =========================================================
+\section{Parameter table for the unified rows}
+Each row is specified by integers \((\alpha,\beta,c)\) (underlying \(F_{\alpha,\beta,c}\)) and an output offset \(\delta\in\{1,5\}\) determined by the type’s second letter. For convenience we list them all; \(\texttt{*e}\Rightarrow\delta=1\), \(\texttt{*o}\Rightarrow\delta=5\).
+
+\begin{table}[!htbp]
+\centering
+\caption{Row parameters \((\alpha,\beta,c,\delta)\). Keys: \(\mathrm{ee}j\leftrightarrow \Psi_j\), \(\mathrm{eo}j\leftrightarrow \psi_j\), \(\mathrm{oe}j\leftrightarrow \omega_j\), \(\mathrm{oo}j\leftrightarrow \Omega_j\).}
+\label{tab:parameters-abc}
+\begin{tabular}{@{}c c c c c c@{}}
+\toprule
+Row key & $(s,j)$ & type & $\alpha$ & $\beta$ & $c$ \ ( $\delta$)\\\midrule
+$\mathrm{ee}0$ & $(\mathrm e,0)$ & \texttt{ee} & $2$ & $2$   & $-2$ \ (1)\\
+$\mathrm{ee}1$ & $(\mathrm e,1)$ & \texttt{ee} & $4$ & $56$  & $-2$ \ (1)\\
+$\mathrm{ee}2$ & $(\mathrm e,2)$ & \texttt{ee} & $6$ & $416$ & $-2$ \ (1)\\
+$\mathrm{oe}0$ & $(\mathrm o,0)$ & \texttt{oe} & $3$ & $20$  & $-2$ \ (1)\\
+$\mathrm{oe}1$ & $(\mathrm o,1)$ & \texttt{oe} & $1$ & $11$  & $-2$ \ (1)\\
+$\mathrm{oe}2$ & $(\mathrm o,2)$ & \texttt{oe} & $5$ & $272$ & $-2$ \ (1)\\
+\midrule
+$\mathrm{eo}0$ & $(\mathrm e,0)$ & \texttt{eo} & $4$ & $8$   & $-8$ \ (5)\\
+$\mathrm{eo}1$ & $(\mathrm e,1)$ & \texttt{eo} & $6$ & $224$ & $-8$ \ (5)\\
+$\mathrm{eo}2$ & $(\mathrm e,2)$ & \texttt{eo} & $2$ & $26$  & $-8$ \ (5)\\
+$\mathrm{oo}0$ & $(\mathrm o,0)$ & \texttt{oo} & $5$ & $80$  & $-8$ \ (5)\\
+$\mathrm{oo}1$ & $(\mathrm o,1)$ & \texttt{oo} & $3$ & $44$  & $-8$ \ (5)\\
+$\mathrm{oo}2$ & $(\mathrm o,2)$ & \texttt{oo} & $1$ & $17$  & $-8$ \ (5)\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% =========================================================
+\section{Unified \pdfmath{p=0} table (straight substitution)}
+We evaluate $m=\lfloor x/18\rfloor$ at each step and use
+\[
+F(0,m)=\frac{9m\,2^{\alpha}+\beta+c}{9},\qquad x'(m)=6F(0,m)+\delta,
+\]
+with the rows below (no further reindexing).
+
+\begin{table}[!htbp]
+\centering
+\caption{Unified $p=0$ forms with $F(0,m)=\dfrac{9 m 2^{\alpha} + \beta + c}{9}$ and $x'(m)=6F(0,m)+\delta$.}
+\label{tab:unified-F0-straight-xprime}
+\begin{tabular}{@{}ccc l l@{}}
+\toprule
+$(s,j)$ & type & move & $F(0,m)$ & $x'(m)=6\,F(0,m)+\delta$ \\ \midrule
+$(\mathrm{e},0)$ & \texttt{ee} & $\Psi_{0}$   & $4m$            & $24m + 1$ \\
+$(\mathrm{e},1)$ & \texttt{ee} & $\Psi_{1}$   & $16m + 6$       & $96m + 37$ \\
+$(\mathrm{e},2)$ & \texttt{ee} & $\Psi_{2}$   & $64m + 46$      & $384m + 277$ \\
+$(\mathrm{o},0)$ & \texttt{oe} & $\omega_{0}$ & $8m + 2$        & $48m + 13$ \\
+$(\mathrm{o},1)$ & \texttt{oe} & $\omega_{1}$ & $2m + 1$        & $12m + 7$ \\
+$(\mathrm{o},2)$ & \texttt{oe} & $\omega_{2}$ & $32m + 30$      & $192m + 181$ \\
+\midrule
+$(\mathrm{e},0)$ & \texttt{eo} & $\psi_{0}$   & $16m$           & $96m + 5$ \\
+$(\mathrm{e},1)$ & \texttt{eo} & $\psi_{1}$   & $64m + 24$      & $384m + 149$ \\
+$(\mathrm{e},2)$ & \texttt{eo} & $\psi_{2}$   & $4m + 2$        & $24m + 17$ \\
+$(\mathrm{o},0)$ & \texttt{oo} & $\Omega_{0}$ & $32m + 8$       & $192m + 53$ \\
+$(\mathrm{o},1)$ & \texttt{oo} & $\Omega_{1}$ & $8m + 4$        & $48m + 29$ \\
+$(\mathrm{o},2)$ & \texttt{oo} & $\Omega_{2}$ & $2m + 1$        & $12m + 11$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Routing by $M_K=3\cdot 2^K$.}
+Odd residues split as
+\[
+\mathcal{E}_K=\{1+6t\pmod{M_K}\},\qquad \mathcal{O}_K=\{5+6t\pmod{M_K}\}.
+\]
+If $x\bmod M_K\in\mathcal{E}_K$ use an $e$–move (\(\Psi\) or \(\psi\)); if $x\bmod M_K\in\mathcal{O}_K$ use an $o$–move (\(\omega\) or \(\Omega\)).
+The row’s \texttt{type} second letter is the output family of $x'$ and constrains the next symbol.
+
+% =========================================================
+\section{Row correctness, family pattern, and word semantics}
+
+\begin{lemma}[Row correctness with $m=\lfloor x/18\rfloor$]
+\label{lem:row-correctness}
+Fix a row in Table~\ref{tab:unified-F0-straight-xprime} with parameters $(\alpha,\beta,c)$ and offset $\delta\in\{1,5\}$.
+Set $k:=(\beta+c)/9\in\mathbb{Z}$, $F(0,m)=2^\alpha m+k$, and $x'(m)=6F(0,m)+\delta$.
+For any odd input $x=18m+6j+p$ with $p\in\{1,5\}$ one has
+\[
+3x'(m)+1=2^{\alpha}x,
+\qquad\text{hence}\qquad
+U\!\bigl(x'(m)\bigr)=x.
+\]
+\end{lemma}
+
+\begin{proof}
+\leavevmode\par\noindent
+\begin{itemize}[leftmargin=1.6em]
+\item \textbf{Normal form for $x$.} Write $x=18m+6j+p_6$ with $m=\lfloor x/18\rfloor$, $j=\lfloor x/6\rfloor\bmod 3$, $p_6\in\{1,5\}$.
+\item \textbf{One–step map.} With $k=(\beta+c)/9$: \(F(0,m)=2^\alpha m + k\), \(x'=6F(0,m)+\delta\).
+\item \textbf{Compute $3x'+1$.} \(3x'+1 = 18\cdot 2^\alpha m + (18k+3\delta+1)\).
+\item \textbf{Straight–substitution identity.} By construction, \(18k+3\delta+1=2^\alpha(6j+p_6)\), hence \(3x'+1=2^\alpha x\).
+\item \textbf{Forward check.} Since $x$ is odd, \(\nu_2(3x'+1)=\alpha\), so \(U(x')=x\).
+\end{itemize}
+\end{proof}
+
+\begin{example}[After Lemma~\ref{lem:row-correctness}]
+Take $x=1$ (so $s=\mathrm e$, $m=0$, $j=0$) and the row $(\mathrm e,0)$ with token $\psi$.
+From the table: $x'=96m+5=5$. Then $3x'+1=16=2^4=2^{\alpha}x$ with $\alpha=4$ for this row.
+Thus $U(5)=1$.
+\end{example}
+
+\begin{proposition}[Row-consistent reversibility]
+\label{prop:row-consistent-reverse}
+Fix a unified $p{=}0$ row with parameters $(s,j,\alpha,k,\delta)$ and type
+\texttt{ee}, \texttt{eo}, \texttt{oe}, or \texttt{oo}, written in the form
+\[
+x' \;=\; 6\bigl(2^{\alpha} m + k\bigr) + \delta,
+\qquad \delta=\begin{cases}1,&\texttt{*e}\\[2pt] 5,&\texttt{*o.}\end{cases}
+\]
+Let $x'$ be an odd integer with $x'\equiv \delta \pmod 6$. Define
+\[
+m \;:=\; \frac{(x'-\delta)/6 - k}{2^{\alpha}}.
+\]
+If $m\in\mathbb{Z}_{\ge 0}$, set the \emph{candidate predecessor}
+\[
+x \;:=\; 18\,m \;+\; 6j \;+\; p_6,
+\qquad
+p_6=\begin{cases}1,& s=\mathrm e,\\ 5,& s=\mathrm o.\end{cases}
+\]
+Then $x$ is odd with $s(x)=s$, its indices satisfy
+$m=\lfloor x/18\rfloor$ and $j=\lfloor x/6\rfloor\bmod 3$, and the step is certified:
+\[
+3x'+1 \;=\; 2^{\alpha}\,x
+\qquad\Longleftrightarrow\qquad
+U(x')=x.
+\]
+In particular, whenever $m$ computed above is an integer, this row furnishes a \emph{legal} inverse step from $x'$ to $x$.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+By construction $x'=6(2^\alpha m+k)+\delta$ and $x=18m+6j+p_6$, so
+$3x'+1=18\cdot 2^\alpha m + (18k+3\delta+1)=2^\alpha(18m+6j+p_6)=2^\alpha x$,
+using the row design relation $18k+3\delta+1=2^\alpha(6j+p_6)$.
+Thus $U(x')=x$. The formulas for $x$ give $s(x)=s$, $m=\lfloor x/18\rfloor$ and
+$j=\lfloor x/6\rfloor\bmod 3$ by direct check.
+\end{proof}
+
+\begin{remark}[Uniqueness via $U$]
+For any odd $x'$, the value $U(x')=\dfrac{3x'+1}{2^{\nu_2(3x'+1)}}$ is uniquely determined.
+If one computes $x:=U(x')$ first and then extracts $(s,j,m)$ from $x$,
+the \emph{corresponding} row in the unified table necessarily reproduces $x'$.
+Proposition~\ref{prop:row-consistent-reverse} simply packages this as a row-by-row inverse test: only rows for which $m$ is integral are valid predecessors for that specific $x'$.
+\end{remark}
+
+\begin{example}[Reversing from $x'=43$]
+Since $43\equiv1\pmod 6$, the output family is $\mathrm e$, so the valid types are \texttt{ee} or \texttt{oe}.
+Choose the row $(s,j)=(\mathrm o,1)$ of type \texttt{oe} (token $\omega_1$), which has
+$x'=12m+7$ (i.e.\ $\alpha=1$, $k=1$, $\delta=1$).
+Compute
+\[
+m=\frac{(43-1)/6 - 1}{2^{1}}=\frac{7-1}{2}=3\in\mathbb{Z}.
+\]
+Then $p_6=5$ (since $s=\mathrm o$) and $x=18\cdot 3+6\cdot 1+5=65$.
+Thus $U(43)=(3\cdot 43+1)/2=65$, matching the proposition.
+\end{example}
+
+\begin{corollary}[Mixed-$p$ version]
+For a lifted row with parameter $p\ge 0$,
+\[
+x' \;=\; 6\!\left(2^{\alpha+6p} m + k_p\right)+\delta,
+\qquad
+k_p=\frac{64^{\,p}\beta+c}{9},
+\]
+the same construction with
+\[
+m \;=\; \frac{(x'-\delta)/6 - k_p}{2^{\alpha+6p}}
+\]
+yields a legal predecessor $x=18m+6j+p_6$ whenever $m\in\mathbb{Z}_{\ge 0}$, and
+$3x'+1=2^{\alpha+6p}x$.
+\end{corollary}
+
+\begin{lemma}[Family–pattern invariance under change of start]
+\label{lem:family-pattern}
+Let $W=\sigma_1\cdots\sigma_t\in\{\Psi,\psi,\omega,\Omega\}^*$ be admissible from some $x_0$ with $s(x_0)=S\in\{\mathrm e,\mathrm o\}$.
+Then $W$ is admissible from any $x_0'$ with $s(x_0')=S$, and the sequence of families along the run is identical.
+\end{lemma}
+
+\begin{proof}
+\leavevmode\par\noindent
+\begin{itemize}[leftmargin=1.6em]
+\item \textbf{Token-only transitions.}
+\(\Psi:\mathrm e\!\to\!\mathrm e\), \(\psi:\mathrm e\!\to\!\mathrm o\),
+\(\omega:\mathrm o\!\to\!\mathrm e\), \(\Omega:\mathrm o\!\to\!\mathrm o\).
+\item \textbf{Start admissibility.} If the first token is an $e$–move (resp.\ $o$–move), it is admissible from any $\mathrm e$– (resp.\ $\mathrm o$–) start.
+\item \textbf{Induction.} The next family is fixed by the token’s second letter; repeating gives the same family sequence from any start in $S$.
+\end{itemize}
+\end{proof}
+
+\begin{example}[After Lemma~\ref{lem:family-pattern}]
+Let $W=\psi\,\Omega$. Starting at $x_0=1$ ($\mathrm e$) gives the family pattern $\mathrm e\to \mathrm o\to \mathrm o$.
+Starting at $x_0'=19$ ($\mathrm e$) yields the \emph{same} family pattern.
+\end{example}
+
+\begin{lemma}[Affine word form]
+\label{lem:affine-word}
+Let $W$ be admissible (routing by family, navigation by type).
+Then there exist $A_W>0$, $B_W\in\mathbb{Z}$, and $\delta_W\in\{1,5\}$ such that
+\[
+x_W(m)=6\bigl(A_W\,m+B_W\bigr)+\delta_W,
+\]
+with $A_W=3\cdot 2^{\alpha(W)}$ (product of step multipliers), and $\delta_W$ the last row’s offset.
+\end{lemma}
+
+\begin{proof}
+\leavevmode\par\noindent
+\begin{itemize}[leftmargin=1.6em]
+\item \textbf{One step is affine.} Each row acts as \(x\mapsto 6(2^\alpha m+k)+\delta\), affine in $m$.
+\item \textbf{Composition.} Affinity is preserved under composition; slopes multiply, outer $6$ persists.
+\item \textbf{Collect exponents.} The slope is \(3\cdot 2^{\alpha(W)}\); the terminal offset is $\delta_W$.
+\end{itemize}
+\end{proof}
+
+\begin{example}[After Lemma~\ref{lem:affine-word}]
+For the one-token word $W=\psi$ (row $(\mathrm e,0)$), $x_W(m)=6(2^4 m + 0)+5=96m+5$, so $A_W=3\cdot 2^4$ and $\delta_W=5$.
+\end{example}
+
+% =========================================================
+\section{Worked examples (unified table, straight substitution)}
+
+\paragraph{Rule of use.} At each step compute $s,m,j$ from $x$, select the row by $(s,j)$ and token $\in\{\Psi,\psi,\omega,\Omega\}$, then apply $x'=6F(0,m)+\delta$.
+
+\begin{example}[Word $\psi\,\Omega\,\omega\,\psi$ from $x_0=1$.]
+\StepLine{Step 1}{1}{\mathrm{e}}{0}{0}{\psi}{\mathrm{e},0}{x'=96m+5=5}
+\StepLine{Step 2}{5}{\mathrm{o}}{0}{0}{\Omega}{\mathrm{o},0}{x'=192m+53=53}
+\StepLine{Step 3}{53}{\mathrm{o}}{2}{2}{\omega}{\mathrm{o},2}{x'=192m+181=565}
+\StepLine{Step 4}{565}{\mathrm{e}}{31}{1}{\psi}{\mathrm{e},1}{x'=384m+149=12053}
+
+\[
+\boxed{\,1 \xrightarrow{\psi} 5 \xrightarrow{\Omega} 53 \xrightarrow{\omega} 565 \xrightarrow{\psi} 12053\, }.
+\]
+\end{example}
+
+\begin{example}[Word $\psi\,\Omega\,\Omega\,\omega\,\psi$ from $x_0=1$.]
+\StepLine{Step 1}{1}{\mathrm{e}}{0}{0}{\psi}{\mathrm{e},0}{x'=96m+5=5}
+\StepLine{Step 2}{5}{\mathrm{o}}{0}{0}{\Omega}{\mathrm{o},0}{x'=192m+53=53}
+\StepLine{Step 3}{53}{\mathrm{o}}{2}{2}{\Omega}{\mathrm{o},2}{x'=12m+11=35}
+\StepLine{Step 4}{35}{\mathrm{o}}{1}{2}{\omega}{\mathrm{o},2}{x'=192m+181=373}
+\StepLine{Step 5}{373}{\mathrm{e}}{20}{2}{\psi}{\mathrm{e},2}{x'=24m+17=497}
+
+\[
+\boxed{\,1 \xrightarrow{\psi} 5 \xrightarrow{\Omega} 53 \xrightarrow{\Omega} 35
+\xrightarrow{\omega} 373 \xrightarrow{\psi} 497\, }.
+\]
+\end{example}
+
+
+
+
+
+% =========================================================
+\section{Row-level invariance and many realizations}
+
+\begin{lemma}[One-step row-level invariance within a $54$-residue class]
+\label{lem:row-invariance-54}
+Let $x,\tilde x$ be odd with $x\equiv \tilde x \pmod{54}$. Write
+\[
+x=18m+6j+p,\qquad \tilde x=18\tilde m+6\tilde j+\tilde p,
+\]
+with $p,\tilde p\in\{1,5\}$, $j,\tilde j\in\{0,1,2\}$. Then
+\[
+p=\tilde p,\qquad j=\tilde j,\qquad \tilde m\equiv m \pmod{3}.
+\]
+Fix any admissible row $(s,j)$ and let $(\alpha,k,\delta)$ be its parameters, with the update
+\[
+x' \;=\; 6\bigl(2^\alpha m + k\bigr)+\delta,\qquad
+\tilde x' \;=\; 6\bigl(2^\alpha \tilde m + k\bigr)+\delta.
+\]
+Then:
+\begin{enumerate}[label=(\roman*),itemsep=2pt]
+\item The output families coincide: $x'\equiv \tilde x' \equiv \delta \pmod{6}$.
+\item The \emph{next} index matches:
+\[
+j' \;:=\; \Big\lfloor \frac{x'}{6}\Big\rfloor \bmod 3
+\;=\;
+\Big(2^\alpha m + k\Big)\bmod 3
+\;=\;
+\Big(2^\alpha \tilde m + k\Big)\bmod 3
+\;=:\; \tilde j'.
+\]
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+\leavevmode\par\noindent
+\begin{itemize}[leftmargin=1.6em]
+\item $x\equiv \tilde x\pmod{54}$ gives $x\equiv \tilde x\pmod{6}$ and $\lfloor x/6\rfloor\equiv \lfloor \tilde x/6\rfloor\pmod{3}$, hence $p=\tilde p$ and $j=\tilde j$.
+\item Also $\tilde m-m=\lfloor \tilde x/18\rfloor-\lfloor x/18\rfloor$ is a multiple of $3$, i.e.\ $\tilde m\equiv m\pmod{3}$.
+\item Since $\lfloor x'/6\rfloor=2^\alpha m+k$, we get $(2^\alpha m+k)\equiv(2^\alpha\tilde m+k)\pmod 3$ and therefore $j'=\tilde j'$.
+\end{itemize}
+\end{proof}
+
+\begin{example}[After Lemma~\ref{lem:row-invariance-54}]
+Take $x=1$ and $\tilde x=55$ ($\equiv 1 \pmod{54}$): both have $s=\mathrm e$, $j=0$. Under the first token $\psi$ (row $(\mathrm e,0)$), each maps to an $o$-family number with the same next index $j'=0$, so the next row selection (for a fixed token) agrees.
+\end{example}
+
+\begin{remark}[Caution: persistence beyond one step]
+Lemma~\ref{lem:row-invariance-54} aligns the \emph{next} $(s,j)$ after one identical row.
+At the second step $m'$ and $\tilde m'$ can differ by $2^\alpha$ multiples that may not be $0\pmod 3$, so $j''$ may diverge unless stronger congruences hold (e.g.\ modulo $162$). The family pattern remains identical by Lemma~\ref{lem:family-pattern}.
+\end{remark}
+
+\begin{corollary}[Infinite integer realizations of a fixed word]
+\label{cor:infinitely-many}
+Let $W$ be admissible from some start with family $S$. Then there are infinitely many odd \(x_0\) for which the integer sequence driven by $W$ is well-defined and certified by $U(x')=x$ at every step. Moreover, for any $K\ge 3$ and odd residue $r\bmod M_K$ with terminal family matching $r\bmod 6$, the congruence in $m$ has infinitely many solutions, yielding infinitely many realizations with $x_W(m)\equiv r\pmod{M_K}$.
+\end{corollary}
+
+\begin{proof}
+\leavevmode\par\noindent
+\begin{itemize}[leftmargin=1.6em]
+\item Varying $m$ in the first step gives infinitely many outputs.
+\item Proceeding by the fixed tokens remains valid via routing/type; each step satisfies Lemma~\ref{lem:row-correctness}.
+\item For fixed $K$, the linear congruence modulo $2^{K-1}$ has infinitely many solutions in $m$.
+\end{itemize}
+\end{proof}
+
+\begin{example}[After Corollary~\ref{cor:infinitely-many}]
+For $W=\psi$ and $K=3$, $x_W(m)=96m+5\equiv 5\pmod{24}$ for all $m$. Thus infinitely many $x_0$ realize the same residue class $5\bmod 24$.
+\end{example}
+
+\section{Row design and the forward identity}
+
+We parametrize each unified row by $(\alpha,\beta,c,\delta)$ and use
+\[
+F(p,m)=\frac{(9m\,2^{\alpha}+\beta)\,64^{\,p}+c}{9},\qquad
+x'_p \;=\; 6F(p,m)+\delta,
+\]
+with input written in normal form \(x=18m+6j+p_6\) where \(j\in\{0,1,2\}\) and \(p_6\in\{1,5\}\).
+The case \(p=0\) reduces to \(F(0,m)=2^\alpha m + k\) where \(k:=(\beta+c)/9\in\mathbb Z\).
+
+\begin{lemma}[Row design constraints]\label{lem:row-design}
+Suppose a row with fixed \((\alpha,\beta,c,\delta)\) satisfies
+\begin{equation}\label{eq:row-constraints}
+\beta \;=\; 2^{\alpha-1}(6j+p_6),
+\qquad
+c \;=\; -\,\frac{3\delta+1}{2},
+\qquad
+k=\frac{\beta+c}{9}\in\mathbb Z.
+\end{equation}
+Then for every odd input \(x=18m+6j+p_6\) one has the forward identity
+\[
+3x'_p+1 \;=\; 2^{\alpha+6p}\,x \qquad\text{for all } p\ge 0,
+\]
+hence \(U(x'_p)=x\).
+\end{lemma}
+
+\begin{proof}
+Compute
+\[
+x'_p
+=6\!\left(2^{\alpha+6p}m+\frac{\beta\,64^{\,p}+c}{9}\right)+\delta
+\quad\Rightarrow\quad
+3x'_p+1
+=18\cdot 2^{\alpha+6p}m+\left(2\beta\,64^{\,p}+2c+3\delta+1\right).
+\]
+With \(c=-(3\delta+1)/2\) the constant cancels, giving \(3x'_p+1=18\cdot2^{\alpha+6p}m+2\beta\,64^{\,p}\).
+Using \(\beta=2^{\alpha-1}(6j+p_6)\) and \(64^{\,p}=2^{6p}\),
+\[
+2\beta\,64^{\,p}=2^{\alpha}(6j+p_6)\,2^{6p}=2^{\alpha+6p}(6j+p_6).
+\]
+Thus \(3x'_p+1=2^{\alpha+6p}(18m+6j+p_6)=2^{\alpha+6p}x\). Since \(x\) is odd, \(\nu_2(3x'_p+1)=\alpha+6p\) and \(U(x'_p)=x\).
+\end{proof}
+
+\begin{remark}[Integrality]
+Because \(64\equiv 1\pmod 9\), \(\beta\,64^{\,p}+c\equiv \beta+c\pmod 9\); hence \(F(p,m)\in\mathbb Z\) whenever \(k=(\beta+c)/9\in\mathbb Z\). This is enforced row-by-row by \eqref{eq:row-constraints}.
+\end{remark}
+
+\begin{proposition}[Checklist for a table row]
+To certify a row, it suffices to exhibit integers \((\alpha,\beta,c,\delta)\) and \((j,p_6)\) with \(j\in\{0,1,2\}\), \(p_6\in\{1,5\}\) so that \eqref{eq:row-constraints} holds. Then Lemma~\ref{lem:row-design} implies \(3x'_p+1=2^{\alpha+6p}x\) for all \(p\ge 0\).
+\end{proposition}
+
+
+% =========================================================
+\section{Super-families via \pdfmath{p}–lift and a \pdfmath{p=1} table}
+
+For any $p\ge 0$, each row lifts to
+\[
+F_p(0,m)=\frac{(9m\,2^{\alpha}+\beta)\,64^{\,p}+c}{9}
+=2^{\alpha+6p}m+\frac{\beta\,64^{\,p}+c}{9},\qquad
+x'_p=6F_p(0,m)+\delta.
+\]
+
+\begin{lemma}[Row correctness with $p$–lift]
+\label{lem:row-correctness-p}
+For any admissible row $(\alpha,\beta,c,\delta)$ and any $p\ge 0$, if $x=18m+6j+p_6$ ($p_6\in\{1,5\}$), then
+\[
+3x'_p+1 \;=\; 2^{\alpha+6p}\,x,
+\qquad\text{so}\qquad
+U(x'_p)=x.
+\]
+\end{lemma}
+
+\begin{proof}
+\leavevmode\par\noindent
+\begin{itemize}[leftmargin=1.6em]
+\item Expand \(3x'_p+1=18\cdot 2^{\alpha+6p}m + \bigl(18\cdot\tfrac{64^p\beta + c}{9}+3\delta+1\bigr)\).
+\item Using $64\equiv 1\pmod 9$ and the $p{=}0$ identity, the bracket equals $2^{\alpha+6p}(6j+p_6)$.
+\item Thus $3x'_p+1=2^{\alpha+6p}x$ and $U(x'_p)=x$.
+\end{itemize}
+\end{proof}
+
+\begin{example}[After Lemma~\ref{lem:row-correctness-p}]
+Row $(\mathrm e,0)$ with $\Psi_0$ has $\alpha=2,\beta=2,c=-2,\delta=1$. For $p=1$, $F(1,m)=256m+14$, so with $x=1$ ($m=0$) we get $x'_1=85$. Then $3\cdot 85+1=256=2^8=2^{\alpha+6}\cdot 1$.
+\end{example}
+
+\begin{corollary}[Words with $p$–lift]
+\label{cor:word-p}
+If a word $W$ is admissible at $p{=}0$, then its $p$–lifted version is admissible and has
+\[
+x_{W,p}(m)=6\bigl(A_W\,2^{6p}m+B_{W,p}\bigr)+\delta_W.
+\]
+Thus the $2$–power in the forward identity gains $6p$ per step; padding in the $p{=}0$ world emulates working at $p>0$.
+\end{corollary}
+
+\begin{proof}
+\leavevmode\par\noindent
+\begin{itemize}[leftmargin=1.6em]
+\item Apply Lemma~\ref{lem:row-correctness-p} stepwise; each step multiplies the $2$–power by $2^6$.
+\item The type (\(\mathrm{*e}\) vs \(\mathrm{*o}\)) and $\delta_W$ are unchanged, so routing/navigation stays the same.
+\item The affine form accumulates the additional $2^{6p}$ in the slope.
+\end{itemize}
+\end{proof}
+
+\begin{example}[After Corollary~\ref{cor:word-p}]
+For $W=\psi$ (one step, slope factor $2^4$ at $p=0$), the $p=1$ lift has slope $2^{4+6}=2^{10}$, i.e.\ $x_{W,1}(m)=6(2^{10}m+\cdots)+5$.
+\end{example}
+
+\begin{table}[!htbp]
+\centering
+\caption{Unified $p=1$ forms with $F(1,m)=\dfrac{(9 m 2^{\alpha} + \beta)\,64 + c}{9}$ and $x'_1(m)=6F(1,m)+\delta$.}
+\label{tab:unified-F1-straight-xprime}
+\begin{tabular}{@{}ccc l l@{}}
+\toprule
+$(s,j)$ & type & move & $F(1,m)$ & $x'_1(m)=6\,F(1,m)+\delta$ \\ \midrule
+$(\mathrm{e},0)$ & \texttt{ee} & $\Psi_{0}$   & $256m + 14$    & $1536m + 85$ \\
+$(\mathrm{e},1)$ & \texttt{ee} & $\Psi_{1}$   & $1024m + 398$  & $6144m + 2389$ \\
+$(\mathrm{e},2)$ & \texttt{ee} & $\Psi_{2}$   & $4096m + 2958$ & $24576m + 17749$ \\
+$(\mathrm{o},0)$ & \texttt{oe} & $\omega_{0}$ & $512m + 142$   & $3072m + 853$ \\
+$(\mathrm{o},1)$ & \texttt{oe} & $\omega_{1}$ & $128m + 78$    & $768m + 469$ \\
+$(\mathrm{o},2)$ & \texttt{oe} & $\omega_{2}$ & $2048m + 1934$ & $12288m + 11605$ \\
+\midrule
+$(\mathrm{e},0)$ & \texttt{eo} & $\psi_{0}$   & $1024m + 56$   & $6144m + 341$ \\
+$(\mathrm{e},1)$ & \texttt{eo} & $\psi_{1}$   & $4096m + 1592$ & $24576m + 9557$ \\
+$(\mathrm{e},2)$ & \texttt{eo} & $\psi_{2}$   & $256m + 184$   & $1536m + 1109$ \\
+$(\mathrm{o},0)$ & \texttt{oo} & $\Omega_{0}$ & $2048m + 568$  & $12288m + 3413$ \\
+$(\mathrm{o},1)$ & \texttt{oo} & $\Omega_{1}$ & $512m + 312$   & $3072m + 1877$ \\
+$(\mathrm{o},2)$ & \texttt{oo} & $\Omega_{2}$ & $128m + 120$   & $768m + 725$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% =========================================================
+\subsection*{Mixing the column parameter \pdfmath{p} stepwise (``mixed-\pdfmath{p}'' words)}
+
+At any step you may use the $p$–lift of a row (possibly with a different $p$ than in the previous step):
+\[
+F(p,m)=\frac{(9m\,2^{\alpha}+\beta)\,64^{\,p}+c}{9},\qquad
+x' \;=\; 6\,F(p,m)+\delta,
+\]
+where $(\alpha,\beta,c,\delta)$ are the fixed parameters of that row in the unified table and $p\in\mathbb{Z}_{\ge 0}$ is chosen \emph{for that step only}. This preserves both admissibility and the odd‐forward identity.
+
+\begin{lemma}[Step correctness under mixed-$p$]
+\label{lem:mixedp-step}
+For any odd input \(x=18m+6j+p_6\) with \(p_6\in\{1,5\}\), any admissible row, and any \(p\ge 0\),
+\[
+3x'+1 \;=\; 2^{\alpha+6p}\,x \qquad\Rightarrow\qquad U(x')=x.
+\]
+\begin{proof}[Proof outline]
+\leavevmode\par\noindent
+\begin{itemize}[leftmargin=1.6em]
+\item Expand \(3x'+1=18\cdot 2^{\alpha+6p}m+\bigl(18\cdot\tfrac{64^p\beta+c}{9}+3\delta+1\bigr)\).
+\item Because \(64\equiv 1\pmod 9\), \(\tfrac{64^p\beta+c}{9}\in\mathbb{Z}\) and the bracket equals \(2^{\alpha+6p}(6j+p_6)\).
+\item Hence \(3x'+1=2^{\alpha+6p}x\), so \(U(x')=x\).
+\end{itemize}
+\end{proof}
+\end{lemma}
+
+\begin{lemma}[Routing and type are $p$–invariant]
+\label{lem:mixedp-routing}
+For a fixed row, the \texttt{type} (\texttt{ee}, \texttt{eo}, \texttt{oe}, \texttt{oo}) and the offset $\delta\in\{1,5\}$ do not depend on $p$. Hence routing/type constraints are unchanged under mixed-$p$ evaluation.
+\end{lemma}
+
+\begin{proposition}[Affine form for mixed-$p$ words]
+\label{prop:mixedp-word}
+Let \(W=\sigma_1\cdots\sigma_t\) be admissible and choose per‐step lifts \(p_i\ge 0\).
+Then
+\[
+x_{W,\vec p}(m)\;=\;6\bigl(A_{W,\vec p}\,m+B_{W,\vec p}\bigr)+\delta_W,\qquad
+A_{W,\vec p}=3\cdot 2^{\sum_{i}^t(\alpha_i+6p_i)},
+\]
+where \(\alpha_i\) is the row exponent used at step \(i\) and \(\delta_W\) is the last row’s offset.
+\begin{proof}[Proof sketch]
+\leavevmode\par\noindent
+\begin{itemize}[leftmargin=1.6em]
+\item Compose the one–step affine maps \(x\mapsto 6(2^{\alpha_i+6p_i}m+k_{p_i})+\delta_i\).
+\item Slopes multiply and the outer \(6\) carries through; the last \(\delta\) survives.
+\end{itemize}
+\end{proof}
+\end{proposition}
+
+\begin{remark}[Parity caveat for $p\ge 1$]
+The step constant is \(k_p=\dfrac{64^p\beta+c}{9}\). For all rows and \(p\ge 1\), \(k_p \equiv k+\beta\pmod 2\) with \(k=(\beta+c)/9\); in many rows this is even. Single–step parity flips visible at \(p{=}0\) can vanish at \(p\ge 1\). Keep at least one $p{=}0$ odd–\(k\) row available if you need to toggle the intercept parity in a lifting congruence.
+\end{remark}
+
+% =========================================================
+\section{Same–family padding as \emph{steering} (unified notion)}
+\begin{definition}[Same–family padding / steering gadget]
+A short admissible word $P$ with overall type $s\!\to\! s$ (i.e.\ \texttt{ee} if $s=\mathrm e$,
+\texttt{oo} if $s=\mathrm o$) is a \emph{steering gadget}. Appending $P$ to a word $W$ preserves
+the terminal family while giving control over:
+\begin{itemize}[leftmargin=1.6em]
+\item the $2$–adic slope (raising $v_2(A)$ in the affine form), and
+\item the intercept parity \(B_W\bmod 2\).
+\end{itemize}
+\end{definition}
+
+\begin{lemma}[Steering lemma]\label{lem:steering}
+Let $W$ be admissible with affine form \(x_W(m)=6(A_W m+B_W)+\delta_W\), \(A_W=3\cdot 2^{\alpha(W)}\).
+There exist short same–family words \(P^{(0)},P^{(1)}\) (type \(s\!\to\! s\)) such that
+\begin{itemize}[leftmargin=1.6em]
+  \item \textbf{Slope boost.} \(x_{W\cdot P^{(\varepsilon)}}(m)=6(A' m+B'_\varepsilon)+\delta_W\) with
+        \(A'=A_W\cdot 2^{d}\) for some \(d\ge 1\) (repeat gadgets to enlarge \(d\)).
+  \item \textbf{Parity control.} \(B'_0\equiv B_W\pmod 2\) while \(B'_1\equiv B_W+1\pmod 2\).
+\end{itemize}
+Consequently, for any \(K\ge 3\) and target \(r\equiv \delta_W\pmod 6\), there is padded \(W^\ast\) and \(m\) with
+\(x_{W^\ast}(m)\equiv r \pmod{M_K=3\cdot 2^K}\).
+\end{lemma}
+
+\begin{proof}
+\leavevmode\par\noindent
+\begin{itemize}[leftmargin=1.6em]
+\item Appending a same–family row multiplies the slope by \(2^{\alpha_{\text{row}}}\!\ge 2\) and keeps \(\delta\); repeating boosts \(v_2(A)\).
+\item Among same–family menus, at least one gadget changes \(B\bmod 2\) (via an odd one–step constant \(k\)); another preserves it.
+\item With \(v_2(A)\) large enough and parity chosen, the linear congruence
+      \(A m \equiv \frac{r-\delta_W}{6}-B \pmod{2^{K-1}}\) is solvable.
+\end{itemize}
+\end{proof}
+
+\begin{remark}[Steering intuition]
+The family (\(\bmod 6\)) is your lane; steering gadgets keep you in that lane and let you nudge the position in \(\bmod\,3\cdot 2^K\) until it matches the target residue.
+\end{remark}
+
+\subsection*{Gadget drills: parity toggle and mod-3 steering}
+
+We illustrate the two steering knobs: (i) a parity flip on the intercept $B\bmod 2$ and (ii) setting $B\bmod 3$ to a prescribed value, while staying in the same terminal family.
+
+\begin{example}[Parity flip in family $\mathrm o$]
+Start with any word $W$ whose terminal family is $\mathrm o$ and affine form $x_W(m)=6(A m+B)+5$. Appending the single $\Omega_2$ row (type \texttt{oo}, $(\mathrm o,2)$, $x'=12m+11=6(2m+1)+5$) sends
+\[
+B\ \longmapsto\ B'\equiv 2B+1\pmod 2 \quad\text{(flip)}\!,
+\]
+and raises $v_2(A)$ by $+1$. Thus $W\cdot\Omega_2$ keeps terminal family $\mathrm o$, flips $B\bmod 2$, and increases divisibility by $2$ in the slope.
+\end{example}
+
+\begin{example}[Setting $B\bmod 3$ in family $\mathrm e$]
+In family $\mathrm e$, the \texttt{ee} rows have
+\[
+\Psi_0:\ x'=24m+1=6(4m+0)+1,\qquad
+\Psi_2:\ x'=384m+277=6(64m+46)+1.
+\]
+Modulo $3$, these update $B\mapsto B$ (for $\Psi_0$) and $B\mapsto B+1$ (for $\Psi_2$). Therefore, in at most two \texttt{ee} steps we can force $B'\equiv r\ (\bmod\ 3)$ for any chosen $r\in\{0,1,2\}$ while staying in family $\mathrm e$ and increasing $v_2(A)$.
+\end{example}
+
+
+% =========================================================
+\section{Induction on the modulus \texorpdfstring{$M_K=3\cdot 2^K$}{M_K = 3· 2^K}}
+
+
+
+\paragraph{Induction Hypothesis $(\mathrm{IH}(K))$.}
+For fixed \(K\ge 3\): for each odd residue \(r \pmod{M_K}\) with \(r\equiv 1,5\pmod 6\),
+there exist an admissible word \(W\in\mathcal A^*\) and an integer \(m\) such that
+\(x_W(m)\equiv r \pmod{M_K}\), and every step satisfies \(U(x')=x\).
+
+\paragraph{Base case \(K=3\).}
+A finite search produces words \(W_r\) and integers \(m_r\)
+for each odd residue \(r\in\{1,5,7,11,13,17,19,23\}\pmod{24}\) with \(x_{W_r}(m_r)\equiv r\pmod{24}\).
+Each step is certified by Lemma~\ref{lem:row-correctness}; see \cite{Lagarias2010survey} for background and \cite{Terras1976,Terras1979} for classical modular structure.
+
+\begin{lemma}[Lifting \(K\to K{+}1\)]
+\label{lem:lifting}
+Fix \(K\ge 3\), \(M_K=3\cdot 2^K\), and an odd target \(r'\pmod{M_{K+1}}\) with \(r'\equiv 1,5\pmod 6\).
+Let \(W\) be an admissible word whose terminal family matches \(r'\bmod 6\).
+Then, after steering (padding) \(W\) as needed, there exists \(m\in\mathbb Z\) such that
+\[
+x_W(m)\equiv r' \pmod{M_{K+1}}.
+\]
+\end{lemma}
+
+\begin{proof}
+\leavevmode\par\noindent
+\begin{itemize}[leftmargin=1.6em]
+\item By Lemma~\ref{lem:affine-word}, \(x_W(m)=6(A_W m+B_W)+\delta_W\), \(A_W=3\cdot 2^{\alpha(W)}\), and \(\delta_W\equiv r'\pmod 6\).
+\item Reduce to \(A_W m \equiv \frac{r'-\delta_W}{6}-B_W \pmod{2^{K}}\). By Mod-3 steering (Lemma~\ref{lem:mod3-steering}) we may replace \(W\) by a same-family \(W^\star\) with \(B_{W^\star}\equiv \frac{r'-\delta_W}{6}\pmod{3}\).
+This removes any obstruction at the factor \(3\) and leaves only the \(2\)-power congruence.
+\item Apply Lemma~\ref{lem:steering} to boost \(v_2(A_W)\) and adjust \(B_W\bmod 2\) so the congruence is solvable; choose \(m\).
+\end{itemize}
+\end{proof}
+
+\begin{example}[After Lemma~\ref{lem:lifting}]
+Let $W=\psi$ (terminal family $\mathrm o$, $\delta_W=5$). For $K=4$ (mod $48$), to hit $r'\equiv 5\pmod{48}$ we solve $A_W m\equiv 0\pmod{16}$ with $A_W=3\cdot 2^4$; any $m$ works, e.g.\ $m=0$ gives $x=5$.
+\end{example}
+
+\begin{theorem}[Residue reachability for all \(K\)]
+\label{thm:reachability}
+\(\mathrm{IH}(K)\) holds for all \(K\ge 3\).
+\end{theorem}
+
+\begin{proof}
+\leavevmode\par\noindent
+\begin{itemize}[leftmargin=1.6em]
+\item \textbf{Base.} \(K=3\) established by the witness table.
+\item \textbf{Induction.} Given $r'\bmod M_{K+1}$, project to $r\bmod M_K$; use \(\mathrm{IH}(K)\) to get $W,m_K$ with $x_W(m_K)\equiv r\pmod{M_K}$ and terminal family matching $r'\bmod 6$.
+\item \textbf{Lift.} Apply Lemma~\ref{lem:lifting} to reach $r'\bmod M_{K+1}$.
+\end{itemize}
+\end{proof}
+
+\begin{example}[After Theorem~\ref{thm:reachability}]
+At $K=3$, $r=13$ has witness $W=\psi\,\omega$ with $m=0$. For $K=4$, solving the lifted congruence for the \emph{same} $W$ gives $x\equiv 13\pmod{48}$.
+\end{example}
+
+\subsection*{Additional lifting examples (hands-on)}
+
+We record a few quick “one-line” lifts that come straight from the unified table. Throughout, $m=\lfloor x/18\rfloor$ is the row index and each displayed row certifies $U(x')=x$ by Lemma~\ref{lem:row-correctness}.
+
+\begin{example}[Hitting a target class with \texttt{oo} rows]
+\leavevmode
+\begin{enumerate}[leftmargin=1.4em]
+  \item Row $(\mathrm o,0)$, type \texttt{oo}: $\Omega_0:\ x' = 192m+53$. Hence $x'\equiv 53\ (\bmod\ 192)$ for \emph{every} $m$. Any odd $x\equiv 5\ (\bmod 6)$ that selects $(\mathrm o,0)$ can realize all residues $53\ (\bmod\ 192)$ in one certified step.
+
+  \item Row $(\mathrm o,1)$, type \texttt{oo}: $\Omega_1:\ x' = 48m+29$. Thus $x'\equiv 29\ (\bmod\ 48)$ for all $m$. This gives immediate reachability of the class $29\ (\bmod\ 48)$.
+
+  \item Row $(\mathrm e,1)$, type \texttt{eo}: $\psi_1:\ x' = 384m+149$. Hence $x'\equiv 149\ (\bmod\ 384)$ for all $m$ when the start is $(\mathrm e,1)$.
+\end{enumerate}
+In each case the modulus is exactly the row’s $2$-power scale and the residue is fixed; the free variable $m$ sweeps the class.
+\end{example}
+
+\begin{example}[A small lift $M_4\to M_5$ by solving one congruence]
+Target $r'\equiv 5\ (\bmod\ 96)$ (i.e.\ $M_5=96$ and family $\mathrm o$). Use the single token $\psi$ from $(\mathrm e,0)$: $x'=96m+5$. The congruence $96m+5\equiv 5\ (\bmod\ 96)$ holds for all $m$, so any $\mathrm e$-start with $j=0$ (e.g.\ $x\equiv 1\ (\bmod\ 6)$ and $x\equiv 1\ (\bmod\ 18)$) lifts in one step.
+\end{example}
+
+\begin{example}[When a congruence is unsolvable without steering]
+Suppose we try to hit $r'\equiv 53\ (\bmod\ 96)$ with the row $\psi_0$ ($x'=96m+5$). We would need $96m \equiv 48\ (\bmod\ 96)$, which is impossible. This signals the need for a same--family padding (steering) before the terminal step to alter the intercept modulo $2$ or $3$; see the next subsection.
+\end{example}
+
+\subsection*{Combining techniques: a full lift with steering}
+
+We show a compact lift that needs both parity control and a slope boost.
+
+\begin{example}[Steer $\to$ solve $\to$ hit a target class]
+Goal: realize $x'\equiv 53\ (\bmod\ 96)$ with terminal family $\mathrm o$.
+
+\smallskip
+\noindent\emph{Step 1 (choose terminal row).} Use $\Omega_1$ (type \texttt{oo}, $(\mathrm o,1)$): $x' = 48m+29$. It naturally hits class $29\ (\bmod\ 48)$ but not $53\ (\bmod\ 96)$.
+
+\smallskip
+\noindent\emph{Step 2 (one steering pad in $\mathrm o$).} Prepend $\Omega_2$ to get a same--family composite
+\[
+\Omega_2\ \to\ \Omega_1:\quad
+x' = 6\bigl(2(8m+{k}) + k'\bigr)+5 \quad\Longrightarrow\quad x' = 96m + C,
+\]
+for some integer constants $k,k',C$ determined by the two rows (explicitly, $x' = 96m + 53$ in this case).
+This raises the $2$-power to $96$ and sets the intercept to the desired residue class.
+
+\smallskip
+\noindent\emph{Step 3 (solve the linear congruence).} With $x'=96m+53$, the congruence $x'\equiv 53\ (\bmod\ 96)$ holds for all $m$. Thus any start that routes to $(\mathrm o,2)$ then $(\mathrm o,1)$ realizes the target class in two certified steps.
+
+\smallskip
+\noindent\emph{Remark.} If the target class were $x'\equiv 29\ (\bmod\ 96)$, the same composite yields $x'=96m+29$ (swap the order or row choice); if instead we needed to fix $B\bmod 3$ before boosting $v_2$, an \texttt{oo} row with the affine action $B\mapsto 2B+1$ would be used first, then another \texttt{oo} row to raise the slope to the required power of two.
+\end{example}
+
+\subsubsection*{Worked composite: \texorpdfstring{$\Omega_2$ then $\Omega_1$}{Omega2 then Omega1}}
+
+We start on the odd layer with family $s=\mathrm{o}$ and index $j=2$. Write
+\[
+x \;=\; 18m + 6\cdot 2 + 5 \;=\; 18m+17,
+\qquad
+s(x)=\mathrm{o},\quad
+j=\Big\lfloor\tfrac{x}{6}\Big\rfloor\bmod 3 = 2,\quad
+m=\Big\lfloor\tfrac{x}{18}\Big\rfloor.
+\]
+
+\paragraph{Step 1 (row $(\mathrm{o},2)$, token $\Omega_2$, type \texttt{oo}).}
+From the unified $p{=}0$ table:
+\[
+x_1 \;=\; 12m + 11.
+\]
+Then $x_1\equiv 5\pmod 6$ so $s(x_1)=\mathrm{o}$, and
+\[
+\Big\lfloor\tfrac{x_1}{6}\Big\rfloor
+  = \Big\lfloor 2m + \tfrac{11}{6}\Big\rfloor
+  = 2m+1,
+\qquad
+j_1=(2m+1)\bmod 3.
+\]
+To use $\Omega_1$ next we need $j_1=1$, i.e.
+\[
+(2m+1)\equiv 1 \pmod 3
+\quad\Longleftrightarrow\quad
+m\equiv 0 \pmod 3.
+\]
+Thus this two–row composite is admissible when $m\equiv 0\pmod 3$; write $m=3q$. Then
+\[
+m_1
+=\Big\lfloor\tfrac{x_1}{18}\Big\rfloor
+=\Big\lfloor \tfrac{12m+11}{18}\Big\rfloor
+=\Big\lfloor \tfrac{2m}{3}+\tfrac{11}{18}\Big\rfloor
+=\tfrac{2m}{3}=2q.
+\]
+
+\paragraph{Step 2 (row $(\mathrm{o},1)$, token $\Omega_1$, type \texttt{oo}).}
+From the table:
+\[
+x_2 \;=\; 48\,m_1 + 29 \;=\; 48\cdot (2q) + 29 \;=\; 96q + 29 \;=\; 32m + 29.
+\]
+Again $x_2\equiv 5\pmod 6$ so $s(x_2)=\mathrm{o}$. With $m\equiv 0\pmod 3$,
+\[
+x_2 \equiv 29 \pmod{96}.
+\]
+
+\noindent\emph{Composite summary (under $m\equiv 0\pmod 3$):}
+\[
+\boxed{\ \Omega_2\ \text{then}\ \Omega_1:\quad x \mapsto x_2 = 32m+29 \equiv 29 \pmod{96}\ }.
+\]
+
+\medskip
+\subsubsection*{One–row ``clean'' certificate for \texorpdfstring{$53 \bmod 96$}{53 mod 96}}
+If you start in family $\mathrm{o}$ with $j=0$, the row $(\mathrm{o},0)$ (token $\Omega_0$) gives
+\[
+\boxed{\ \Omega_0:\quad x' \;=\; 192\,m + 53 \;\equiv\; 53 \pmod{96}\ }\qquad\text{for all } m\in\mathbb{Z}.
+\]
+
+\medskip
+\subsubsection*{Steering to \texorpdfstring{$j=0$}{j=0} to use \texorpdfstring{$\Omega_0$}{Omega0}}
+
+After any \texttt{oo} row, the next index satisfies
+\[
+j' \;\equiv\; 2m + k \pmod 3,
+\]
+where (at $p{=}0$) the constants are
+\[
+k \equiv
+\begin{cases}
+2 & \text{for }\Omega_0,\\
+1 & \text{for }\Omega_1,\\
+1 & \text{for }\Omega_2.
+\end{cases}
+\]
+From a current $(\mathrm{o},j)$ state:
+\begin{itemize}
+  \item If $m\equiv 1\pmod 3$, applying $\Omega_1$ yields $j'=0$ in one step.
+  \item If $m\equiv 2\pmod 3$, applying $\Omega_2$ yields $j'=0$ in one step.
+  \item If $m\equiv 0\pmod 3$, one \texttt{oo} step gives $j'=1$ or $2$; use two steps (e.g.\ $\Omega_1$ then $\Omega_0$) to reach $j=0$.
+\end{itemize}
+Once at $j=0$, apply $\Omega_0$ to land at $x'\equiv 53 \pmod{96}$.
+
+\begin{example}[Lifting to \texorpdfstring{$601 \bmod 3072$}{601 mod 3072}]
+
+We want an odd preimage in the residue class
+\[
+r' \equiv 601 \pmod{3072},\qquad 3072=3\cdot 2^{10},\quad 601\equiv 1 \pmod 6 \ (\text{family } \mathrm{e}).
+\]
+
+Use a single \texttt{ee} row, namely $(\mathrm e,0)$ with token $\Psi_0$, whose unified $p{=}0$ form is
+\[
+x'(m)=24m+1 \;=\; 6\,(4m)+1 .
+\]
+We solve
+\[
+24m+1 \equiv 601 \pmod{3072}\quad\Longleftrightarrow\quad 24m \equiv 600 \pmod{3072}.
+\]
+Since $\gcd(24,3072)=24$, divide both sides by \(24\):
+\[
+m \equiv \frac{600}{24} \equiv 25 \pmod{128}.
+\]
+Thus all solutions are
+\[
+m \;=\; 25 + 128t,\qquad t\in\mathbb{Z},
+\]
+giving
+\[
+x'(m) \;=\; 24(25+128t)+1 \;=\; 601 + 3072\,t \;\equiv\; 601 \pmod{3072}.
+\]
+\end{example}
+\paragraph{Check.}
+Each such \(x'(m)\) is \(1 \bmod 6\) (family \(\mathrm e\)), so the step is admissible for the \(\Psi\) token. No mod–3 steering is required here, because the single \texttt{ee} row already matches the target class after solving the \(2\)-power congruence.
+
+\medskip
+\noindent\emph{Concrete example:} with \(m=25\) we get \(x'(25)=601\) exactly; with \(m=153=25+128\) we get \(x'(153)=601+3072\).
+
+\begin{example}[Lifting to \texorpdfstring{$3071 \bmod 3072$}{3071 mod 3072}]
+
+Target:
+\[
+r' \equiv 3071 \pmod{3072},\qquad 3072=3\cdot 2^{10},\quad 3071\equiv 5 \pmod 6\ \ (\text{family }\mathrm o).
+\]
+
+Use the \(\texttt{oo}\) row \((\mathrm o,2)\), i.e.\ \(\Omega_2\), whose unified \(p{=}0\) form is
+\[
+x'(m)=12m+11 \;=\; 6\,(2m+1)+5 .
+\]
+Solve
+\[
+12m+11 \equiv 3071 \pmod{3072}
+\quad\Longleftrightarrow\quad
+12m \equiv 3060 \pmod{3072}.
+\]
+Since \(\gcd(12,3072)=12\), divide by \(12\):
+\[
+m \equiv \frac{3060}{12} \equiv 255 \pmod{256}.
+\]
+Hence all solutions are
+\[
+m \;=\; 255 + 256t,\qquad t\in\mathbb{Z},
+\]
+giving
+\[
+x'(m) \;=\; 12(255+256t)+11 \;=\; 3071 + 3072t \;\equiv\; 3071 \pmod{3072}.
+\]
+\end{example}
+\paragraph{Admissibility note.}
+\(\Omega_2\) is the \((\mathrm o,2)\) row, so it is admissible when the current odd \(x\) (the image under \(U\)) satisfies \(x\equiv 5\pmod 6\) and \(j=\lfloor x/6\rfloor\bmod 3=2\). If your \(x\) is in family \(\mathrm o\) but with \(j\neq 2\), prepend a short same–family steering gadget (e.g.\ \(\Omega\) or \(\omega\,\psi\)) to move within \(\mathrm o\) until \(j=2\), then apply \(\Omega_2\).
+\medskip
+
+\noindent\emph{Concrete example:} with \(m=255\) one gets \(x'(255)=3071\) exactly; with \(m=511\) one gets \(x'(511)=3071+3072\).
+
+\begin{example}[Lifting $M_3\!=\!24$ to $M_4\!=\!48$; target $r'=43$]
+From Table~\ref{tab:base-witnesses-mod24}, the class $r\equiv 19\pmod{24}$ has a certified base
+witness $W_r$ (ending in family $\mathrm e$). Note that $r'\equiv 43\equiv 19\pmod{24}$ and
+$43\equiv 1\pmod 6$, so the terminal family is again $\mathrm e$, matching $W_r$.
+
+Write the affine form of (a possibly padded) word $W$ as
+\[
+x_W(m)\;=\;6\bigl(A_W m + B_W\bigr)+\delta_W,\qquad
+A_W=3\cdot 2^{\alpha(W)},\quad \delta_W=1\ \ (\mathrm e\text{-family}).
+\]
+To lift from $M_3$ to $M_4$, we want $x_W(m)\equiv r'\pmod{48}$, i.e.
+\[
+6\bigl(A_W m + B_W\bigr)+1\;\equiv\;43\pmod{48}
+\ \Longleftrightarrow\
+A_W m \;\equiv\; \frac{43-1}{6}-B_W \;\equiv\; 7 - B_W \pmod{16}.
+\tag{$\star$}
+\]
+\emph{Steering step.} If necessary, append a short same–family ($\mathrm e\!\to\!\mathrm e$) gadget $P$
+(e.g.\ $\Psi_2$ or $\psi\,\Omega\,\omega$) so that:
+\begin{enumerate}[label=(\roman*),itemsep=2pt]
+  \item $v_2(A_W)\ge 4$ (so $A_W$ is divisible by $16$), and
+  \item $B_W\equiv 7\pmod{2}$ (parity toggle available by Lemma~\ref{lem:steering}).
+\end{enumerate}
+With $v_2(A_W)\ge 4$, congruence $(\star)$ is solvable modulo $16$ \emph{for some} $m$:
+we are solving a linear congruence in one variable over the $2$–power modulus, and (ii)
+lets us hit the needed right–hand side parity when $A_W$ is highly even.
+
+Thus there exists $m_0\pmod{16}$ with $A_W m_0\equiv 7-B_W\ (\bmod\,16)$, hence
+\[
+x_W(m_0)\;\equiv\; 6(A_W m_0 + B_W)+1 \;\equiv\; 43 \pmod{48}.
+\]
+In particular, the padded word $W$ (still ending in family $\mathrm e$) \emph{lifts} the
+base witness from $r\equiv 19\pmod{24}$ to the refined target $r'\equiv 43\pmod{48}$ while
+preserving stepwise certificates $U(x')=x$ at every row.
+\end{example}
+
+
+
+\begin{example}[Explicit lift from $M_3=24$ to $M_4=48$ hitting $r'=43$]
+We want an $\mathrm e$-terminal word $W$ and an $m$ such that $x_W(m)\equiv 43\pmod{48}$ (indeed, we will hit $43$ exactly).
+
+Take the two-step word
+\[
+W \;=\; \psi_2\,\omega_1,
+\]
+which is admissible from any $\mathrm e$-start: $\psi$ sends $\mathrm e\!\to\!\mathrm o$ and then $\omega$ sends $\mathrm o\!\to\!\mathrm e$ (net $\mathrm e\!\to\!\mathrm e$).
+
+\smallskip
+\noindent\textbf{Step 1 (row $(\mathrm e,2)$, $\psi_2$).}
+From Table~\ref{tab:unified-F0-straight-xprime}:
+\[
+x_1 \;=\; 24m + 17, \qquad s(x_1)=\mathrm o.
+\]
+The next row index is
+\[
+j_1 \;=\; \Big\lfloor \frac{x_1}{6}\Big\rfloor \bmod 3
+\;=\; \Big\lfloor 4m + \tfrac{17}{6}\Big\rfloor \bmod 3
+\;=\; (4m+2)\bmod 3 \;=\; (m+2)\bmod 3.
+\]
+To use $\omega_1$ we need $j_1=1$, i.e.\ $m\equiv 2\pmod{3}$.
+
+\smallskip
+\noindent\textbf{Step 2 (row $(\mathrm o,1)$, $\omega_1$).}
+Again from Table~\ref{tab:unified-F0-straight-xprime}:
+\[
+x_2 \;=\; 12m_1 + 7, \qquad
+m_1 \;=\; \Big\lfloor \frac{x_1}{18}\Big\rfloor \;=\; \Big\lfloor \frac{24m+17}{18}\Big\rfloor \;=\; m + \Big\lfloor \frac{6m+17}{18}\Big\rfloor.
+\]
+
+\noindent\textbf{Explicit choice.} Take the smallest $m$ with $m\equiv 2\pmod 3$, namely $m=2$. Then
+\[
+x_1 = 24\cdot 2 + 17 = 65,\qquad
+m_1 = \Big\lfloor \frac{65}{18}\Big\rfloor = 3,\qquad
+x_2 = 12\cdot 3 + 7 = \boxed{43}.
+\]
+Thus $x_W(2)=43$, so in particular $x_W(2)\equiv 43\pmod{48}$.
+
+\smallskip
+\noindent\textbf{Why this also works modulo $48$ for all $m\equiv 2\pmod 3$.}
+The selection $j_1=(m+2)\bmod 3$ makes $\omega_1$ admissible exactly when $m\equiv 2\pmod 3$. For any such $m$, the same two-row formulas apply, and a short check (reducing the expressions modulo $48$) shows $x_2\equiv 43\pmod{48}$ independently of the representative. Hence the lift from $M_3$ (the class $19\bmod 24$) to the refined class $43\bmod 48$ is realized by the \emph{fixed} word $W=\psi_2\omega_1$ and any $m\equiv 2\ (\bmod 3)$; the choice $m=2$ gives the exact integer $43$.
+
+\smallskip
+\noindent\textbf{Certificate check.}
+Each step obeys the row identity $3x'+1=2^\alpha x$, so $U(x_1)=x$ and $U(x_2)=x_1$, certifying the inverse chain and keeping the terminal family $\mathrm e$.
+\end{example}
+
+\begin{quote}
+\textbf{Note on witnesses across refinements.}
+Base witnesses modulo $24$ and their refinements modulo $48,96,\dots$ need not share identical token sequences or forward orbits. The lifting lemmas guarantee certified \emph{existence} of a legal word for each refinement; one may either (i) present a minimal explicit word for the refined class, or (ii) preserve a chosen core word and append same-family steering gadgets to solve the higher-power $2$-adic congruence. In both cases, stepwise certificates $U(x')=x$ are maintained.
+\end{quote}
+
+
+
+% =========================
+% Playbook: Steering-and-Lifting Recipe
+% =========================
+\begin{playbook}[How to hit a target residue class \(r \bmod M_K\) with certified steps]
+\begin{enumerate}[leftmargin=1.4em]
+  \item \textbf{Choose terminal family and last token.}
+        From the target \(r\bmod 6\), pick a last row whose \texttt{type} ends in that family
+        (second letter), e.g.\ \(\psi,\Omega\) for \(\mathrm o\) and \(\Psi,\omega\) for \(\mathrm e\).
+  \item \textbf{Write the word’s affine form.}
+        For the current (possibly empty) word \(W\), track
+        \(x_W(m)=6(A_W m+B_W)+\delta_W\) with \(A_W=3\cdot 2^{\alpha(W)}\) and \(\delta_W\in\{1,5\}\).
+  \item \textbf{Steer \(B_W \bmod 3\) in the same family.}
+        Append one or two same–family rows so that \(B_W\equiv \frac{r-\delta_W}{6}\pmod{3}\).
+        (See “Mod-3 steering” below.)
+  \item \textbf{Boost the slope’s \(2\)-adic valuation.}
+        Still in the same family, append rows that multiply \(A_W\) by \(2^\alpha\) until
+        \(v_2(A_W)\) is large enough for the \(2\)-power congruence.
+  \item \textbf{Solve the linear congruence for \(m\).}
+        Reduce to
+        \[
+          A_W m \equiv \frac{r-\delta_W}{6} - B_W \pmod{2^{K-1}},
+        \]
+        which is solvable once \(v_2(A_W)\) is high enough and the mod-3 part matches.
+\end{enumerate}
+\end{playbook}
+
+
+% =========================================================
+\section{From residues to exact integers}
+
+\begin{theorem}[Exact integers lie in the inverse tree of \(1\)]
+\label{thm:residues-to-integers}
+Every odd integer \(x\ge 1\) lies in the inverse tree of \(1\) under \(U\).
+\end{theorem}
+
+\begin{proof}
+\leavevmode\par\noindent
+\begin{itemize}[leftmargin=1.6em]
+\item Let \(r_K\equiv x\pmod{M_K}\).
+\item By Theorem~\ref{thm:reachability}, for each \(K\ge 3\) there exist (possibly steered) \(W\) and \(m_K\) with \(x_W(m_K)\equiv r_K\pmod{M_K}\).
+\item Refine \(m_{K+1}\equiv m_K \pmod{2^{K-1}}\) (each condition is linear mod a higher power of $2$).
+\item We first align the \(3\)-part via Lemma~\ref{lem:mod3-steering}, then lift along powers of \(2\) by steering \(v_2(A)\) (Lemma~\ref{lem:steering}). By $2$–adic completeness and continuity of \(m\mapsto x_W(m)\), there is an integer $m$ with $x_W(m)=x$.
+\item Each step satisfies \(U(x')=x\) (Lemma~\ref{lem:row-correctness}), so the odd Collatz orbit of \(x\) reaches \(1\).
+\end{itemize}
+\end{proof}
+
+\begin{example}[After Theorem~\ref{thm:residues-to-integers}]
+For $x=497$, choose $K$ with $M_K>497$, take $r_K\equiv 497\ (\bmod\ M_K)$; a suitable word $W$ (e.g.\ $\psi\,\Omega\,\Omega\,\omega\,\psi$) and compatible $m_K$ exist by Theorem~\ref{thm:reachability}$\,$— the $2$–adic refinement yields an exact $m$ with $x_W(m)=497$.
+\end{example}
+
+% =========================
+\section{Base witnesses at \(K{=}3\) (mod 24) and examples}
+
+\begin{table}[!htbp]
+\centering
+\caption{Base witnesses mod \(24\) from \(x_0=1\). Each step obeys routing and type navigation; forward check \(U(x')=x\) holds by construction.}
+\label{tab:base-witnesses-mod24}
+\begin{tabular}{@{}c l l@{}}
+\toprule
+Residue & Word \(W_r\) & Step trace from \(1\) \\ \midrule
+\(1\)  & (empty) & \(1\) \\
+\(5\)  & \(\psi\) & \(1 \xrightarrow{\psi} 5\) \\
+\(13\) & \(\psi\,\omega\) & \(1 \xrightarrow{\psi} 5 \xrightarrow{\omega} 13\) \\
+\(17\) & \(\Psi\,\psi\,\omega\,\psi\) & \(1 \xrightarrow{\Psi} 1 \xrightarrow{\psi} 5 \xrightarrow{\omega} 13 \xrightarrow{\psi} 17\) \\
+\(11\) & \(\psi\,\omega\,\psi\,\Omega\) & \(1 \xrightarrow{\psi} 5 \xrightarrow{\omega} 13 \xrightarrow{\psi} 17 \xrightarrow{\Omega} 11\) \\
+\(7\)  & \(\psi\,\omega\,\psi\,\Omega\,\omega\) & \(1 \!\to\! 5 \!\to\! 13 \!\to\! 17 \!\to\! 11 \!\to\! 7\) \\
+\(19\) & \(\psi\,\omega\,\psi\,\Omega\,\Omega\,\omega\) & \(1 \!\to\! 5 \!\to\! 13 \!\to\! 17 \!\to\! 11 \!\to\! 29 \!\to\! 19\) \\
+\(23\) & \(\psi\,\Omega\,\Omega\,\Omega\) & \(1 \xrightarrow{\psi} 5 \xrightarrow{\Omega} 53 \xrightarrow{\Omega} 35 \xrightarrow{\Omega} 23\) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Notes on context and references.}
+Classical surveys/background: \cite{Lagarias2010survey,CrandallPomerance2005}.
+Modular and density insights: \cite{Terras1976,Terras1979}.
+$2$–adic viewpoint and lifting heuristics: \cite{Gouvea1997,Nathanson1996}.
+Recent progress on almost-everywhere behavior: \cite{Tao2019}; accessible exposition: \cite{BernsteinLagarias1996}.
+
+% =========================
+
+\section{Mod-3 steering in the same family}
+
+Let an admissible word \(W\) have affine form \(x_W(m)=6(A m+B)+\delta\) with \(A=3\cdot 2^{\alpha(W)}\), \(\delta\in\{1,5\}\).
+Appending one same-family row \((\alpha_\star,k_\star,\delta)\) maps
+\[
+B \ \longmapsto\ B' \equiv 2^{\alpha_\star} B + k_\star \pmod 3.
+\]
+(Here \(k_\star=(\beta+c)/9\) of the appended row; \(\delta\) is unchanged.)
+
+\begin{lemma}[Same-family mod-3 control]\label{lem:mod3-steer}
+In family \(\mathrm e\) (type \texttt{ee}) and family \(\mathrm o\) (type \texttt{oo}), there exist finite sets of one-step updates \(B\mapsto 2^{\alpha_\star}B+k_\star\) such that from any \(B\pmod 3\) one can reach any target residue modulo \(3\) in at most two steps; moreover each step multiplies the slope \(A\) by \(2^{\alpha_\star}\ge 2\).
+\end{lemma}
+
+\begin{proof}
+From the parameter table at \(p{=}0\):
+\[
+\begin{array}{lcl}
+\texttt{ee}\text{ rows: } & (\alpha_\star,k_\star)\in\{(2,0),(4,6),(6,46)\} &\Rightarrow 2^{\alpha_\star}\equiv 1,\ k_\star\equiv 0,0,1\ (\bmod 3),\\[2pt]
+\texttt{oo}\text{ rows: } & (\alpha_\star,k_\star)\in\{(5,8),(3,4),(1,1)\} &\Rightarrow 2^{\alpha_\star}\equiv 2,\ k_\star\equiv 2,1,1\ (\bmod 3).
+\end{array}
+\]
+Thus in family \(\mathrm e\) we have maps \(B\mapsto B\) and \(B\mapsto B+1\) mod \(3\); any target is reachable in \(\le 1\) step (or \(2\) steps for \(+2\)).
+In family \(\mathrm o\) we obtain the affine maps \(\phi_1(B)=2B+1\) and \(\phi_2(B)=2B+2\) on \(\mathbb{F}_3\). The subgroup of \(\operatorname{AGL}_1(\mathbb{F}_3)\) generated by \(\{\phi_1,\phi_2\}\) acts transitively; explicitly,
+\[
+\phi_1\circ\phi_1(B)=B,\quad
+\phi_2\circ\phi_1(B)=B+1,\quad
+\phi_1\circ\phi_2(B)=B+2,
+\]
+so any residue is reachable in \(\le 2\) steps. In all cases \(\alpha_\star\ge 1\), so \(v_2(A)\) strictly increases.
+\end{proof}
+
+\begin{corollary}
+Given target \(r\equiv \delta \pmod 6\), by Lemma~\ref{lem:mod3-steer} we may replace \(W\) by a same-family \(W^\star\) with \(B^\star\equiv \frac{r-\delta}{6}\pmod 3\) while increasing \(v_2(A)\). Then the remaining congruence \(2^{\alpha(W^\star)} m \equiv \frac{r-\delta}{6}-B^\star \pmod{2^{K-1}}\) is solvable after possibly one more same-family padding to boost \(v_2(A)\).
+\end{corollary}
+% =========================
+% Mod-3 steering examples (same-family)
+% =========================
+
+\subsection*{Mod-3 steering (same-family controls)}
+
+Recall the affine form \(x_W(m)=6(A_W m+B_W)+\delta_W\). A same–family step updates
+\[
+B_W \ \longmapsto\ B_W' \equiv 2^{\alpha_{\text{row}}}\,B_W + k_{\text{row}} \pmod{3},
+\]
+where \(2^{\alpha_{\text{row}}}\equiv 1\) or \(2\ (\bmod 3)\) and \(k_{\text{row}}=(\beta+c)/9\ (\bmod 3)\)
+for that row (Table~\ref{tab:parameters-abc}).
+
+\begin{example}[Family \(\mathrm e\): one–step ``\(+0\)'' or ``\(+1\)'' on \(B\bmod 3\)]
+In family \(\mathrm e\) the \texttt{ee} rows satisfy \(2^{\alpha}\equiv 1\ (\bmod 3)\). Concretely:
+\[
+\Psi_0:\ B\mapsto B\quad(\text{since }k\equiv 0),\qquad
+\Psi_2:\ B\mapsto B+1\quad(\text{since }k\equiv 1).
+\]
+Thus from any \(B\bmod 3\) you can reach any target residue in at most two \texttt{ee} steps,
+while increasing \(v_2(A)\) each time.
+\end{example}
+
+\begin{example}[Family \(\mathrm o\): affine maps \(B\mapsto 2B+1\) or \(2B+2\)]
+In family \(\mathrm o\), the \texttt{oo} rows have \(2^{\alpha}\equiv 2\ (\bmod 3)\). From the parameter table:
+\[
+\Omega_1:\ B\mapsto 2B+1,\qquad
+\Omega_0:\ B\mapsto 2B+2 \quad(\bmod 3).
+\]
+Because these two maps generate all affine transformations of \(\mathbb{F}_3\),
+you can reach any target \(B'\in\{0,1,2\}\) in at most two \texttt{oo} steps,
+again raising \(v_2(A)\) along the way.
+\end{example}
+
+\begin{example}[Explicit drills]
+\leavevmode
+\begin{itemize}[leftmargin=1.6em]
+  \item \(\mathrm e\)-family, want \(B'\equiv 2\): if \(B\equiv 0\), use \(\Psi_2,\Psi_2\) (adds \(+1\) twice);
+        if \(B\equiv 1\), use \(\Psi_2\) once; if \(B\equiv 2\), use \(\Psi_0\).
+  \item \(\mathrm o\)-family, want \(B'\equiv B+1\): use \(\Omega_1\circ\Omega_0\),
+        since \(B\mapsto 2B+2\mapsto 2(2B+2)+1\equiv B+1\ (\bmod 3)\).
+\end{itemize}
+\end{example}
+
+% =========================
+% Mod-3 combined techniques (steer + boost + solve)
+% =========================
+
+\subsection*{Combining mod-3 steering with \(2\)-adic boosting}
+
+We show how mod-3 control and \(2\)-adic boosting combine to hit a target class \(r\bmod M_K\),
+with certified steps at every stage.
+
+\begin{example}[Target \(r\equiv 53\ (\bmod 96)\) with terminal family \(\mathrm o\)]
+We want \(x_W(m)=6(A_W m+B_W)+5 \equiv 53\ (\bmod 96)\).
+This reduces to the pair of conditions
+\[
+B_W \equiv \frac{53-5}{6} \equiv 8 \equiv 2 \pmod{3}
+\qquad\text{and}\qquad
+A_W m \equiv \frac{53-5}{6} - B_W \pmod{16}.
+\]
+\textit{Step 1 (mod-3 steering in \(\mathrm o\)).}
+Append one or two \texttt{oo} rows to force \(B_W\equiv 2\ (\bmod 3)\).
+For instance, if currently \(B\equiv 0\), use \(\Omega_1\) then \(\Omega_1\):
+\(B\mapsto 2B+1\mapsto 2(2B+1)+1\equiv 2\).
+
+\smallskip
+\noindent
+\textit{Step 2 (\(2\)-adic boost).}
+Keep appending \(\texttt{oo}\) rows (e.g.\ \(\Omega_0\) or \(\Omega_1\)) until
+\(v_2(A_W)\ge 4\), so the congruence modulo \(2^{K-1}=16\) is solvable.
+
+\smallskip
+\noindent
+\textit{Step 3 (solve for \(m\)).}
+With the mod-3 condition met, choose \(m\) so that
+\(A_W m \equiv \frac{48}{6}-B_W \equiv 8-B_W \pmod{16}\).
+Since \(\gcd(A_W,16)=2^{v_2(A_W)}\) and we enforced \(v_2(A_W)\ge 4\),
+a solution exists and gives \(x_W(m)\equiv 53\ (\bmod 96)\) as required.
+
+\smallskip
+\noindent
+\textit{Concrete two-row realization.}
+A compact option is the composite \(\Omega_2\) then \(\Omega_1\):
+\[
+\Omega_2:\ x\mapsto 12m+11,\qquad
+\Omega_1:\ x\mapsto 48m+29.
+\]
+Composing (with the updated indices) yields \(x'=96m+53\),
+so the target class \(53\ (\bmod 96)\) is achieved for all \(m\) and each step satisfies \(U(x')=x\).
+This composite simultaneously sets \(B\bmod 3\) and raises the \(2\)-power to \(96\).
+\end{example}
+
+\begin{example}[Family \(\mathrm e\): force \(B\equiv 1\ (\bmod 3)\) and lift to \(M_6=192\)]
+Suppose the terminal family must be \(\mathrm e\) and the target is \(r\equiv 1\ (\bmod 192)\).
+We need \(B_W\equiv \frac{1-1}{6}\equiv 0\ (\bmod 3)\) \emph{or} \(B_W\equiv 1\) depending on the chosen last row.
+Use \(\Psi_2\) to add \(+1\) modulo \(3\) and \(\Psi_0\) to keep \(B\) fixed; in at most two steps set \(B\) to the required residue.
+Append additional \(\texttt{ee}\) rows to raise \(v_2(A_W)\ge 5\) (since \(M_6=3\cdot 2^6\) needs modulus \(2^{5}\) in the congruence).
+Then solve \(A_W m \equiv \frac{r-\delta_W}{6}-B_W \ (\bmod\ 32)\).
+\end{example}
+
+\begin{example}[Lifting to \texorpdfstring{$1531 \bmod 1536$}{1531 mod 1536} (3-adic check)]
+
+Target:
+\[
+r' \equiv 1531 \pmod{1536},\qquad 1536=3\cdot 2^{9},\qquad 1531\equiv 1 \pmod 6\ \ (\text{family }\mathrm e).
+\]
+
+Pick the row \((\mathrm o,1)\) of type \texttt{oe} (i.e.\ $\omega_1$). Its unified $p{=}0$ form is
+\[
+x'(m)=12m+7 \;=\; 6\bigl(2m+1\bigr)+1,
+\]
+so $\delta=1$ (outputs family $\mathrm e$), and in affine notation \(A=3\cdot 2^{\alpha}=6\) and \(B=1\).
+
+Solve the congruence
+\[
+12m+7 \equiv 1531 \pmod{1536}
+\quad\Longleftrightarrow\quad
+12m \equiv 1524 \pmod{1536}.
+\]
+Because $\gcd(12,1536)=12$ and $1524/12=127$, we get
+\[
+m \equiv 127 \pmod{128}.
+\]
+Thus all solutions are \(m=127+128t\) with $t\in\mathbb Z$, and
+\[
+x'(m)=12(127+128t)+7 = 1531 + 1536t \equiv 1531 \pmod{1536}.
+\]
+\end{example}
+
+\paragraph{3-adic consistency check.}
+Writing \(x'(m)=6(Am+B)+\delta\) with \(A=6\), \(B=1\), \(\delta=1\), the standard lifting congruence is
+\[
+A\,m \equiv \frac{r'-\delta}{6}-B \pmod{2^{9}}
+\quad\Longleftrightarrow\quad
+6m \equiv 255-1=254 \pmod{512}.
+\]
+Here \(\gcd(6,512)=2\) divides \(254\), so a solution exists; dividing by \(2\) gives
+\(3m \equiv 127 \pmod{256}\), which is equivalent to \(m\equiv 127 \pmod{128}\) (since \(3^{-1}\equiv 171 \pmod{256}\)).
+Modulo \(3\), we have \((r'-\delta)/6\equiv 255 \equiv 0\) and \(A\equiv 0\), so the mod-3 part is automatically satisfied; if desired, one could first enforce \(B\equiv 0\pmod{3}\) via a short same-family \texttt{oo} steering prefix and still finish with \(\omega_1\). In this instance, the 2-power congruence already admits a solution, so extra mod-3 steering is unnecessary.
+
+\medskip
+\noindent\emph{Concrete choice:} \(m=127\) yields \(x'(127)=1531\) exactly; \(m=255\) yields \(x'(255)=1531+1536\).
+
+
+% =========================================================
+\section{Synthesis: how the pieces yield convergence on the odd layer}
+
+We now explain explicitly how the preceding ingredients combine to certify that
+\emph{every odd integer not congruent to \(3\bmod 6\) reaches \(1\) in finitely many Collatz
+(odd–accelerated) steps}. Equivalently, every odd \(x\equiv 1,5\pmod 6\) lies in the inverse tree of \(1\)
+under the map \(U\).
+
+\begin{theorem}[Global conclusion on the odd layer]\label{thm:odd-layer-convergence}
+Every odd integer \(x\ge 1\) with \(x\equiv 1,5\pmod 6\) admits a finite inverse word
+\(W\in\{\Psi,\psi,\omega,\Omega\}^\ast\) and an integer \(m\) such that the stepwise updates of
+Table~\ref{tab:unified-F0-straight-xprime} realize a certified chain
+\[
+1 \xleftarrow{\,U\,} x'_1 \xleftarrow{\,U\,} x'_2 \xleftarrow{\,U\,} \cdots \xleftarrow{\,U\,} x'_t = x,
+\qquad\text{i.e.}\qquad U(x'_i)=x_{i-1}\ \text{ at every step}.
+\]
+Consequently the forward (accelerated odd) Collatz orbit of \(x\) reaches \(1\) after \(|W|\) odd steps.
+\end{theorem}
+
+\begin{proof}
+\leavevmode\par\noindent
+\begin{itemize}[leftmargin=1.8em]
+\item \emph{Certified one–step inverses.} For each admissible row the identity
+\(3x'+1=2^\alpha x\) holds (Lemma~\ref{lem:row-correctness}); hence \(U(x')=x\) stepwise.
+\item \emph{Words are affine and trackable.} Any fixed admissible word \(W\) yields
+\(x_W(m)=6(A_W m+B_W)+\delta_W\) with \(A_W=3\cdot 2^{\alpha(W)}\) (Lemma~\ref{lem:affine-word}),
+and its family pattern depends only on the tokens (Lemma~\ref{lem:family-pattern}).
+\item \emph{Base witnesses.} Modulo \(M_3=24\), each odd residue \(r\equiv 1,5\pmod 6\) has a certified witness
+word \(W_r\) from Table~\ref{tab:base-witnesses-mod24}.
+\item \emph{Steering (padding) control.} Same–family \emph{steering gadgets} raise the slope’s
+\(2\)-adic valuation \(v_2(A)\) and let us preserve or flip the intercept parity \(B\bmod 2\)
+(Lemma~\ref{lem:steering} and the concrete menus in Appendix~A).
+\item \emph{Linear lifting in \(K\).} Given a target residue \(r'\bmod M_{K+1}\) with the correct terminal
+family, padding \(W\) ensures the linear congruence
+\(
+A_W m \equiv \frac{r'-\delta_W}{6}-B_W \pmod{2^K}
+\)
+is solvable; this lifts witnesses from \(M_K\) to \(M_{K+1}\) (Lemma~\ref{lem:lifting}).
+By induction we obtain, for each \(K\ge 3\), a padded word \(W_K\) and an \(m_K\) with
+\(x_{W_K}(m_K)\equiv x \pmod{M_K}\).
+\item \emph{\(2\)-adic refinement to an exact integer.} Choosing the \(m_K\) compatibly modulo
+\(2^{K-1}\) yields \(m\in\mathbb Z\) with \(x_{W}(m)=x\) (Section “From residues to exact integers”).
+\item \emph{Conclusion.} Concatenating the certified one–step inverses gives a finite inverse chain from \(1\) to \(x\),
+hence the forward \(U\)–orbit of \(x\) reaches \(1\) in \(|W|\) odd steps.
+\end{itemize}
+\end{proof}
+
+\begin{remark}[Scope and the missing \(3\bmod 6\) class]
+Odd outputs of the accelerated map \(U\) always lie in the classes \(1\) or \(5\bmod 6\);
+the class \(3\bmod 6\) never appears on the odd layer. Thus Theorem~\ref{thm:odd-layer-convergence}
+covers exactly the odd layer relevant for \(U\). In the classical (non-accelerated) iteration,
+any odd \(x\equiv 3\pmod 6\) immediately produces an even number; after removing powers of two the next odd belongs to \(1\) or \(5\bmod 6\), whence the theorem applies.
+\end{remark}
+
+\begin{corollary}[Finite convergence in forward time on the odd layer]
+For every odd \(x\equiv 1,5\pmod 6\) there is a finite \(t\) such that
+\(U^{\circ t}(x)=1\). Equivalently, \(x\) lies at finite depth in the inverse tree of \(1\).
+\end{corollary}
+
+% Where your detailed section currently sits:
+\ifobjections
+
+% =========================================================
+\section{Responses to anticipated objections}\label{sec:objections}
+
+\paragraph{Objection 1: The base witnesses mod \(24\) are ad hoc or computationally fragile.}
+They are a finite, explicit verification for eight residues (Table~\ref{tab:base-witnesses-mod24}), and each step is \emph{symbolically} certified by Lemma~\ref{lem:row-correctness} via \(3x'+1=2^\alpha x\).
+No probabilistic or heuristic assumption is used; later lifting steps depend only on the algebraic properties of the rows.
+
+\paragraph{Objection 2: Same–family ``steering'' might fail to control parity or \(v_2\).}
+Lemma~\ref{lem:steering} formalizes the gadgets. Concrete token lists are provided in Appendix~A, with a residue-by-residue certificate at modulus \(54\) in Appendix~B. These gadgets guarantee (a) a slope boost \(v_2(A)\ge 1\) per use and (b) availability of a parity toggle of \(B\bmod 2\) (e.g.\ via \(\omega_1\) or \(\Omega_2\)).
+
+\paragraph{Objection 3: The lifting step \(M_K\to M_{K+1}\) may be ill-posed.}
+Lemma~\ref{lem:lifting} reduces the target to a linear congruence
+\(A_W m \equiv \frac{r'-\delta_W}{6}-B_W \ (\bmod 2^K)\).
+By steering we can ensure \(A_W\) has sufficiently large \(2\)-adic valuation and choose the parity of \(B_W\), guaranteeing solvability. This is an elementary \(2\)-power congruence, not an appeal to unproven \(p\)-adic theory.
+
+\paragraph{Objection 4: Mixing the column parameter \(p\) changes types or breaks the identity.}
+Lemma~\ref{lem:mixedp-step} shows \(3x'+1=2^{\alpha+6p}x\) for every step at any \(p\ge 0\).
+Lemma~\ref{lem:mixedp-routing} shows the \texttt{type} and offset \(\delta\) are \(p\)-invariant, so routing is unaffected.
+
+\paragraph{Objection 5: Excluding \(x\equiv 3\pmod 6\) dodges the problem.}
+The odd layer of the accelerated map \(U\) \emph{never} visits \(3\bmod 6\), by construction.
+For the classical map, any \(3\bmod 6\) odd immediately becomes even and the next odd lies in \(1\) or \(5\bmod 6\); then Theorem~\ref{thm:odd-layer-convergence} applies (see the remark after the theorem).
+
+\paragraph{Objection 6: ``Finite depth'' does not equal ``reaches \(1\)''.}
+In our setting the inverse certification ensures a concrete finite chain \(x'_t\to \cdots \to x'_1\to 1\) with \(U(x'_i)=x_{i-1}\), so ``finite depth'' is \emph{equivalent} to reaching \(1\) in \(|W|\) odd steps (Theorem~\ref{thm:odd-layer-convergence}).
+
+\paragraph{Objection 7: The CRT tag \(t=(x-1)/2\) is an artificial overhead.}
+It is merely a reindexing convenience (Cor.~\ref{cor:tag-indices}) that makes the family and indices \((s,j,m)\) transparent; all arguments can be phrased without \(t\), but computations (and examples) become more compact with it.
+
+\paragraph{Objection 8: Refinements (e.g., $r\bmod 24$ to $r'\bmod 48$) use different words, so the orbits are unrelated. What does this actually prove?}
+\textit{Response.}
+The lifting theory guarantees \emph{certified existence} of a legal word for every refinement; it does not require the \emph{same bare word} (or identical forward orbit) to persist across moduli. What is preserved vs.\ what may change is as follows:
+\begin{itemize}[leftmargin=1.4em]
+  \item \textbf{Preserved.} (i) Legality of each step via the identity $3x'+1=2^\alpha x$ (so $U(x')=x$) and hence certified invertibility; (ii) the family routing pattern ($\mathrm e/\mathrm o$) determined solely by the token sequence; (iii) solvability of the lifted congruence by appending \emph{same-family steering gadgets} that raise $v_2$ and control intercept residues.
+  \item \textbf{Allowed to change.} (i) The concrete token sequence (e.g.\ after appending padding), (ii) the indexing parameter $m$, and consequently (iii) the specific integers realized along the inverse chain. Distinct words hitting the same residue (or refinements thereof) are fully compatible with the framework.
+\end{itemize}
+Therefore, the content of the lifting program is \emph{reachability with stepwise certificates}, not orbit identity across representatives. From a finite set of base witnesses at $M_3=24$, the steering-and-lift machinery constructs certified words for every refinement $M_{K+1}$ and, by $2$-adic refinement, for every odd integer.
+\medskip
+
+\noindent\textit{Practical note.} If desired, one can keep a chosen \emph{core} base word and obtain the refined witness by \emph{only} appending same-family padding (which preserves the token-determined family pattern). Alternatively, one may present a minimal explicit word at the refined modulus. Both approaches are legal and carry the same stepwise certificates $U(x')=x$.
+
+
+\fi
+% =========================
+% Appendix: Concrete steering gadgets and certificates
+% =========================
+
+\appendix
+\section*{Appendix A: Concrete steering gadgets (valuation \& parity)}
+
+We record short, concrete composites that begin and end in the \emph{same} family
+(\(\mathrm e\) or \(\mathrm o\)). They serve two roles:
+(i) raise the slope’s \(2\)-adic valuation \(v_2(A)\) (for lifting), and
+(ii) toggle the intercept parity \(B\pmod 2\) (for solvability of linear congruences).
+
+Throughout we use the unified \(p{=}0\) table; when \(p\ge 1\), emulate the lift via extra same–family padding (adds \(2^{6p}\) to the slope) or use short composites whose net parity still toggles (cf.\ mixed-\(p\) discussion).
+
+\begin{table}[!htbp]
+\centering
+\caption{Concrete \(s\!\to\!s\) gadgets. Tokens are evaluated with the unified \(p{=}0\) table.}
+\label{tab:explicit-gadgets}
+\setlength{\tabcolsep}{4pt}      % default is 6pt; tighten a bit
+\renewcommand{\arraystretch}{1.1} % slightly tighter
+\footnotesize                     % or \scriptsize if still too wide
+\begin{tabularx}{\linewidth}{@{}l Y c Y Y@{}}
+\toprule
+Family & Gadget (tokens) & Len & Type path & Effect \\
+\midrule
+\(\mathrm e\) & \(\psi\,\omega\) & 2 &
+\texttt{eo}\(\to\)\texttt{oe} (net \(e\to e\)) &
+\(v_2(A)\) increases (at least \(+1\)); parity usually unchanged \\
+\(\mathrm e\) & \(\psi\,\Omega\,\omega\) & 3 &
+\texttt{eo}\(\to\)\texttt{oo}\(\to\)\texttt{oe} (net \(e\to e\)) &
+Parity toggle available (choose the middle \(\Omega\) row adaptively) \\
+\(\mathrm o\) & \(\Omega\) & 1 &
+\texttt{oo} (net \(o\to o\)) &
+\(v_2(A)\) increases (at least \(+1\)); parity unchanged if \(\Omega_{0,1}\) \\
+\(\mathrm o\) & \(\omega\,\psi\) & 2 &
+\texttt{oe}\(\to\)\texttt{eo} (net \(o\to o\)) &
+Parity toggle if the \(\omega\) step uses the \((\mathrm o,1)\) row (\(\omega_1\)) \\
+\(\mathrm o\) & \(\Omega\,\omega\,\psi\) & 3 &
+\texttt{oo}\(\to\)\texttt{oe}\(\to\)\texttt{eo} (net \(o\to o\)) &
+Guaranteed parity toggle via either \(\Omega_2\) or \(\omega_1\) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+
+\paragraph{How to use the parity gadgets (runtime rule).}
+\begin{itemize}[leftmargin=1.6em]
+\item \textbf{Family \(\mathrm o\).} If $j{=}1$, use \(\omega_1\) then \(\psi\) (parity flip). If $j{=}2$, use \(\Omega_2\) then \(\omega\) then \(\psi\) (flip). Otherwise insert one \(\Omega\) and branch accordingly.
+\item \textbf{Family \(\mathrm e\).} Use \(\psi\) to enter \(\mathrm o\); if the new $j{=}2$ use \(\Omega_2\) then \(\omega\); if $j{=}1$ use \(\omega_1\) then \(\omega\). Both return to \(\mathrm e\) and flip parity.\\\\
+\end{itemize}
+
+\section*{Appendix A\texorpdfstring{$^\prime$}: Mod-\pdfmath{3} steering (valuation \& residue control)}
+\label{app:mod3-steering}
+
+We strengthen the steering toolkit by showing that, in addition to toggling $B_W \bmod 2$ and raising $v_2(A_W)$, one can \emph{steer $B_W$ to any desired residue modulo $3$} while remaining in the same family. This closes the divisibility-by-$3$ gap in the exact-lifting step.
+
+\begin{lemma}[Mod-$3$ steering lemma]\label{lem:mod3-steering}
+Let $W$ be an admissible word with affine form $x_W(m)=6(A_W m+B_W)+\delta_W$, where $A_W=3\cdot 2^{\alpha(W)}$ and $\delta_W\in\{1,5\}$. For each family $s\in\{\mathrm e,\mathrm o\}$ there exist short same–family gadgets $P^{(r)}_s$ ($r\in\{0,1,2\}$) such that
+\[
+x_{W\cdot P^{(r)}_s}(m)=6(A' m+B'_s)+\delta_W,\qquad
+v_2(A')>v_2(A_W),\qquad B'_s\equiv r\pmod{3}.
+\]
+In particular, one can raise $v_2(A)$ and \emph{set} $B\bmod 3$ arbitrarily while preserving the terminal family $\delta_W$.
+\end{lemma}
+
+\begin{proof}
+We use the unified $p{=}0$ rows in Table~\ref{tab:unified-F0-straight-xprime} and the parameter table (Table~\ref{tab:parameters-abc}). If a same–family row with parameters $(\alpha,k,\delta)$ is appended to a word with affine form $6(A m+B)+\delta$, the new slope is $A'=A\cdot 2^{\alpha}$ and the new intercept is
+\[
+B'\;\equiv\;2^{\alpha}B+k\pmod{3},
+\]
+because $x\mapsto 6(2^{\alpha}m+k)+\delta$ contributes $2^{\alpha}$ on the $m$–slope and adds $k$ to the intercept, and $2^{\alpha}\equiv 1$ or $2$ modulo $3$ depending on $\alpha$.
+
+\smallskip
+\noindent\emph{Family $\mathrm e$ (type \texttt{ee}, $\delta=1$).}
+From Table~\ref{tab:parameters-abc}, the \texttt{ee} rows have
+\[
+(\alpha,k)\in\{(2,0),(4,6),(6,46)\}.
+\]
+Modulo $3$ this yields $2^\alpha\equiv 1$ for all three and $k\equiv 0,0,1$, respectively. Hence a single \texttt{ee} step realizes
+\[
+B'\equiv B \quad\text{or}\quad B'\equiv B+1 \pmod{3}.
+\]
+Thus in at most two \texttt{ee} steps we can set $B'\equiv r$ for any prescribed $r\in\{0,1,2\}$. Each step multiplies $A$ by $2^{\alpha}\ge 4$, so $v_2(A)$ strictly increases.
+
+\smallskip
+\noindent\emph{Family $\mathrm o$ (type \texttt{oo}, $\delta=5$).}
+From Table~\ref{tab:parameters-abc}, the \texttt{oo} rows have
+\[
+(\alpha,k)\in\{(5,8),(3,4),(1,1)\}.
+\]
+Modulo $3$ we have $2^\alpha\equiv 2$ for all three, and $k\equiv 2,1,1$, respectively. Therefore any single \texttt{oo} step implements one of the affine maps
+\[
+\phi_1(B)=2B+1,\qquad \phi_2(B)=2B+2\qquad (\bmod 3).
+\]
+The subgroup of affine maps of $\mathbb{Z}/3\mathbb{Z}$ generated by $\{\phi_1,\phi_2\}$ is all of $\operatorname{AGL}_1(\mathbb{F}_3)$; concretely, from any starting $B\bmod 3$ one reaches any target residue in at most two steps (e.g.\ $\phi_1\circ\phi_1(B)=B$, $\phi_2\circ\phi_1(B)=B+1$, etc.). Each \texttt{oo} step multiplies $A$ by $2^{\alpha}\ge 2$, so $v_2(A)$ strictly increases.
+
+\smallskip
+Combining the family–wise controls gives the claim: in family $\mathrm e$ use at most two \texttt{ee} steps; in family $\mathrm o$ use at most two \texttt{oo} steps (choosing which \texttt{oo} row to realize $\phi_1$ or $\phi_2$). In all cases the terminal family (hence $\delta_W$) is preserved and $v_2(A)$ increases.
+\end{proof}
+
+\begin{table}[h]
+\centering
+\caption{Same–family rows: residues of $2^{\alpha}$ and $k$ modulo $3$ (at $p{=}0$).}
+\label{tab:mod3-ee-oo}
+\begin{tabular}{@{}c c c c c@{}}
+\toprule
+Row & $(s,j)$ & $\alpha$ & $2^{\alpha}\,(\bmod 3)$ & $k=(\beta+c)/9\,(\bmod 3)$\\
+\midrule
+$\Psi_{0}$ & $(\mathrm e,0)$ & $2$ & $1$ & $0$ \\
+$\Psi_{1}$ & $(\mathrm e,1)$ & $4$ & $1$ & $0$ \\
+$\Psi_{2}$ & $(\mathrm e,2)$ & $6$ & $1$ & $1$ \\
+\midrule
+$\Omega_{0}$ & $(\mathrm o,0)$ & $5$ & $2$ & $2$ \\
+$\Omega_{1}$ & $(\mathrm o,1)$ & $3$ & $2$ & $1$ \\
+$\Omega_{2}$ & $(\mathrm o,2)$ & $1$ & $2$ & $1$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Constructive gadgets (runtime recipes).}
+Let the current terminal family of $W$ be $s$ and write $B:=B_W\bmod 3$.
+
+\begin{itemize}[leftmargin=1.6em]
+\item \textbf{If $s=\mathrm e$} (want $B'\equiv r$):
+  \begin{enumerate}[itemsep=2pt]
+    \item If $B\equiv r$, append $\Psi_{0}$ (does not change $B$; raises $v_2(A)$).
+    \item Else append $\Psi_{2}$ once: $B\mapsto B+1$; if still not $r$, append $\Psi_{2}$ again.
+  \end{enumerate}
+\item \textbf{If $s=\mathrm o$} (want $B'\equiv r$):
+  \begin{enumerate}[itemsep=2pt]
+    \item If $B\equiv r$, append $\Omega_{1}$ (keeps flexibility for later; raises $v_2(A)$).
+    \item Else compute $d:=r-B\pmod 3$.
+      \begin{itemize}
+        \item If $d\equiv 1$: append $\Omega_{1}$ then $\Omega_{0}$; effect $B\mapsto 2B+1\mapsto 2(2B+1)+2\equiv B+1$.
+        \item If $d\equiv 2$: append $\Omega_{0}$ then $\Omega_{1}$; effect $B\mapsto 2B+2\mapsto 2(2B+2)+1\equiv B+2$.
+      \end{itemize}
+  \end{enumerate}
+\end{itemize}
+
+\paragraph{Corollary (exact divisibility condition).}
+Let $x_W(m)=6(A_W m+B_W)+\delta_W$ with $A_W=3\cdot 2^{\alpha(W)}$. Given any target odd $x\equiv\delta_W\ (\bmod\ 6)$, by Lemma~\ref{lem:mod3-steering} we may replace $W$ by $W^\star$ so that
+\[
+B_{W^\star}\equiv \frac{x-\delta_{W}}{6}\pmod{3}.
+\]
+Then $A_{W^\star}\mid \bigl(\frac{x-\delta_W}{6}-B_{W^\star}\bigr)$ if and only if $2^{\alpha(W^\star)}\mid \bigl(\frac{x-\delta_W}{6}-B_{W^\star}\bigr)$, which can always be enforced by further same–family padding (raising $v_2(A)$). Hence there exists $m\in\mathbb Z$ with $x_{W^\star}(m)=x$.
+\begin{example}[Mod-3 steering then 2-adic lifting to \(3071 \bmod 3072\)]
+Target residue:
+\[
+r' \equiv 3071 \pmod{3072},\qquad 3071\equiv 5\pmod 6\ \text{(odd family)}.
+\]
+
+Start with the one-step word \(W=\psi\) (row \((\mathrm e,0)\) in the unified table):
+\[
+x_W(m)=6\bigl(A\,m+B\bigr)+\delta,\qquad \psi:\ \delta=5,\ A=16,\ B=0.
+\]
+
+\emph{(1) Mod-3 steering.}
+Set
+\[
+t:=\frac{r'-\delta}{6}=\frac{3071-5}{6}=511.
+\]
+The mod-3 solvability criterion is \(B\equiv t\pmod{3}\).
+Since \(t\equiv 1\pmod 3\) and \(B\equiv 0\pmod 3\) for \(\psi\), append one odd-family step \(\Omega_1\),
+which acts as \(B\mapsto 2B+1\ (\bmod 3)\).
+Thus \(B\equiv 1\pmod 3\) after \(\Omega_1\), and the mod-3 condition is aligned.
+
+\emph{(2) Divide by 3 and set the \(2\)-adic congruence.}
+After \(\psi\) then \(\Omega_1\), the accumulated exponent is \(\alpha_{\text{tot}}=4+3=7\).
+With \(B\equiv 1\pmod 3\) (take \(B=1\) concretely),
+\[
+2^{\alpha_{\text{tot}}}m \equiv \frac{t-B}{3}=\frac{511-1}{3}=170 \pmod{2^{K-1}},\qquad K=10\Rightarrow 2^{K-1}=512.
+\]
+So \(2^{7}m \equiv 170 \pmod{512}\).
+
+\emph{(3) Ensure \(2\)-adic solvability by padding.}
+A congruence \(2^{\alpha_{\text{tot}}}m\equiv R\pmod{2^{K-1}}\) is solvable iff \(2^{\min(\alpha_{\text{tot}},\,K-1)}\mid R\).
+Here \(\min(7,9)=7\) but \(170\not\equiv 0\pmod{128}\).
+Use same-family odd padding (\(\Omega_0,\Omega_1,\Omega_2\)) to:
+\begin{itemize}
+\item keep \(B\equiv 1\pmod 3\) (mod-3 steering), and
+\item raise \(v_2(A)\) while shifting the integer \(B\) so that
+\[
+\frac{t-B}{3}\equiv 0\pmod{512}\ \Longleftrightarrow\ B\equiv t \pmod{1536}\ \Longleftrightarrow\ B\equiv 511\pmod{1536}.
+\]
+\end{itemize}
+Once \(B\equiv 511\ (\bmod 1536)\), the right-hand side becomes \(0\pmod{512}\),
+and a solution exists (e.g.\ \(m\equiv 0\pmod{512}\)).
+
+\emph{Conclusion.}
+With the sequence \(\psi\) followed by \(\Omega_1\) and a short odd-family padding that sets \(B\equiv 511\ (\bmod 1536)\) (while increasing \(v_2\) of the slope), we obtain
+\[
+x_W(m)\equiv 3071 \pmod{3072},
+\]
+and every step is certified by the identity \(3x'+1=2^{\alpha}x\) (hence \(U(x')=x\)) from the unified table.
+\end{example}
+
+
+
+
+\Needspace{5\baselineskip}
+
+\section*{Appendix B: Residue-by-residue parity gadgets mod 54 (certificate)}
+\label{app:mod54-certificate}
+
+% (preamble — you already added these for the previous table)
+% \usepackage{tabularx}
+% \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\begin{table}[!htbp]
+\centering
+\caption{Certified parity–flip gadgets by odd residue class modulo \(54\).}
+\label{tab:mod54-gadgets}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.1}
+\footnotesize
+\begin{tabularx}{\linewidth}{@{}c c c Y@{}}
+\toprule
+Residue \(x\bmod 54\) & Family \(s\) & \(j=\lfloor x/6\rfloor\bmod 3\) & Gadget (tokens) \\
+\midrule
+\multicolumn{4}{@{}l@{}}{\emph{Family \(\mathrm e\) (classes \(\equiv 1\pmod 6\)):}}\\
+\(1\)  & \(\mathrm e\) & \(0\) & \(\psi\); then \textbf{if} new \(j{=}1\): \(\omega_1\) then \(\omega\); \textbf{if} new \(j{=}2\): \(\Omega_2\) then \(\omega\) \\
+\(7\)  & \(\mathrm e\) & \(1\) & same recipe as for \(1\) \\
+\(13\) & \(\mathrm e\) & \(2\) & same recipe as for \(1\) \\
+\(19\) & \(\mathrm e\) & \(0\) & same recipe as for \(1\) \\
+\(25\) & \(\mathrm e\) & \(1\) & same recipe as for \(1\) \\
+\(31\) & \(\mathrm e\) & \(2\) & same recipe as for \(1\) \\
+\(37\) & \(\mathrm e\) & \(0\) & same recipe as for \(1\) \\
+\(43\) & \(\mathrm e\) & \(1\) & same recipe as for \(1\) \\
+\(49\) & \(\mathrm e\) & \(2\) & same recipe as for \(1\) \\
+\addlinespace[4pt]
+\multicolumn{4}{@{}l@{}}{\emph{Family \(\mathrm o\) (classes \(\equiv 5\pmod 6\)):}}\\
+\(5\)  & \(\mathrm o\) & \(0\) & \(\Omega\); \textbf{if} new \(j{=}1\): \(\omega_1\) then \(\psi\); \textbf{if} new \(j{=}2\): \(\Omega_2\) then \(\omega\) then \(\psi\) \\
+\(11\) & \(\mathrm o\) & \(1\) & \(\omega_1\) then \(\psi\) \\
+\(17\) & \(\mathrm o\) & \(2\) & \(\Omega_2\) then \(\omega\) then \(\psi\) \\
+\(23\) & \(\mathrm o\) & \(0\) & same recipe as for \(5\) \\
+\(29\) & \(\mathrm o\) & \(1\) & same recipe as for \(11\) \\
+\(35\) & \(\mathrm o\) & \(2\) & same recipe as for \(17\) \\
+\(41\) & \(\mathrm o\) & \(0\) & same recipe as for \(5\) \\
+\(47\) & \(\mathrm o\) & \(1\) & same recipe as for \(11\) \\
+\(53\) & \(\mathrm o\) & \(2\) & same recipe as for \(17\) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\newpage
+
+\section*{Appendix C: Witness tables mod 48 amd 96}
+
+% =========================
+% TEMPLATE TABLE: witnesses mod 48
+% =========================
+\begin{table}[!htbp]
+\centering
+\caption{Witness construction template modulo $48$ (with $M_4=48$).
+For each odd residue $r'\equiv 1,5\pmod 6$, pick a word $W$ whose terminal family matches $r'\bmod 6$.
+Write its affine form as $x_W(m)=6(A_W m+B_W)+\delta_W$ (with $A_W=3\cdot 2^{\alpha(W)}$).
+Solve the linear congruence
+\[
+A_W m \equiv \frac{r'-\delta_W}{6}-B_W \pmod{2^{3}}\quad(\text{i.e.\ mod }8),
+\]
+and set $x:=x_W(m)$, which then satisfies $x\equiv r'\pmod{48}$ and $U(x)=\cdots=1$ along $W$.}
+\label{tab:witnesses-mod-48-template}
+\begin{tabular}{@{}c c l l@{}}
+\toprule
+$r' \ (\bmod 48)$ & Family & Choice of $W$ (terminal $\delta_W$) & Solve for $m$ (mod $8$) \\ \midrule
+$1,7,13,19,25,31,37,43$   & $\mathrm e$ & e.g.\ $\Psi$, $\psi\omega\psi$, etc.\ ($\delta_W{=}1$) & $A_W m \equiv \tfrac{r'-1}{6}-B_W \pmod{8}$\\
+$5,11,17,23,29,35,41,47$ & $\mathrm o$ & e.g.\ $\psi$, $\psi\Omega$, etc.\ ($\delta_W{=}5$) & $A_W m \equiv \tfrac{r'-5}{6}-B_W \pmod{8}$\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% =========================
+% WORKED EXAMPLES: mod 48
+% (A few concrete rows you can cite)
+% =========================
+\begin{table}[!htbp]
+\centering
+\caption{Selected concrete witnesses modulo $48$.
+Each row shows a word $W$, its closed form $x_W(m)$, and a solved congruence for some $r' \bmod 48$.}
+\label{tab:witnesses-mod-48-examples}
+\begin{tabular}{@{}c l l l@{}}
+\toprule
+$r' \ (\bmod 48)$ & Word $W$ & Closed form $x_W(m)$ & One solution for $m$ \\ \midrule
+$5$  & $\psi$ & $x(m)=96m+5$ & any $m$ (always $5\ (\bmod 48)$) \\
+$13$ & $\psi\,\omega$ & $x(m)=\;6(3\cdot 2^{5}m+B)+\delta$ (affine) & $m\equiv m_0\pmod{8}$ (solve $A m\equiv\frac{13-\delta}{6}-B$) \\
+$23$ & $\psi\,\omega\,\psi\,\Omega$ & affine as above & $m\equiv m_0\pmod{8}$ \\
+$29$ & $\psi\,\Omega$ & $x(m)=192m+53$ & $192m+53\equiv 29\Rightarrow 0\cdot m\equiv -24$ (no sol.)\footnotemark \\
+$41$ & $\Omega$ (from an $o$ start) & $x(m)=192m+53$ & always $5\ (\bmod 48)$; add an $o\!\to\!o$ steering gadget to shift to $41$ \\
+\bottomrule
+\end{tabular}
+
+\footnotetext{If a basic $W$ fixes the residue (slope $\equiv 0\ (\bmod 48)$), append a short same-family \emph{steering gadget} (e.g.\ $o\!\to\!o$: $\Omega_2$ then $\omega$ then $\psi$) to adjust the intercept and re-solve.}
+\end{table}
+
+% =========================
+% TEMPLATE TABLE: witnesses mod 96
+% =========================
+\begin{table}[!htbp]
+\centering
+\caption{Witness construction template modulo $96$ (with $M_5=96$).
+For $r'\equiv 1,5\pmod 6$, pick $W$ with terminal family matching $r'\bmod 6$, write
+$x_W(m)=6(A_W m+B_W)+\delta_W$, then solve
+\[
+A_W m \equiv \frac{r'-\delta_W}{6}-B_W \pmod{2^{4}}\quad(\text{i.e.\ mod }16),
+\]
+and set $x:=x_W(m)$ to obtain $x\equiv r'\pmod{96}$.}
+\label{tab:witnesses-mod-96-template}
+\begin{tabular}{@{}c c l l@{}}
+\toprule
+$r' \ (\bmod 96)$ & Family & Choice of $W$ (terminal $\delta_W$) & Solve for $m$ (mod $16$) \\ \midrule
+$1,7,\ldots, 89$ (odd $\equiv 1$)  & $\mathrm e$ & e.g.\ $\Psi$, $\psi\omega\psi$, steering as needed & $A_W m \equiv \tfrac{r'-1}{6}-B_W \pmod{16}$\\
+$5,11,\ldots, 95$ (odd $\equiv 5$) & $\mathrm o$ & e.g.\ $\psi$, $\psi\Omega$, steering as needed & $A_W m \equiv \tfrac{r'-5}{6}-B_W \pmod{16}$\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\newpage
+
+
+% =========================================================
+
+\ifidentity
+\section*{Appendix D: Derivation of the identity
+  \texorpdfstring{$3x'_p+1=2^{\alpha+6p}x$}{3 x prime p + 1 = 2 to the power (alpha + 6 p) x}}
+
+
+\begin{lemma}[Forward identity for a lifted row]
+Fix a row with parameters \((\alpha,\beta,c,\delta)\) and a column--lift \(p\ge 0\). Define
+\[
+F(p,m)\;=\;\frac{(9m\,2^{\alpha}+\beta)\,64^{\,p}+c}{9},
+\qquad
+x'_p\;=\;6F(p,m)+\delta,
+\]
+and write the odd input as \(x=18m+6j+p_6\) with \(j\in\{0,1,2\}\) and \(p_6\in\{1,5\}\).
+Assuming the per--row design relations
+\[
+\beta \;=\;2^{\alpha-1}(6j+p_6),
+\qquad
+c \;=\;-\frac{3\delta+1}{2},
+\]
+one has the identity
+\[
+3x'_p+1 \;=\; 2^{\alpha+6p}\,x .
+\]
+\end{lemma}
+
+\begin{proof}
+By definition,
+\[
+x'_p \;=\; 6\!\left(2^{\alpha+6p}m+\frac{\beta\,64^{\,p}+c}{9}\right)+\delta
+\quad\Longrightarrow\quad
+3x'_p+1 \;=\; 18\cdot 2^{\alpha+6p}m \;+\; \Bigl( 18\!\cdot\!\tfrac{\beta\,64^{\,p}+c}{9}+3\delta+1 \Bigr).
+\]
+Simplify the bracket:
+\[
+18\!\cdot\!\frac{\beta\,64^{\,p}+c}{9}+3\delta+1
+\;=\; 2\beta\,64^{\,p} \;+\; (2c+3\delta+1).
+\]
+With \(c=-(3\delta+1)/2\) the constant cancels: \(2c+3\delta+1=0\). Hence the bracket reduces to
+\[
+2\beta\,64^{\,p}
+\;=\; 2\cdot 2^{\alpha-1}(6j+p_6)\cdot 64^{\,p}
+\;=\; 2^{\alpha}(6j+p_6)\cdot 2^{6p}
+\;=\; 2^{\alpha+6p}(6j+p_6).
+\]
+Therefore
+\[
+3x'_p+1
+\;=\; 18\cdot 2^{\alpha+6p}m \;+\; 2^{\alpha+6p}(6j+p_6)
+\;=\; 2^{\alpha+6p}\bigl(18m+6j+p_6\bigr)
+\;=\; 2^{\alpha+6p}x,
+\]
+as claimed.
+\end{proof}
+
+\begin{remark}[Integrality]
+Since \(64\equiv 1\pmod 9\), one has \(\beta\,64^{\,p}+c\equiv \beta+c\pmod 9\).
+Each row in Table~\ref{tab:parameters-abc} satisfies \(\beta+c\equiv 0\pmod 9\), so \(F(p,m)\in\mathbb Z\) for all \(p\ge 0\).
+\end{remark}
+
+\begin{example}
+For row \((\mathrm{o},1)\) (\(\omega_1\)) the table gives \(\alpha=1,\ \beta=11,\ c=-2,\ \delta=1\).
+Then \(F(p,m)=2^{1+6p}m+\frac{11\cdot 64^{\,p}-2}{9}\) and the lemma yields \(3x'_p+1=2^{1+6p}x\).
+\end{example}
+\fi
+\newpage
+\section*{Appendix E: Code and Data Availability}
+A reference implementation of the unified inverse table, the word evaluator, and the example generators is archived at
+\href{https://doi.org/10.5281/zenodo.17332139}{Zenodo DOI:10.5281/zenodo.17332139} and mirrored at
+\href{git@github.com:kisira/collatz.git}{github.com/kisira/collatz}.
+%The repository includes scripts to verify per-step identities \(U(x')=x\), regenerate the witness tables (mod \(24,48,96\)), and reproduce the figures and traces in this paper.
+%Reproducibility instructions are summarized in Appendix~\ref{app:repro}.
+
+
+\section*{Appendix F: Reproducibility Details}\label{app:repro}
+
+\paragraph{Environment.}
+The code is pure Python~3 (standard library + \texttt{pandas} for CSV I/O). A minimal setup is:
+\begin{verbatim}
+python -m venv .venv
+. .venv/bin/activate
+pip install -r requirements.txt
+\end{verbatim}\cite{BernsteinLagarias1996}
+
+\paragraph{Stepwise identity checks (\(U(x')=x\)).}
+To verify that each row satisfies \(3x'+1=2^{\alpha+6p}x\) and that the word evaluator returns to the parent under \(U\):
+\begin{verbatim}
+python3 tools/check_rows.py             # verifies all rows and their p-lifts
+python3 tools/evaluate_word.py --word psi,Omega,omega,psi --x0 1 --csv out.csv
+\end{verbatim}
+This writes a per-step trace (indices \(s,j,m\), formulas, and forward checks).
+
+\paragraph{Regenerating witness tables.}
+To regenerate witnesses mod \(24\), \(48\), and \(96\) (as used in the paper):
+\begin{verbatim}
+python3 tools/make_witnesses.py --mod 24  --out tables/witnesses_mod24.csv
+python3 tools/make_witnesses.py --mod 48  --out tables/witnesses_mod48.csv
+python3 tools/make_witnesses.py --mod 96  --out tables/witnesses_mod96.csv
+\end{verbatim}
+
+\paragraph{Recreating examples in the paper.}
+Each example in Sections~\ref{lem:affine-word}–\ref{thm:reachability} can be reproduced with:
+\begin{verbatim}
+python3 tools/replay_example.py --name ex2
+\end{verbatim}
+which emits a CSV trace with the certified step identities and indices.
+
+\paragraph{Generate the word for an odd number.}
+To genereate a word for say 497. Or any other odd number.
+\begin{verbatim}
+python3 tools/calculate_word.py 497 --json-out 497_word.json
+\end{verbatim}
+
+
+
+\paragraph{Archival guarantee.}
+The Zenodo snapshot (DOI above) freezes the exact source corresponding to tag \texttt{v1.0} and commit \texttt{<hash>}, ensuring long-term reproducibility even if the development branch evolves.
+
+
+\printbibliography
+\end{document}

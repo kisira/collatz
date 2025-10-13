@@ -1,8 +1,9 @@
  
 .
-├─ collatz.tex
-├─ collatz.bbl
-├─ collatz.pdf
+├─ collatz_calculus.tex
+├─ collatz_calculus.bib
+├─ collatz_calculus.bbl
+├─ collatz_calculus.pdf
 ├─ repo.txt
 ├─ requirements.txt
 └─ tools/
