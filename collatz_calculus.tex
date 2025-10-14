@@ -1322,6 +1322,232 @@ Base witnesses modulo $24$ and their refinements modulo $48,96,\dots$ need not s
 \end{enumerate}
 \end{playbook}
 
+\section{Row–consistent reversibility (with optional \texorpdfstring{$p$}{p}-lift)}
+\label{sec:row-consistent-reversibility}
+
+A key feature of the unified table is that each admissible row not only certifies a
+forward odd step \(U(x')=x\) via \(3x'+1=2^{\alpha}x\), but also enables a \emph{row–consistent}
+\emph{backward} reconstruction of the parent \(x\) from a given child \(x'\).
+This provides a controlled way to ``descend'' in \(2\)-adic precision (drop the power of two
+by \(\alpha\) per reverse step), or to \emph{reverse–guide} lifting to a higher modulus by
+choosing the terminal row and back–solving for indices.
+
+Each unified-table row is specified by
+\[
+(s,j,\alpha,\beta,c,\delta),
+\]
+where $s\in\{\mathrm e,\mathrm o\}$ is the \emph{parent} family, $j\in\{0,1,2\}$ the parent index, and $\delta\in\{1,5\}$ encodes the \emph{child} family (the second letter of the type: \texttt{*e} $\Rightarrow \delta{=}1$, \texttt{*o} $\Rightarrow \delta{=}5$).
+For any column--lift $p\ge 0$ set
+\[
+k_p \;:=\; \frac{\beta\,64^{\,p}+c}{9}\in\mathbb Z,
+\qquad
+x' \;=\; 6\!\left(2^{\alpha+6p}m + k_p\right)+\delta.
+\]
+At $p{=}0$ this reduces to $k=\tfrac{\beta+c}{9}$ and $x'=6(2^\alpha m+k)+\delta$ (the unified $p{=}0$ table).
+
+\begin{theorem}[Row–consistent reversibility]
+\label{thm:row-consistent-reversibility}
+Let $y$ be odd with $y\equiv 1$ or $5\pmod 6$. Fix any row $(s,j,\alpha,\beta,c,\delta)$ with $\delta\equiv y\pmod 6$ and any $p\ge 0$. If
+\[
+k_p=\frac{\beta\,64^{\,p}+c}{9}\in\mathbb Z
+\quad\text{and}\quad
+m_{\mathrm{prev}}
+\;:=\;
+\frac{\tfrac{y-\delta}{6}-k_p}{2^{\alpha+6p}}
+\;\in\;
+\mathbb Z_{\ge 0},
+\]
+then, writing $p_6:=1$ if $s=\mathrm e$ and $p_6:=5$ if $s=\mathrm o$, the integer
+\[
+x_{\mathrm{prev}} \;:=\; 18\,m_{\mathrm{prev}} + 6j + p_6
+\]
+satisfies
+\[
+3y+1 \;=\; 2^{\alpha+6p}\,x_{\mathrm{prev}},
+\qquad\text{hence}\qquad
+U(y)=x_{\mathrm{prev}},
+\]
+and the parent indices match:
+\[
+\bigl(s(x_{\mathrm{prev}}),\, \lfloor x_{\mathrm{prev}}/6\rfloor\bmod 3\bigr)=(s,j),
+\qquad
+\Big\lfloor \frac{x_{\mathrm{prev}}}{18}\Big\rfloor = m_{\mathrm{prev}}.
+\]
+Conversely, if this row produces $y$ from some $x_{\mathrm{prev}}$ at lift $p$, the formulas recover $m_{\mathrm{prev}}$ and $x_{\mathrm{prev}}$.
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+By the row definition (with lift $p$),
+\[
+y = 6\!\left(2^{\alpha+6p}m_{\mathrm{prev}} + k_p\right)+\delta
+\Longrightarrow
+3y+1 = 18\cdot 2^{\alpha+6p}m_{\mathrm{prev}} + \bigl(6\cdot 2^{\alpha+6p}k_p + 3\delta + 1\bigr).
+\]
+Row integrality gives $k_p\in\mathbb Z$ and the bracket equals $2^{\alpha+6p}(6j+p_6)$ (equivalent to the $p{=}0$ identity plus $64\equiv 1\pmod 9$). Hence
+\(
+3y+1 = 2^{\alpha+6p}\bigl(18m_{\mathrm{prev}} + 6j + p_6\bigr)=2^{\alpha+6p}x_{\mathrm{prev}}.
+\)
+Indices follow from the explicit form of $x_{\mathrm{prev}}$.
+\end{proof}
+
+\begin{algorithm}[H]
+\caption{Reverse-One-Step-Unbounded-$p$($y$) (row-consistent)}
+\label{alg:reverse-one-step-unbounded-p}
+\begin{algorithmic}[1]
+\Require odd $y \equiv 1$ or $5 \pmod{6}$
+\For{each row $(s,j,\alpha,\beta,c,\delta)$ with $\delta \equiv y \pmod{6}$}
+  \State $T \gets (y - \delta)/6$ \Comment{$T \in \mathbb{Z}$}
+  \For{$p \gets 0,1,2,\ldots$}
+    \If{$\beta \cdot 64^{p} + c > 9T$}
+      \State \textbf{break} \Comment{early stop for this row}
+    \EndIf
+    \If{$(\beta \cdot 64^{p} + c) \bmod 9 = 0$}
+      \State $k_p \gets (\beta \cdot 64^{p} + c)/9$
+      \State $t \gets T - k_p$
+      \If{$t \ge 0$ \textbf{and} $\, t \bmod 2^{\alpha+6p} = 0$}
+        \State $m \gets t / 2^{\alpha+6p}$
+        \State $p_6 \gets \text{1 if } s=\mathrm{e} \text{ else } 5$
+        \State $x \gets 18m + 6j + p_6$
+        \If{$U(y)=x$ \textbf{and} $\, (\,s(x),\, \lfloor x/6\rfloor \bmod 3\,) = (\,s,\,j\,)$}
+          \State \Return $x$ \Comment{legal parent found}
+        \EndIf
+      \EndIf
+    \EndIf
+  \EndFor
+\EndFor
+\State \Return \textbf{fail}
+\end{algorithmic}
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\caption{Reverse-One-Step\texorpdfstring{$(y,p)$}{(y,p)} (row-consistent)}
+\label{alg:reverse-one-step}
+\begin{algorithmic}[1]
+\Require odd $y\equiv 1$ or $5\pmod 6$, lift $p\ge 0$
+\For{each row $(s,j,\alpha,\beta,c,\delta)$ with $\delta\equiv y\ (\mathrm{mod}\ 6)$}
+  \State $k_p \gets (\beta\,64^{\,p}+c)/9$ \textbf{(skip if non-integer)}
+  \State $m \gets \big((y-\delta)/6 - k_p\big) / 2^{\alpha+6p}$ \textbf{(skip if $m\notin\mathbb Z_{\ge 0}$)}
+  \State $p_6 \gets 1$ if $s{=}\mathrm e$ else $5$
+  \State $x \gets 18m + 6j + p_6$
+  \If{$U(y)=x$ \textbf{and} $(s(x),\lfloor x/6\rfloor\bmod 3)=(s,j)$}
+     \State \Return $x$ \Comment{legal parent found}
+  \EndIf
+\EndFor
+\State \Return \textbf{fail}
+\end{algorithmic}
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\caption{Reverse-Until\texorpdfstring{$(y_0,\text{stop},p)$}{(y0, stop, p)}}
+\label{alg:reverse-until}
+\begin{algorithmic}[1]
+\Require odd start $y_0$, target ancestor $\text{stop}$ (e.g.\ $1$), lift $p\ge 0$
+\State $y\gets y_0$; \textsc{Log}$\gets [\,]$
+\While{$y\neq \text{stop}$}
+  \State $x\gets$ \Call{Reverse-One-Step}{$(y,p)$}
+  \If{$x$ is \textbf{fail}} \State \Return \textbf{fail} \EndIf
+  \State append $(y\leftarrow x)$ to \textsc{Log}; \ $y\gets x$
+\EndWhile
+\State \Return \textsc{Log}
+\end{algorithmic}
+\end{algorithm}
+
+\paragraph{Algorithmic note (search order).}
+Given $y\equiv 1,5\pmod 6$, our implementation first tries the one–step reverse
+search over all rows $(s,j,\alpha,\beta,c,\delta)$ with $\delta\equiv y\ (\bmod\ 6)$
+and small lifts $p\in\{0,1,\dots,p_{\max}\}$; if no integer $m_{\mathrm{prev}}\ge 0$
+is obtained, it then tries a single layer of same–family padding: a padding row
+$G$ with the same parent family as the decisive row $R$ (type \texttt{ee} if $s{=}\mathrm e$,
+type \texttt{oo} if $s{=}\mathrm o$). The combined two–step identity
+\[
+y \;=\; 6\!\left(2^{\alpha_G+6p_G}\bigl(2^{\alpha_R+6p_R}m + k_{R,p_R}\bigr)+k_{G,p_G}\right)+\delta_R
+\]
+is then solved for $m\in\mathbb Z_{\ge 0}$, with $j$–indices taken from the chosen $G$ and $R$ rows.
+The candidate parent is $x_{\mathrm{prev}}=18\,m+6j_G+p_6$ (with $p_6{=}1$ if $s{=}\mathrm e$, else $5$),
+and we verify $U(y)=x_{\mathrm{prev}}$. Small $p$–lifts ($p_G,p_R\in\{0,1,\dots\}$) are included.
+
+\begin{corollary}[Algorithmic completeness of reverse search]
+\label{cor:alg-complete-reverse}
+Combining row-consistent reversibility (Theorem~\ref{thm:row-consistent-reversibility})
+with same–family steering (mod-$3$ steering, parity control, and $v_2$ boosting) and optional $p$–lifts,
+the reverse search described above always finds a legal parent for any odd $y\equiv 1,5\pmod 6$.
+Iterating yields a finite certified inverse chain to $1$; hence the algorithm constructs, for each odd $y$,
+a legal word $W_y$ with per–step certificates $U(x'_i)=x_{i-1}$.
+\end{corollary}
+
+\begin{proof}[Proof sketch]
+If a decisive row fails to yield an integer $m_{\mathrm{prev}}$ at $p{=}0$, the obstruction is purely
+arithmetic (a $2$–power divisibility and/or a low–modulus congruence). The same–family gadgets
+guarantee control of $B\bmod 2$ and $B\bmod 3$ while strictly increasing the $2$–adic slope,
+and $p$–lifts multiply the slope by $2^{6p}$ without changing routing. Therefore, after at most one layer
+of padding and a small lift, the linear divisibility constraint becomes solvable, yielding a legal parent.
+Repeating this step produces a finite reverse chain; each step is certified by the identity
+$3y+1=2^{\alpha+6p}x_{\mathrm{prev}}$ for the chosen rows and lifts.
+\end{proof}
+
+
+\subsection*{Worked examples}
+
+\paragraph{(A) One–step descent: \(y=3071\).}
+Here \(y\equiv 5\pmod 6\) (child family \(\mathrm o\)).
+Pick the \(\texttt{oo}\) row with \(j=2\) (\(\Omega_2\)):
+\[
+x' \;=\; 12m+11,\qquad (\alpha=1,\ s=\mathrm o,\ j=2,\ \delta=5).
+\]
+Then \(m=(3071-11)/12=255\in\mathbb{Z}\), and the parent is
+\[
+x \;=\; 18\cdot 255 + 6\cdot 2 + 5 \;=\; 4607,
+\]
+with \(3\cdot 3071+1=9214=2^1\cdot 4607\). Thus one reverse step drops the
+$2$–power by $\alpha=1$.
+
+\paragraph{(B) A short \emph{two–row} tail landing exactly at \(43\).}
+We want a child \(y=43\equiv 1\pmod 6\) (child family \(\mathrm e\)).
+
+\emph{Step 1 (last row).}
+Choose the \(\texttt{oe}\) row with \(j=1\) (\(\omega_1\)), which ends in family \(\mathrm e\):
+\[
+x' \;=\; 12m+7 \quad(\alpha=1,\ s=\mathrm o,\ j=1,\ \delta=1).
+\]
+Solve \(12m+7\equiv 43\ (\mathrm{mod}\ 48)\Rightarrow 12m\equiv 36\Rightarrow m\equiv 3\ (\mathrm{mod}\ 4)\).
+Pick the \emph{integral} choice \(m=3\), giving \(\boxed{12\cdot 3+7=43}\).
+The parent of \(43\) across this last row is therefore
+\[
+x_1 \;=\; 18\cdot 3 + 6\cdot 1 + 5 \;=\; \boxed{65}.
+\]
+
+\emph{Step 2 (penultimate row).}
+Produce \(x_1=65\) from an \(\mathrm e\)-family parent using the \(\texttt{eo}\) row with \(j=2\) (\(\psi_2\)):
+\[
+x' \;=\; 24m+17 \quad(\alpha=2,\ s=\mathrm e,\ j=2,\ \delta=5).
+\]
+Solve \(24m+17=65\Rightarrow m=2\in\mathbb{Z}\), so the penultimate parent is
+\[
+x_0 \;=\; 18\cdot 2 + 6\cdot 2 + 1 \;=\; \boxed{49}.
+\]
+Forward certificates hold stepwise:
+\[
+3\cdot 65 + 1 \;=\; 196 \;=\; 2^2\cdot 49,
+\qquad
+3\cdot 43 + 1 \;=\; 130 \;=\; 2^1\cdot 65.
+\]
+
+\emph{Conclusion.} The two–row tail \(W^{\star}=\psi_2\,\omega_1\) maps \(49\to 65\to 43\).
+Modulo \(48\), this realizes \(49\equiv 1 \mapsto 65\equiv 17 \mapsto 43\), and
+\(\omega_1\) enforces the exact hit \(43\) (not merely modulo \(48\)).
+
+\medskip
+\noindent\textbf{Why not a single \texttt{ee} final row?}
+For \(\texttt{ee}\) rows we have
+\[
+\Psi_0: x'=24m+1 \equiv 1 \ (\mathrm{mod}\ 48),\quad
+\Psi_1: x'=96m+37 \equiv 37 \ (\mathrm{mod}\ 48),\quad
+\Psi_2: x'=384m+277 \equiv 37 \ (\mathrm{mod}\ 48),
+\]
+independent of \(m\) modulo \(48\). None can produce \(43\ (\mathrm{mod}\ 48)\).
+Hence at least one non-\(\texttt{ee}\) step (here \(\omega_1\)) is necessary at the end to land at \(43\).
 
 % =========================================================
 \section{From residues to exact integers}
@@ -2051,139 +2277,20 @@ Then \(F(p,m)=2^{1+6p}m+\frac{11\cdot 64^{\,p}-2}{9}\) and the lemma yields \(3x
 % Appendix: Row-consistent reversibility
 % Requires \usepackage{algorithm,algpseudocode}
 % =========================
-\section{Row-consistent reversibility (with optional \texorpdfstring{$p$}{p}-lift)}
-\label{app:row-consistent-reversibility}
 
-Recall a unified table row is specified by $(s,j,\alpha,\beta,c,\delta)$, where $s\in\{\mathrm e,\mathrm o\}$ is the parent family, $j\in\{0,1,2\}$ the parent index, and $\delta\in\{1,5\}$ encodes the \emph{child} family (second letter of the type: \texttt{*e} $\Rightarrow \delta{=}1$, \texttt{*o} $\Rightarrow \delta{=}5$). For any column--lift $p\ge 0$ define
-\[
-k_p \;:=\; \frac{\beta\,64^{\,p}+c}{9}\in\mathbb Z,
-\qquad
-x \;=\; 6\!\left(2^{\alpha+6p}m + k_p\right)+\delta.
-\]
-At $p{=}0$ this reduces to $k=\tfrac{\beta+c}{9}$ and $x = 6(2^\alpha m + k)+\delta$ (the unified $p{=}0$ table).
-
-\begin{theorem}[Row-consistent reversibility]
-\label{thm:row-consistent-reversibility}
-Let $y$ be an odd integer with $y\equiv 1$ or $5\pmod 6$. Fix any row $(s,j,\alpha,\beta,c,\delta)$ with $\delta\equiv y\pmod 6$ and any $p\ge 0$. If
-\[
-k_p=\frac{\beta\,64^{\,p}+c}{9}\in\mathbb Z
-\quad\text{and}\quad
-m_{\mathrm{prev}}
-\;:=\;
-\frac{\tfrac{y-\delta}{6}-k_p}{2^{\alpha+6p}}
-\;\in\;
-\mathbb Z_{\ge 0},
-\]
-then, writing $p_6:=1$ if $s=\mathrm e$ and $p_6:=5$ if $s=\mathrm o$, the integer
-\[
-x_{\mathrm{prev}} \;:=\; 18\,m_{\mathrm{prev}} + 6j + p_6
-\]
-satisfies the forward identity
-\[
-3y+1 \;=\; 2^{\alpha+6p}\,x_{\mathrm{prev}},
-\qquad\text{hence}\qquad
-U(y)=x_{\mathrm{prev}},
-\]
-and the parent indices match:
-\[
-\bigl(s(x_{\mathrm{prev}}),\, \lfloor x_{\mathrm{prev}}/6\rfloor\bmod 3\bigr)=(s,j),
-\quad
-\Big\lfloor \frac{x_{\mathrm{prev}}}{18}\Big\rfloor = m_{\mathrm{prev}}.
-\]
-Conversely, if a row $(s,j,\alpha,\beta,c,\delta)$ produces $y$ from some parent $x_{\mathrm{prev}}$ at lift $p$, then the formulas above recover $m_{\mathrm{prev}}$ and $x_{\mathrm{prev}}$.
-\end{theorem}
-
-\begin{proof}[Proof sketch]
-By definition of the row and lift $p$,
-\[
-y = 6\!\left(2^{\alpha+6p}m_{\mathrm{prev}} + k_p\right)+\delta
-\quad\Longrightarrow\quad
-3y+1 = 18\cdot 2^{\alpha+6p}m_{\mathrm{prev}} + \bigl(6\cdot 2^{\alpha+6p}k_p + 3\delta + 1\bigr).
-\]
-Row integrality ensures $k_p\in\mathbb Z$ and the bracket equals $2^{\alpha+6p}(6j+p_6)$ by the row’s design (equivalent to the $p{=}0$ identity together with $64\equiv 1\pmod 9$). Hence
-\[
-3y+1 \;=\; 2^{\alpha+6p}\!\bigl(18m_{\mathrm{prev}} + 6j + p_6\bigr)
-\;=\; 2^{\alpha+6p}x_{\mathrm{prev}},
-\]
-so $U(y)=x_{\mathrm{prev}}$. The explicit form of $x_{\mathrm{prev}}$ immediately yields the index equalities.
-\end{proof}
-
-\paragraph{How to use (one-step reverse).}
-Given a child \(y\):
-\begin{enumerate}[leftmargin=1.4em]
-\item Filter rows by child family: keep exactly those with \(\delta \equiv y \pmod 6\).
-\item For each such row (optionally fix some \(p\ge 0\)):
-  \begin{enumerate}[itemsep=1pt]
-  \item Compute \(k_p=\frac{\beta\,64^{\,p}+c}{9}\). If non-integer, skip.
-  \item Set \(m_{\mathrm{prev}}=\dfrac{(y-\delta)/6 - k_p}{2^{\alpha+6p}}\). If not a nonnegative integer, skip.
-  \item Set \(x_{\mathrm{prev}}=18m_{\mathrm{prev}}+6j+p_6\) with \(p_6=1\) if \(s=\mathrm e\), else \(p_6=5\).
-  \item Verify \(U(y)=x_{\mathrm{prev}}\) (and the indices of \(x_{\mathrm{prev}}\) match \((s,j)\)).
-  \end{enumerate}
-\item The unique row passing all checks yields the legal parent \(x_{\mathrm{prev}}\).
-\end{enumerate}
-
-\begin{algorithm}[H]
-\caption{Reverse-One-Step\texorpdfstring{$(y,p)$}{(y,p)} (row-consistent)}
-\label{alg:reverse-one-step}
-\begin{algorithmic}[1]
-\Require odd $y\equiv 1$ or $5\pmod 6$, lift $p\ge 0$
-\For{each row $(s,j,\alpha,\beta,c,\delta)$ with $\delta\equiv y\ (\mathrm{mod}\ 6)$}
-  \State $k_p \gets (\beta\,64^{\,p}+c)/9$ \textbf{(skip if not integer)}
-  \State $m \gets \big((y-\delta)/6 - k_p\big) / 2^{\alpha+6p}$ \textbf{(skip if $m\notin\mathbb Z_{\ge 0}$)}
-  \State $p_6 \gets 1$ if $s{=}\mathrm e$ else $5$
-  \State $x \gets 18m + 6j + p_6$
-  \If{$U(y)=x$ \textbf{and} $(s(x),\lfloor x/6\rfloor\bmod 3)=(s,j)$}
-     \State \Return $x$ \Comment{legal parent found}
-  \EndIf
-\EndFor
-\State \Return \textbf{fail} \Comment{no legal parent for $(y,p)$}
-\end{algorithmic}
-\end{algorithm}
-
-\begin{algorithm}[H]
-\caption{Reverse-Until\texorpdfstring{$(y_0,\text{stop},p)$}{(y0, stop, p)}}
-\label{alg:reverse-until}
-\begin{algorithmic}[1]
-\Require odd start $y_0$, target ancestor $\text{stop}$ (e.g.\ $1$), lift $p\ge 0$
-\State $y\gets y_0$; \textsc{Log}$\gets [\,]$
-\While{$y\neq \text{stop}$}
-  \State $x\gets$ \Call{Reverse-One-Step}{$(y,p)$}
-  \If{$x$ is \textbf{fail}} \State \Return \textbf{fail} \EndIf
-  \State append $(y\leftarrow x)$ to \textsc{Log}
-  \State $y\gets x$
-\EndWhile
-\State \Return \textsc{Log}
-\end{algorithmic}
-\end{algorithm}
-
-\paragraph{Worked micro-example (\(p{=}0\)).}
-Take \(y=43\) (so \(y\equiv 1\pmod 6\)). Rows with \(\delta=1\) include the \texttt{oe} row \(\omega_1\) at \((s,j)=(\mathrm o,1)\) with \((\alpha,\beta,c)=(1,11,-2)\). Then
-\[
-k=\frac{\beta+c}{9}=\frac{11-2}{9}=1,\qquad
-m_{\mathrm{prev}}=\frac{\frac{43-1}{6}-1}{2^{1}}=\frac{7-1}{2}=3.
-\]
-With \(p_6=5\) (since \(s=\mathrm o\)), the parent is
-\[
-x_{\mathrm{prev}}=18\cdot 3 + 6\cdot 1 + 5 = 65.
-\]
-Check: \(U(43)=65\) and the indices of \(65\) are \(s=\mathrm o\), \(j=1\), \(m=3\), as required.
-
-\medskip
-\noindent
-This reverse step can be iterated (Algorithm~\ref{alg:reverse-until}) to climb the inverse tree toward \(1\) while logging each certified step. Since the construction enforces the per-row identity \(3y+1=2^{\alpha+6p}x_{\mathrm{prev}}\), every step is accompanied by a forward certificate \(U(y)=x_{\mathrm{prev}}\).
 
 
 
 \newpage
-\section*{Appendix F: Code and Data Availability}
+\section*{Appendix E: Code and Data Availability}
 A reference implementation of the unified inverse table, the word evaluator, and the example generators is archived at
-\href{https://doi.org/10.5281/zenodo.17332139}{Zenodo DOI:10.5281/zenodo.17332139} and mirrored at
+\href{https://doi.org/10.5281/zenodo.17337982}{Zenodo DOI: 10.5281/zenodo.17337982} and mirrored at
 \href{git@github.com:kisira/collatz.git}{github.com/kisira/collatz}.
 %The repository includes scripts to verify per-step identities \(U(x')=x\), regenerate the witness tables (mod \(24,48,96\)), and reproduce the figures and traces in this paper.
 %Reproducibility instructions are summarized in Appendix~\ref{app:repro}.
 
 
-\section*{Appendix G: Reproducibility Details}\label{app:repro}
+\section*{Appendix F: Reproducibility Details}\label{app:repro}
 
 \paragraph{Environment.}
 The code is pure Python~3 (standard library + \texttt{pandas} for CSV I/O). A minimal setup is:
@@ -2220,6 +2327,13 @@ which emits a CSV trace with the certified step identities and indices.
 To genereate a word for say 497. Or any other odd number.
 \begin{verbatim}
 python3 tools/calculate_word.py 497 --json-out 497_word.json
+\end{verbatim}
+
+\paragraph{Row consistent reverse.}
+To reverse an odd number any number of steps.
+\begin{verbatim}
+python reverse_construct.py --mode one --y 43 --csv reverse_43.csv
+python reverse_construct.py --mode chain --y 497 --stop 1 --csv chain_497_to_1.csv
 \end{verbatim}
 
 
