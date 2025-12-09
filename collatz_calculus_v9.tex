@@ -6332,9 +6332,63 @@ Row integrality gives $k_p\in\mathbb Z$ and the bracket equals $2^{\alpha+6p}(6j
 Indices follow from the explicit form of $x_{\mathrm{prev}}$.
 \end{proof}
 
+% Algorithm 4: Search for a parent without a fixed p limit
+\begin{algorithm}[H]
+\caption{Reverse-One-Step-Unbounded-p\texorpdfstring{$(y)$}{(y)}}
+\label{alg:reverse-one-step-unbounded-p}
+\begin{algorithmic}[1]
+\Require odd $y \equiv 1$ or $5 \pmod{6}$
+\For{each row $(s,j,\alpha,\beta,c,\delta)$ with $\delta \equiv y \pmod{6}$}
+  \State $T \gets (y - \delta)/6$ \Comment{$T \in \mathbb{Z}$}
+  \For{$p \gets 0,1,2,\ldots$}
+    \If{$\beta \cdot 64^{p} + c > 9T$}
+      \State \textbf{break} \Comment{early stop for this row (monotonicity)}
+    \EndIf
+    \If{$(\beta \cdot 64^{p} + c) \bmod 9 = 0$}
+      \State $k_p \gets (\beta \cdot 64^{p} + c)/9$
+      \State $t \gets T - k_p$
+      \If{$t \ge 0$ \textbf{and} $t \bmod 2^{\alpha+6p} = 0$}
+        \State $m \gets t / 2^{\alpha+6p}$
+        \State $p_6 \gets \text{1 if } s=\mathrm{e} \text{ else } 5$
+        \State $x \gets 18m + 6j + p_6$
+        \If{$U(y)=x$ \textbf{and} $(\,s(x),\, \lfloor x/6\rfloor \bmod 3\,) = (s,j)$}
+          \State \Return $x$ \Comment{legal parent found}
+        \EndIf
+      \EndIf
+    \EndIf
+  \EndFor
+\EndFor
+\State \Return \textbf{fail}
+\end{algorithmic}
+\end{algorithm}
+
+% Algorithm 5: Helper to check a specific lift p
+\begin{algorithm}[H]
+\caption{Reverse-One-Step\texorpdfstring{$(y,p)$}{(y,p)} (row-consistent)}
+\label{alg:reverse-one-step}
+\begin{algorithmic}[1]
+\Require odd $y\equiv 1$ or $5\pmod 6$, lift $p\ge 0$
+\For{each row $(s,j,\alpha,\beta,c,\delta)$ with $\delta\equiv y\ (\mathrm{mod}\ 6)$}
+  \State $k_p \gets (\beta\,64^{\,p}+c)/9$
+  \If{$k_p \notin \mathbb{Z}$} \textbf{continue} \EndIf
+  \State $num \gets (y-\delta)/6 - k_p$
+  \State $den \gets 2^{\alpha+6p}$
+  \If{$num < 0$ \textbf{or} $num \bmod den \neq 0$} \textbf{continue} \EndIf
+  \State $m \gets num / den$
+  \State $p_6 \gets 1$ if $s{=}\mathrm e$ else $5$
+  \State $x \gets 18m + 6j + p_6$
+  \If{$U(y)=x$ \textbf{and} $(s(x),\lfloor x/6\rfloor\bmod 3)=(s,j)$}
+     \State \Return $x$ \Comment{legal parent found}
+  \EndIf
+\EndFor
+\State \Return \textbf{fail}
+\end{algorithmic}
+\end{algorithm}
+
+% Algorithm 6: Full chain builder with padding fallback
 \begin{algorithm}[H]
 \caption{Reverse-Until\texorpdfstring{$(y_0,\text{stop},p)$}{(y0, stop, p)}}
-\label{alg:reverse-until-refined}
+\label{alg:reverse-until}
 \begin{algorithmic}[1]
 \Require odd start $y_0$, target ancestor $\text{stop}$ (e.g.\ $1$), lift $p\ge 0$
 \State $y\gets y_0$; \textsc{Log}$\gets [\,]$
@@ -6357,41 +6411,6 @@ Indices follow from the explicit form of $x_{\mathrm{prev}}$.
     \If{\textbf{not} $found$} \State \Return \textbf{fail} \EndIf
   \EndIf
 
-  \State append $(y\leftarrow x)$ to \textsc{Log}; \ $y\gets x$
-\EndWhile
-\State \Return \textsc{Log}
-\end{algorithmic}
-\end{algorithm}
-
-
-\begin{algorithm}[H]
-\caption{Reverse-One-Step\texorpdfstring{$(y,p)$}{(y,p)} (row-consistent)}
-\label{alg:reverse-one-step}
-\begin{algorithmic}[1]
-\Require odd $y\equiv 1$ or $5\pmod 6$, lift $p\ge 0$
-\For{each row $(s,j,\alpha,\beta,c,\delta)$ with $\delta\equiv y\ (\mathrm{mod}\ 6)$}
-  \State $k_p \gets (\beta\,64^{\,p}+c)/9$ \textbf{(skip if non-integer)}
-  \State $m \gets \big((y-\delta)/6 - k_p\big) / 2^{\alpha+6p}$ \textbf{(skip if $m\notin\mathbb Z_{\ge 0}$)}
-  \State $p_6 \gets 1$ if $s{=}\mathrm e$ else $5$
-  \State $x \gets 18m + 6j + p_6$
-  \If{$U(y)=x$ \textbf{and} $(s(x),\lfloor x/6\rfloor\bmod 3)=(s,j)$}
-     \State \Return $x$ \Comment{legal parent found}
-  \EndIf
-\EndFor
-\State \Return \textbf{fail}
-\end{algorithmic}
-\end{algorithm}
-
-
-\begin{algorithm}[H]
-\caption{Reverse-Until\texorpdfstring{$(y_0,\text{stop},p)$}{(y0, stop, p)}}
-\label{alg:reverse-until}
-\begin{algorithmic}[1]
-\Require odd start $y_0$, target ancestor $\text{stop}$ (e.g.\ $1$), lift $p\ge 0$
-\State $y\gets y_0$; \textsc{Log}$\gets [\,]$
-\While{$y\neq \text{stop}$}
-  \State $x\gets$ \Call{Reverse-One-Step}{$(y,p)$}
-  \If{$x$ is \textbf{fail}} \State \Return \textbf{fail} \EndIf
   \State append $(y\leftarrow x)$ to \textsc{Log}; \ $y\gets x$
 \EndWhile
 \State \Return \textsc{Log}
