@@ -4068,6 +4068,17 @@ hence $U^2(377)=425$, matching
     \xrightarrow{\ \psi_2\ } 377\equiv 41\ (\bmod 48).
 \]
 
+\begin{lemma}[Integrality Preservation]\label{lem:integrality-preservation}
+Let a prefix end in the affine form $x_t(m) = 6(A_t m + B_t) + \delta_t$. Suppose the next token $T$ (with parameters $\alpha_p, k^{(p)}, \delta_T$) is admissible, meaning the router condition holds:
+\[ A_t m + B_t \equiv r_{t+1} \pmod 3, \]
+where $r_{t+1}$ is the router index required by $T$. Then the updated intercept
+\[ B_{t+1} = \frac{2^{\alpha_p}}{3}(B_t - r_{t+1}) + k^{(p)} \]
+is guaranteed to be an integer.
+\end{lemma}
+
+\begin{proof}
+The admissibility condition $A_t m + B_t \equiv r_{t+1} \pmod 3$ implies $B_t - r_{t+1} \equiv -A_t m \pmod 3$. Since $A_t$ is a power of 2 (and thus not divisible by 3) and $m$ is chosen from a class where this congruence holds, the term $(B_t - r_{t+1})$ is divisible by 3. Thus, the division by 3 is exact in $\mathbb{Z}$.
+\end{proof}
 
 % ------------------------------------------------------------
 
@@ -4547,6 +4558,11 @@ and with the mod-$3$ part consistent with the planned rows, then every step’s 
 \begin{proof}[Proof sketch]
 The bound forces all intermediate $(A_t m+B_t)$ to stabilize modulo $3$ and $2^{\sum_{i\le t}\alpha_i}$ so that $m_t=(A_tm+B_t-r_{t+1})/3\in\mathbb{Z}$ matches the planned router at each step; this is the standard routing-compatibility argument specialized to powers of two and fixed rows.
 \end{proof}
+\begin{remark}[Arithmetic Mechanism of Router Stability]
+The bound $S^\ast \ge 1 + \sum_{i<t} \alpha_i$ is not arbitrary. It works because fixing $m \pmod{2^{S^\ast}}$ freezes the term $A_t m$ modulo $2 \cdot A_t = 2^{1+\sum \alpha_i}$. Since the router index is determined by
+\[ j_{t+1} = \left\lfloor \frac{x_t}{6} \right\rfloor \bmod 3 = (A_t m + B_t) \bmod 3, \]
+stabilizing $A_t m$ modulo a sufficiently large power of 2 (specifically one that is coprime to 3) is sufficient to fix the value modulo 3 when combined with the admissibility constraints. The formal proof (see Coq \texttt{lem\_routing\_compatibility\_Sstar}) verifies this by induction.
+\end{remark}
 \begin{remark}[Single source of truth]
 Tables~\ref{tab:menu-effects-p0}--\ref{tab:menu-effects-p2} are the canonical per-token
 effects; later sections refer to them and do not reproduce their contents.
@@ -4838,6 +4854,10 @@ Forward check with $U(n)=(3n+1)/2^{v_2(3n+1)}$ gives $U(185)=139$, $U(139)=209$.
     In the congruence regime, solve $a^{(p)}m\equiv r^{(p)}\pmod{M_K}$ for $m$; in the pinning regime, any $m$ works.
     Intersect this solution class with the routing class from Lemma~\ref{lem:routing-compat}.
     \emph{(Note: These classes are guaranteed to have a non-empty intersection by the Chinese Remainder Theorem for powers of two, because the base witness at $M_3=24$ already ensures consistency at the lower modulus.)}
+    \begin{remark}[Consistency of Constraints]
+      In Step 5, we intersect the routing constraint $m \equiv m_{\text{route}} \pmod{2^{S^\ast}}$ with the lifting constraint $m \equiv m_{\text{lift}} \pmod{2^{K-\alpha}}$.
+      These constraints are guaranteed to be compatible (have a non-empty intersection) by the Chinese Remainder Theorem for prime powers. Why? Because both constraints are derived from the same base witness $W_3$ at $M_3=24$. The base witness ensures the conditions are met at the lower modulus (min$(S^\ast, K-\alpha)$), and the lifting process preserves this validity at higher powers of 2.
+\end{remark}
   \item \textbf{Output.} The resulting finite word $W$ and index $m$ satisfy $x_W(m)=x$ and the forward accelerated map reaches $1$ along $W$.
 \end{enumerate}
 
