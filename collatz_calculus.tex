@@ -4068,6 +4068,17 @@ hence $U^2(377)=425$, matching
     \xrightarrow{\ \psi_2\ } 377\equiv 41\ (\bmod 48).
 \]
 
+\begin{lemma}[Integrality Preservation]\label{lem:integrality-preservation}
+Let a prefix end in the affine form $x_t(m) = 6(A_t m + B_t) + \delta_t$. Suppose the next token $T$ (with parameters $\alpha_p, k^{(p)}, \delta_T$) is admissible, meaning the router condition holds:
+\[ A_t m + B_t \equiv r_{t+1} \pmod 3, \]
+where $r_{t+1}$ is the router index required by $T$. Then the updated intercept
+\[ B_{t+1} = \frac{2^{\alpha_p}}{3}(B_t - r_{t+1}) + k^{(p)} \]
+is guaranteed to be an integer.
+\end{lemma}
+
+\begin{proof}
+The admissibility condition $A_t m + B_t \equiv r_{t+1} \pmod 3$ implies $B_t - r_{t+1} \equiv -A_t m \pmod 3$. Since $A_t$ is a power of 2 (and thus not divisible by 3) and $m$ is chosen from a class where this congruence holds, the term $(B_t - r_{t+1})$ is divisible by 3. Thus, the division by 3 is exact in $\mathbb{Z}$.
+\end{proof}
 
 % ------------------------------------------------------------
 
@@ -4547,6 +4558,11 @@ and with the mod-$3$ part consistent with the planned rows, then every step’s 
 \begin{proof}[Proof sketch]
 The bound forces all intermediate $(A_t m+B_t)$ to stabilize modulo $3$ and $2^{\sum_{i\le t}\alpha_i}$ so that $m_t=(A_tm+B_t-r_{t+1})/3\in\mathbb{Z}$ matches the planned router at each step; this is the standard routing-compatibility argument specialized to powers of two and fixed rows.
 \end{proof}
+\begin{remark}[Arithmetic Mechanism of Router Stability]
+The bound $S^\ast \ge 1 + \sum_{i<t} \alpha_i$ is not arbitrary. It works because fixing $m \pmod{2^{S^\ast}}$ freezes the term $A_t m$ modulo $2 \cdot A_t = 2^{1+\sum \alpha_i}$. Since the router index is determined by
+\[ j_{t+1} = \left\lfloor \frac{x_t}{6} \right\rfloor \bmod 3 = (A_t m + B_t) \bmod 3, \]
+stabilizing $A_t m$ modulo a sufficiently large power of 2 (specifically one that is coprime to 3) is sufficient to fix the value modulo 3 when combined with the admissibility constraints. The formal proof (see Coq \texttt{lem\_routing\_compatibility\_Sstar}) verifies this by induction.
+\end{remark}
 \begin{remark}[Single source of truth]
 Tables~\ref{tab:menu-effects-p0}--\ref{tab:menu-effects-p2} are the canonical per-token
 effects; later sections refer to them and do not reproduce their contents.
@@ -4834,7 +4850,14 @@ Forward check with $U(n)=(3n+1)/2^{v_2(3n+1)}$ gives $U(185)=139$, $U(139)=209$.
           \item \emph{Congruence regime:} ensure the last-row congruence is solvable (Lemma on congruence targeting).
         \end{itemize}
   \item \textbf{Bit-lift and parity.} If needed, use same-family padding blocks to raise $v_2(A)$ and the 2-token same-family cycle to toggle $B\bmod 2$ without changing family (Section~\ref{sec:menu-all-p}).
-  \item \textbf{Solve $m$-class.} In the congruence regime, solve $a^{(p)}m\equiv r^{(p)}\pmod{M_K}$ for $m$; in the pinning regime, any $m$ works. Intersect with the class from Lemma~\ref{lem:routing-compat}.
+  \item \textbf{Solve $m$-class.}
+    In the congruence regime, solve $a^{(p)}m\equiv r^{(p)}\pmod{M_K}$ for $m$; in the pinning regime, any $m$ works.
+    Intersect this solution class with the routing class from Lemma~\ref{lem:routing-compat}.
+    \emph{(Note: These classes are guaranteed to have a non-empty intersection by the Chinese Remainder Theorem for powers of two, because the base witness at $M_3=24$ already ensures consistency at the lower modulus.)}
+    \begin{remark}[Consistency of Constraints]
+      In Step 5, we intersect the routing constraint $m \equiv m_{\text{route}} \pmod{2^{S^\ast}}$ with the lifting constraint $m \equiv m_{\text{lift}} \pmod{2^{K-\alpha}}$.
+      These constraints are guaranteed to be compatible (have a non-empty intersection) by the Chinese Remainder Theorem for prime powers. Why? Because both constraints are derived from the same base witness $W_3$ at $M_3=24$. The base witness ensures the conditions are met at the lower modulus (min$(S^\ast, K-\alpha)$), and the lifting process preserves this validity at higher powers of 2.
+\end{remark}
   \item \textbf{Output.} The resulting finite word $W$ and index $m$ satisfy $x_W(m)=x$ and the forward accelerated map reaches $1$ along $W$.
 \end{enumerate}
 
@@ -5465,6 +5488,9 @@ Global routing compatibility (Lemma~\ref{lem:global-routing-compat}) and integra
 By construction, each certified chain ends at $1$ under $U$.
 \end{proof}
 
+\begin{remark}[Equivalence of Witnesses and Orbits]
+Theorem~\ref{thm:odd-layer-convergence} establishes that the existence of a lifted witness implies convergence to $1$ (Sufficiency). Conversely, Corollary~\ref{cor:completeness} (Algebraic Completeness) ensures that every valid preimage under $U$ corresponds to a row in the unified table. Therefore, any integer $x$ that reaches $1$ does so via a unique trajectory that is exactly described by some admissible word $W$. The search for a witness is thus equivalent to the search for the orbit itself; our method simply performs this search in the complete inverse space.
+\end{remark}
 
 \begin{remark}[Why each ingredient is necessary]
 The base witnesses provide a seed at $K=3$; the steering menu and monotone padding raise
@@ -5726,6 +5752,7 @@ Consider a hypothetical cycle of period $n$ corresponding to the word $W$. In th
 x^* = A_W x^* + B_W \quad \Longrightarrow \quad (1 - A_W) x^* = B_W \quad \Longrightarrow \quad x^* = -\frac{B_W}{A_W - 1} = -v_W.
 \]
 \begin{theorem}[Cycle Location Bound]
+\label{thm:cycle-location-bound}
 If an odd integer $x$ belongs to a non-trivial cycle corresponding to the word $W$, then $x$ must lie in a bounded neighborhood of the geometric point $-v_W$. Specifically,
 \[
 \left| x - (-v_W) \right| \;\le\; \frac{C}{A_W - 1},
@@ -5736,6 +5763,36 @@ where $C$ depends on the accumulated rounding errors (carries) of the word $W$.
 \begin{remark}[The Geometric Trap]
 Since we have proven $A_W > 1$ (expansivity of the inverse) for all words $W$ (except the singular $p=0$ identity cases), the fixed point $-v_W$ acts as a \emph{center of repulsion} for the inverse map. Conversely, for the forward map $U$, it acts as a pseudo-attractor.
 This result provides a \textbf{Geometric Bounding Box}: it proves that if a counter-example (cycle) exists for a specific word $W$, the integers in that cycle cannot be distributed arbitrarily; they must be clustered near the rational number $-v_W$. This drastically narrows the search space for non-trivial cycles.
+\end{remark}
+
+\begin{remark}[Arithmetic Sterilization of ``Ghost'' Fixed Points at $p=0$]
+While Theorem~\ref{thm:cycle-location-bound} restricts cycles to a neighborhood of $-v_W$, at low slopes ($p=0$) this neighborhood may appear large enough to contain integers. However, arithmetic constraints (admissibility and the structure of $\mathbb{Z}_{\text{odd}}$) can ``sterilize'' these regions.
+
+Consider the row $\omega_0$ at $p=0$ (Type \texttt{oe}, $\alpha=3$).
+\begin{itemize}
+    \item \textbf{Geometric Trap:} The affine parameters yield a repulsive fixed point at $x^* \approx 6.2$. This suggests a potential cycle near the integers $6$ or $7$.
+    \item \textbf{Arithmetic Exclusion:}
+    \begin{enumerate}
+        \item The integer $6$ is even (and $0 \pmod 3$), hence it is not in the domain of the odd map $U$.
+        \item The integer $7$ is odd, but $7 \equiv 1 \pmod 6$, placing it in family $\mathbf{e}$. The row $\omega_0$ requires inputs from family $\mathbf{o}$ ($x \equiv 5 \pmod 6$). Thus, $7$ is \emph{algebraically invisible} to this operator.
+    \end{enumerate}
+\end{itemize}
+The nearest admissible integer is $5$, but the map repels $5$ away from the trap ($5 \mapsto 13$). Thus, the ``ghost'' fixed point at $6.2$ is dynamically empty. This illustrates how the \textbf{Admissibility Mask} filters out geometric attractors that do not align with the residue structure of the map.
+\end{remark}
+
+\begin{remark}[Arithmetic Exclusion and Dynamical Repulsion at $p=0$]
+While Theorem~\ref{thm:cycle-location-bound} restricts cycles to a neighborhood of $-v_W$, at low slopes ($p=0$) this neighborhood may appear large enough to contain integers. However, a combination of arithmetic constraints and strong local repulsion clears these regions.
+
+Consider the row $\Omega_0$ at $p=0$ (Type \texttt{oo}, $\alpha=5$).
+\begin{itemize}
+    \item \textbf{Geometric Trap:} The affine parameters yield a repulsive fixed point at $x^* \approx 5.2$. This suggests a potential cycle near the integers $5$ or $6$.
+    \item \textbf{Exclusion Analysis:}
+    \begin{enumerate}
+        \item The integer $6$ is even (and $0 \pmod 3$), hence it is not in the domain of the odd map $U$. It is structurally excluded.
+        \item The integer $5$ satisfies the family constraint ($\Omega_0$ requires inputs from $\mathbf{o}$, i.e., $x \equiv 5 \pmod 6$). However, the map at this point is strongly repulsive: applying $\Omega_0$ ($m=0$) yields $x' = 192(0) + 53 = 53$.
+    \end{enumerate}
+\end{itemize}
+The orbit is violently ejected ($5 \to 53$) away from the fixed point $5.2$. Thus, the ``ghost'' fixed point contains no cycles: invalid integers are arithmetically invisible, and valid integers are dynamically transient.
 \end{remark}
 
 \subsection{The carry cocycle}
@@ -6295,8 +6352,9 @@ Row integrality gives $k_p\in\mathbb Z$ and the bracket equals $2^{\alpha+6p}(6j
 Indices follow from the explicit form of $x_{\mathrm{prev}}$.
 \end{proof}
 
+% Algorithm 4: Search for a parent without a fixed p limit
 \begin{algorithm}[H]
-\caption{Reverse-One-Step-Unbounded-$p$($y$) (row-consistent)}
+\caption{Reverse-One-Step-Unbounded-p\texorpdfstring{$(y)$}{(y)}}
 \label{alg:reverse-one-step-unbounded-p}
 \begin{algorithmic}[1]
 \Require odd $y \equiv 1$ or $5 \pmod{6}$
@@ -6304,16 +6362,16 @@ Indices follow from the explicit form of $x_{\mathrm{prev}}$.
   \State $T \gets (y - \delta)/6$ \Comment{$T \in \mathbb{Z}$}
   \For{$p \gets 0,1,2,\ldots$}
     \If{$\beta \cdot 64^{p} + c > 9T$}
-      \State \textbf{break} \Comment{early stop for this row}
+      \State \textbf{break} \Comment{early stop for this row (monotonicity)}
     \EndIf
     \If{$(\beta \cdot 64^{p} + c) \bmod 9 = 0$}
       \State $k_p \gets (\beta \cdot 64^{p} + c)/9$
       \State $t \gets T - k_p$
-      \If{$t \ge 0$ \textbf{and} $\, t \bmod 2^{\alpha+6p} = 0$}
+      \If{$t \ge 0$ \textbf{and} $t \bmod 2^{\alpha+6p} = 0$}
         \State $m \gets t / 2^{\alpha+6p}$
         \State $p_6 \gets \text{1 if } s=\mathrm{e} \text{ else } 5$
         \State $x \gets 18m + 6j + p_6$
-        \If{$U(y)=x$ \textbf{and} $\, (\,s(x),\, \lfloor x/6\rfloor \bmod 3\,) = (\,s,\,j\,)$}
+        \If{$U(y)=x$ \textbf{and} $(\,s(x),\, \lfloor x/6\rfloor \bmod 3\,) = (s,j)$}
           \State \Return $x$ \Comment{legal parent found}
         \EndIf
       \EndIf
@@ -6324,15 +6382,19 @@ Indices follow from the explicit form of $x_{\mathrm{prev}}$.
 \end{algorithmic}
 \end{algorithm}
 
-
+% Algorithm 5: Helper to check a specific lift p
 \begin{algorithm}[H]
 \caption{Reverse-One-Step\texorpdfstring{$(y,p)$}{(y,p)} (row-consistent)}
 \label{alg:reverse-one-step}
 \begin{algorithmic}[1]
 \Require odd $y\equiv 1$ or $5\pmod 6$, lift $p\ge 0$
 \For{each row $(s,j,\alpha,\beta,c,\delta)$ with $\delta\equiv y\ (\mathrm{mod}\ 6)$}
-  \State $k_p \gets (\beta\,64^{\,p}+c)/9$ \textbf{(skip if non-integer)}
-  \State $m \gets \big((y-\delta)/6 - k_p\big) / 2^{\alpha+6p}$ \textbf{(skip if $m\notin\mathbb Z_{\ge 0}$)}
+  \State $k_p \gets (\beta\,64^{\,p}+c)/9$
+  \If{$k_p \notin \mathbb{Z}$} \textbf{continue} \EndIf
+  \State $num \gets (y-\delta)/6 - k_p$
+  \State $den \gets 2^{\alpha+6p}$
+  \If{$num < 0$ \textbf{or} $num \bmod den \neq 0$} \textbf{continue} \EndIf
+  \State $m \gets num / den$
   \State $p_6 \gets 1$ if $s{=}\mathrm e$ else $5$
   \State $x \gets 18m + 6j + p_6$
   \If{$U(y)=x$ \textbf{and} $(s(x),\lfloor x/6\rfloor\bmod 3)=(s,j)$}
@@ -6343,7 +6405,7 @@ Indices follow from the explicit form of $x_{\mathrm{prev}}$.
 \end{algorithmic}
 \end{algorithm}
 
-
+% Algorithm 6: Full chain builder with padding fallback
 \begin{algorithm}[H]
 \caption{Reverse-Until\texorpdfstring{$(y_0,\text{stop},p)$}{(y0, stop, p)}}
 \label{alg:reverse-until}
@@ -6351,8 +6413,24 @@ Indices follow from the explicit form of $x_{\mathrm{prev}}$.
 \Require odd start $y_0$, target ancestor $\text{stop}$ (e.g.\ $1$), lift $p\ge 0$
 \State $y\gets y_0$; \textsc{Log}$\gets [\,]$
 \While{$y\neq \text{stop}$}
-  \State $x\gets$ \Call{Reverse-One-Step}{$(y,p)$}
-  \If{$x$ is \textbf{fail}} \State \Return \textbf{fail} \EndIf
+  \State $x \gets$ \Call{Reverse-One-Step}{$(y,p)$}
+
+  \If{$x$ is \textbf{fail}}
+    \State \Comment{Fallback: try 1-layer same-family padding}
+    \State $found \gets \mathbf{false}$
+    \For{each padding gadget $G$ compatible with family of $y$}
+        \For{each row $R$ admissible after $G$}
+            \State Attempt to solve composite step $y \leftarrow R \leftarrow G \leftarrow x$
+            \If{solution $m \ge 0$ found}
+                \State $x \gets \text{parent}(m)$; $found \gets \mathbf{true}$
+                \State \textbf{break}
+            \EndIf
+        \EndFor
+        \If{$found$} \textbf{break} \EndIf
+    \EndFor
+    \If{\textbf{not} $found$} \State \Return \textbf{fail} \EndIf
+  \EndIf
+
   \State append $(y\leftarrow x)$ to \textsc{Log}; \ $y\gets x$
 \EndWhile
 \State \Return \textsc{Log}

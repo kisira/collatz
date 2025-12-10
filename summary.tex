@@ -1245,7 +1245,10 @@ Our approach rests on three novel structural insights:
 By combining these tools, we established an inductive lifting procedure that extends reachability from the base modulus \(M_3=24\) to arbitrary \(M_K\), and ultimately to exact integers via \(2\)-adic completeness.
 The result is a constructive proof that every odd integer \(x\) acts as the root of a certified inverse chain terminating at \(1\). Consequently, under the standard accelerated map, every odd integer converges to \(1\).
 
-\section*{Appendix A\texorpdfstring{$^\prime$}: Mod-\pdfmath{3} steering (valuation \& residue control)}
+\appendix
+
+%\section*{Appendix A\texorpdfstring{$^\prime$}: Mod-\pdfmath{3} steering (valuation \& residue control)}
+\section*{Appendix A: Mod-\pdfmath{3} steering (valuation \& residue control)}
 \label{app:mod3-steering}
 
 We strengthen the steering toolkit by showing that, in addition to toggling $B_W \bmod 2$ and raising $v_2(A_W)$, one can \emph{steer $B_W$ to any desired residue modulo $3$} while remaining in the same family. This closes the divisibility-by-$3$ gap in the exact-lifting step.
@@ -1438,8 +1441,9 @@ Residue \(x\bmod 54\) & Family \(s\) & \(j=\lfloor x/6\rfloor\bmod 3\) & Gadget 
 \end{tabularx}
 \end{table}
 
-\appendix
-\section{Appendix C: Mechanical checks and lifted witnesses}\label{app:checks}
+\Needspace{5\baselineskip}
+\newpage
+\section*{Appendix C: Mechanical checks and lifted witnesses}\label{app:checks}
 
 \paragraph{Audit protocol (informal).}
 A simple script can (i) verify each row formula $x'=6(2^{\alpha_p}u+k^{(p)})+\delta$ at sampled inputs, (ii) check routers $j=\lfloor x/6\rfloor\bmod 3$ match the table choice, (iii) confirm $U(x')=x$ for the forward accelerated map, and (iv) validate lifted witnesses at higher moduli ($M_K$) by direct congruence checks.
