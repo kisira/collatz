@@ -1,0 +1,3031 @@
+%%
+%% This is LaTeX2e input.
+%%
+
+%% The following tells LaTeX that we are using the 
+%% style file amsart.cls (That is the AMS article style
+%%
+\documentclass{amsart}
+
+%% This has a default type size 10pt.  Other options are 11pt and 12pt
+%% This are set by replacing the command above by
+%% \documentclass[11pt]{amsart}
+%%
+%% or
+%%
+%% \documentclass[12pt]{amsart}
+%%
+
+%%
+%% Some mathematical symbols are not included in the basic LaTeX
+%% package.  Uncommenting the following makes more commands
+%% available. 
+%%
+
+%\usepackage{amssymb}
+%\usepackage{amssymb}
+\usepackage{amsmath,amssymb,amsthm} % AMS bundle
+\usepackage{mathtools} % extends amsmath and defines \coloneqq
+\usepackage{booktabs}
+\usepackage{comment}
+\usepackage{float}    % for [H]
+\usepackage{placeins} % optional, for \FloatBarrier
+
+
+
+\newtheorem{lemma}{Lemma}            % simple global numbering
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+% \newtheorem{lemma}{Lemma}[section]  % restart numbering each section
+% \newtheorem{theorem}{Theorem}
+% \newtheorem{lemma}[theorem]{Lemma}  % share counter with 'theorem'
+
+% Optional styles:
+% \theoremstyle{definition} \newtheorem{definition}{Definition}
+% \theoremstyle{remark}     \newtheorem*{remark}{Remark}
+
+
+% --- References (optional but recommended) ---
+\usepackage[hidelinks]{hyperref}
+\usepackage[capitalize,noabbrev]{cleveref} % \cref for smart refs
+
+
+\usepackage{pdfrender}
+\DeclareRobustCommand*{\pmbb}[1]{%
+  \textpdfrender{
+    TextRenderingMode=Stroke,
+    LineWidth=.1pt,
+  }{#1}%
+}
+
+%%
+%% The following is commands are used for importing various types of
+%% graphics.
+%% 
+
+%\usepackage{epsfig}  		% For postscript
+%\usepackage{epic,eepic}       % For epic and eepic output from xfig
+
+%%
+%% The following is very useful in keeping track of labels while
+%% writing.  The variant   \usepackage[notcite]{showkeys}
+%% does not show the labels on the \cite commands.
+%% 
+
+%\usepackageshowkeys}
+\usepackage{graphicx}
+\usepackage[l3]{csvsimple}
+
+%%%%
+%%%% The next few commands set up the theorem type environments.
+%%%% Here they are set up to be numbered section.number, but this can
+%%%% be changed.
+%%%%
+
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{cor}[thm]{Corollary}
+
+
+%%
+%% If some other type is need, say conjectures, then it is constructed
+%% by editing and uncommenting the following.
+%%
+
+%\newtheorem{conj}[thm]{Conjecture} 
+
+
+%%% 
+%%% The following gives definition type environments (which only differ
+%%% from theorem type invironmants in the choices of fonts).  The
+%%% numbering is still tied to the theorem counter.
+%%% 
+
+\theoremstyle{definition}
+\newtheorem{definition}[thm]{Definition}
+\newtheorem{example}[thm]{Example}
+
+%%
+%% Again more of these can be added by uncommenting and editing the
+%% following. 
+%%
+
+%\newtheorem{note}[thm]{Note}
+
+
+%%% 
+%%% The following gives remark type environments (which only differ
+%%% from theorem type invironmants in the choices of fonts).  The
+%%% numbering is still tied to the theorem counter.
+%%% 
+
+
+\theoremstyle{remark}
+
+\newtheorem{remark}[thm]{Remark}
+
+
+%%%
+%%% The following, if uncommented, numbers equations within sections.
+%%% 
+
+\numberwithin{equation}{section}
+
+
+%%%
+%%% The following show how to make definition (also called macros or
+%%% abbreviations).  For example to use get a bold face R for use to
+%%% name the real numbers the command is \mathbf{R}.  To save typing we
+%%% can abbreviate as
+
+\newcommand{\R}{\mathbf{R}}  % The real numbers.
+
+%%
+%% The comment after the defintion is not required, but if you are
+%% working with someone they will likely thank you for explaining your
+%% definition.  
+%%
+%% Now add you own definitions:
+%%
+
+%%%
+%%% Mathematical operators (things like sin and cos which are used as
+%%% functions and have slightly different spacing when typeset than
+%%% variables are defined as follows:
+%%%
+
+\DeclareMathOperator{\dist}{dist} % The distance.
+
+\usepackage{listings}
+
+%%
+%% This is the end of the preamble.
+%% 
+
+
+\usepackage{dcolumn}
+%\newcolumntype{2}{D{.}{}{2.0}}
+
+\usepackage[backend=bibtex]{biblatex}
+\addbibresource{refs.bib}
+
+
+
+\begin{document}
+
+%%
+%% The title of the paper goes here.  Edit to your title.
+%%
+
+\title{On the Collatz Conjecture}
+
+%%
+%% Now edit the following to give your name and address:
+%% 
+
+\author{Agola Kisira Odero}
+\address{Faculty of Science, The University of the West Indies,
+St. Augustine, Trinidad and Tobago}
+\email{kisira.odero@sta.uwi.edu, agolakisira@gmail.com}
+\urladdr{https://uwiseismic.com/staff/kisira-odero/} 
+
+%%
+%% If there is another author uncomment and edit the following.
+%%
+
+%\author{Second Author}
+%\address{Department of Mathematics, University of South Carolina,
+%Columbia, SC 29208}
+%\email{second@math.sc.edu}
+%\urladdr{www.math.sc.edu/$\sim$second}
+
+%%
+%% If there are three of more authors they are added in the obvious
+%% way. 
+%%
+
+%%%
+%%% The following is for the abstract.  The abstract is optional and
+%%% if not used just delete, or comment out, the following.
+%%%
+
+\begin{abstract}
+In this paper a procedure is demonstrated to generate pre-images of the 
+Collatz procedure. As such a path can be traced from the number one to 
+any given odd number using the Collatz procedure in reverse. 
+\end{abstract}
+
+%%
+%%  LaTeX will not make the title for the paper unless told to do so.
+%%  This is done by uncommenting the following.
+%%
+
+\maketitle
+
+%%
+%% LaTeX can automatically make a table of contents.  This is done by
+%% uncommenting the following:
+%%
+
+%\tableofcontents
+
+%%
+%%  To enter text is easy.  Just type it.  A blank line starts a new
+%%  paragraph. 
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+The \textbf{digital root} of a natural number \textbf{x} in a given base is a 
+procedure by which the digits of x are iteratively summed resulting 
+in a single digit. In this paper, we will restrict ourselves to natural 
+numbers in base 10.
+
+
+The \textbf{digit sum} of $n$ a natural number in base $b > 1, F_b : \mathbb{N} \rightarrow \mathbb{N} $ is defined as
+$$
+F_b(n)=\sum_{i=0}^kd_i.
+$$
+
+where $k = \lfloor log_bn \rfloor$ is one less than the number of digits in $n$ and 
+
+$$
+d_i = \frac{n \mod b^{i+1} - n \mod b^i}{b^i}
+$$
+
+is the value of each digit in $n$. 
+
+Repeatedly applying the \textbf{digit sum} yields the \textbf{digital root}. Formally; a natural number $n$ is a digital root if it is also a fixed point for $F_b$, which occurs if $F_b(n) = n$
+
+In the specific case of base 10 natural numbers, the \textbf{digital root} $dr: \mathbb{N} \rightarrow \mathbb{N}$ can be computed by the following congruence formula
+
+$$
+F_{10}(n) = dr(n) = \begin{cases}
+         n (\mod 9) & n \not\equiv 0 (\mod 9)\\
+         9          & n \equiv 0 (\mod 9)
+        \end{cases}     
+$$
+
+Simplifying
+
+$$
+= 1 + [n -1 (\mod 9)]
+$$
+
+\subsection{Operations on and properties of the digital root}
+
+Let $n,m \in \mathbb{N}_{\pmbb{>0}}$ in base 10 then 
+
+
+\begin{align*}
+dr(n + m) &= dr(n) + dr(m) \\
+dr(n \times m) &= dr(n) \times dr(m)
+\end{align*}
+
+The base-10 digital roots of the first few natural numbers $n>0$ are 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, ... 
+
+Let $m \in \mathbb{N}_{\pmbb{>0}}$  be a base 10 natural number then $m \equiv 0 (\mod 3) \iff dr(m) \in \{{3,6,9}\}$. These are numbers of the form $9k + 3$ or $9k + 6$ or $9k$ where $k \in \mathbb{N}$
+
+Let $m \in \mathbb{N}_{\pmbb{>0}}$ be a base 10 natural number  $m \equiv 0 (\mod 9) \iff dr(m) = 9$. These are numbers of the form  $9k$ where $k \in \mathbb{N}$
+
+\section{The Collatz Conjecture}
+
+The simple statement of the Collatz conjecture is as follows
+Given a natural number $n \in \mathbb{N}_{\pmbb{>0}}$
+\begin{itemize} 
+\item If the number is even, divide it by 2. 
+\item If the number is odd, triple it and add one. 
+\end{itemize}
+
+We may define this function as follows
+
+$$
+f(n) = 
+\begin{cases}
+ \frac{n}{2} & n \equiv 0 (\mod 2)\\
+ 3n+1 & n \equiv 1 (\mod 2)
+\end{cases}
+$$
+
+Perform these operations repeatedly beginning with any natural number and taking the result at each step as the input to the next step. In mathematical notation
+
+$$
+a_i = 
+\begin{cases}
+ n & i = 0 \\
+ f(a_{i - 1}) & i > 0
+\end{cases}
+$$
+
+In other words $a_i$ is the value of $f$ applied to n recursively for $i$ times: $a_i = f^i(n)$
+
+The Collatz conjecture is: The process outlined above will eventually reach the number 1, regardless of the $n$ chosen. In other words, no matter the number chosen the final state will be $a_i=1$ for some $i$. We will refer to this as the Collatz process
+
+\section{Pre-images of the Collatz Conjecture sequences}
+
+\begin{thm} 
+Let $x \in \mathbb{N}_{\pmbb{>0}}$ be a base 10 natural number where $dr(x) \in \{1,4,7\}$ then $x\times2^{2n} = 3\times\alpha + 1, n = 1,2,3...$ and $\alpha$ is odd. If $x$ is odd, then $\alpha$ is a preimage of $x$ under the Collatz process.
+\end{thm}
+\begin{proof}
+ The digital root $dr(2^{2n}) \in \{1,4,7\}$ also the digital root of $3\times\alpha \in \{3,6,9\}$ since $3\times\alpha$ is a multiple of 3. As such the $dr(3\times\alpha + 1) \in \{1,4,7\}$. Since $dr(x) \in \{1,4,7\}$ The product of $x\times2^{2n} \in \{1,4,7\}$ since $dr(a \times b) = dr(a) \times dr(b)$ and any number of the from $y = 3\times\alpha + 1$ has a $dr(y) \in \{1,4,7\}$ since, by the rules of digital root addition $3 + 1 = 4$, $6 + 1 = 7$ and $9 + 1 = 1$. 
+\end{proof}
+
+\begin{thm} 
+ Let $x \in \mathbb{N}_{\pmbb{>0}}$ be a base 10 natural number where $dr(x) \in \{2,5,8\}$ then $x\times2^{n} = 3\times\alpha + 1, n = 1,3,5,7...$ and $\alpha$ is odd. If $x$ is odd, then $\alpha$ is a preimage of $x$ under the Collatz process.
+\end{thm}
+\begin{proof}
+ Because the digital root $dr(2^{n}) \in \{2,5,8\}$, and $dr(x) \in \{2,5,8\}$ the argument proceeds analogously to the proof above. Since, by the rules of digital root multiplication $2\times 2 = 4$, $2 \times 5 = 1$, $2 \times 8 = 7$ and $5 \times 2 = 1$, $5 \times 5 = 7$, $5 \times 8 = 4,$ finally $8 \times 2 = 7$, $8 \times 5 = 4$ and $8 \times 8 = 1$ , generating the set $\{1,4,7\}$ in every instance.
+\end{proof}
+
+Notice that a number $x \in \mathbb{N}_{\pmbb{>0}}$ in base 10 where $dr(x) \in \{3,6,9\}$ has no pre-image since by the rules of digital root addition $dr(3\times\alpha + 1) \in \{\{3,6,9\} + 1\} = \{4,7,1\}$
+
+It is also clear that the operations above cover all of $\mathbb{N}_{\pmbb{>0}}$ and every Collatz preimage is included since the digital roots take all possible values.
+
+\begin{thm}
+ The only base 10 natural number which is its own pre-image is 1. 
+\end{thm}
+\begin{proof}
+ Suppose $y \in \mathbb{N}_{\pmbb{>0}}$ is odd and is its own preimage. Then 
+ 
+ $$y = \frac{(2^{\beta}\times y - 1)}{3}$$ 
+ 
+ where $\beta \in \{1,2,3...\}$. This equation places constraints on the value of $\beta$ and $y$ and is only consistent when $2^{\beta} = 4$, $\beta = 2$ and $y=1$. This is consitent with $dr(y) \in \{1,4,7\}$.
+ 
+ For example, suppose $y=5$ instead, choosing $\beta = 3$ would maintain consistency with the pre-image calculation since $dr(y) \in \{2,5,8\}$. This would imply that
+ 
+ $$5 = \frac{5\times(2^{3} - 1)}{3}$$
+ 
+ which is impossible. 
+ 
+ It is for this reason that the only cycle in any Collatz sequence is 1-4-1.
+ 
+\end{proof}
+
+\begin{thm}
+ Let $x \in \mathbb{N}_{\pmbb{>0}}$ be an odd number. We may write $2^{\beta}\times x = 3\times y + 1$ to generate the preimage of $x$ in the Collatz process. Suppose $z = 3 \times y$, then $dr(z) \in \{3,6,9\}$. If $dr(z) = 3 \iff dr(y) \in \{1,4,7\}$ otherwise if $dr(z) = 6 \iff dr(y) \in \{2,5,8\} $ finally if $dr(z) = 9 \iff dr(y) \in \{3,6,9\} $. As usual $dr(a)$ is the digital root of $a$
+ \end{thm}
+ \begin{proof}
+  Suppose $dr(z) = 3$ then $z = 9k + 3$ for some $k \in \mathbb{N}$ dividing  through by $3$ gives $y = 3k + 1$ to find $dr(y)$ we may substitute $dr(k) \in \{1..9\}$.
+  $$
+  dr(y) =
+  \begin{cases}
+  dr(3\times 1 + 1) = 4\\
+  dr(3\times 2 + 1) = 7\\
+  dr(3\times 3 + 1) = 1\\
+  dr(3\times 4 + 1) = 4\\
+  dr(3\times 5 + 1) = 7\\
+  dr(3\times 6 + 1) = 1\\
+  dr(3\times 7 + 1) = 4\\
+  dr(3\times 8 + 1) = 7\\
+  dr(3\times 9 + 1) = 1
+  \end{cases}
+  $$
+$\therefore dr(y) \in \{1,4,7\} \iff 3 = dr(z) = dr(3y)$
+The arguments for $dr(y) \in \{2,5,8\} \iff 6 = dr(z) = dr(3y)$ and
+$dr(y) \in \{3,6,9\} \iff 9 = dr(z) = dr(3y)$ proceed by a simillar argument.
+ \end{proof}
+ 
+\section{Digital roots of the powers of 2}
+
+The powers of two have a limited, cyclical and specific set of digital roots.
+
+\begin{thm}
+ Let $n \in \mathbb{N}$ then $dr(2^n) \in \{1,2,4,5,7,8\}$
+\end{thm}
+\begin{proof}
+ The digital root of $dr(2^0) = 1$ similarly $dr(2^1) = 2$, $dr(2^2) = 4$, $dr(2^3) = 8$, $dr(2^4) = 7$, $dr(2^5) = 5$, $dr(2^6) = 1$ after which the cycle restarts.
+ The digital root $dr(x^0) = 1: x \in \mathbb{N}$, therefore $dr(2^0) = 1$, after that we can use the property that $dr(a \times b) = dr(a) \times dr(b)$ to find the rest
+\end{proof}
+
+\begin{cor}
+ The digital root of the even powers of $2: dr(2^{2n}) \in \{1,4,7\}$ where $n \in \{1,2,3..\}$
+\end{cor}
+
+\begin{cor}
+ The digital root of the odd powers of $2: dr(2^{n}) \in \{2,5,8\}$ where $n \in \{1,3,5..\}$
+\end{cor}
+
+\section{Properties of the Collatz procedure}
+
+To generate the even preimages of the Collatz procedure, we multiply $x \in \mathbb{N}_{\pmbb{>0}}$ where $dr(x) \in \{1,4,7\}$ and $x$ is odd, by $2^{2n}$ where $n \in \{1,2,3...\}$. The digital roots of $dr(2^{2n}) \in \{1,4,7\}$. We may construct the follwing table of products:
+
+\begin{center}
+\renewcommand\arraystretch{1.3}
+\setlength\doublerulesep{0pt}
+%\begin{tabular}{r||*{4}{2|}}
+\begin{tabular}{ c || c  c  c }
+$\times$ & 1 & 4 & 7\\
+\hline\hline
+1 & 1 & 4 & 7\\
+%\hline
+4 & 4 & 7 & 1\\
+%\hline
+7 & 7 & 1 & 4\\
+%\hline
+\end{tabular}
+\end{center}
+
+
+Similarly to generate preimages of the Collatz procedure of $x \in \mathbb{N}_{\pmbb{>0}}$ where $dr(x) \in \{2,5,8\}$ and $x$ is odd, multiply $x$ by $2^{n}$ where $n \in \{1,3,5...\}$. The digital roots of $dr(2^{n}) \in \{2,5,8\}$. We may construct the table of products:
+
+\begin{center}
+\renewcommand\arraystretch{1.3}
+\setlength\doublerulesep{0pt}
+%\begin{tabular}{r||*{3}{2|}}
+%\begin{tabular}{ c| c | c | c }
+\begin{tabular}{ c || c  c  c }
+$\times$ & 2 & 5 & 8\\
+\hline\hline
+2 & 4 & 1 & 7\\
+%\hline
+5 & 1 & 7 & 4\\
+%\hline
+8 & 7 & 4 & 1\\
+%\hline
+\end{tabular}
+\end{center}
+
+in the case of $x \in \mathbb{N}_{\pmbb{>0}}$ where $dr(x) \in \{3,6,9\}$ and $x$ is odd we will do the procedure using the usual $3x + 1$ and use the property of the digital root where $dr(a\times b) = dr(a) \times dr(b)$ as follows:
+
+\begin{center}
+\begin{tabular}{ c } 
+ %\hline\hline
+ $dr(3\times 3 + 1) = 1 $ \\  \\
+ $dr(3\times 6 + 1) = 1 $ \\  \\
+ $dr(3\times 9 + 1) = 1 $ \\  \\
+ %\hline\hline
+\end{tabular}
+\end{center}
+
+From the above tables, we observe that digital roots in the set $\{3,6,9\} \Rightarrow 1$, $\{1,4,7\} \Rightarrow 4$ and $\{2,5,8\} \Rightarrow 7$ 
+
+\subsection{Properties of even numbers with digital roots in \{1,4,7\}}
+
+Given any even number $y$ such that $dr(y) \in \{1,4,7\} \Rightarrow y = 3\beta + 1$ where $\beta$ is odd;
+
+We can conclude that when $dr(y) = 1$ then $dr(\beta) \in \{3,6,9\}$ and when $dr(y) = 4$ then  $dr(\beta) \in \{1,4,7\}$ and finally when $dr(y) = 7$ then $dr(\beta) \in \{2,5,8\}$.
+
+For example $dr(31) = 4 \in \{1,4,7\}$ and $31 \times 2^2 = 124$ and $dr(124) = 7 = 6 + 1$ and $124 = 123 + 1 = 3 \times 41 + 1$ where $dr(123) = dr(3 \times 41) = 6$ as such $dr(41) = 5 \in \{2,5,8\}$
+
+Supposing $dr(y) = dr(x2^{\alpha}) = dr(3\beta + 1) \in \{1,4,7\}$  where $x, \beta \in \mathbb{N}_{\pmbb{>0}}$ and $\alpha \in \{1,2,3...\}$ then 
+$$
+dr(y) = 
+  \begin{cases}
+   1 \Rightarrow dr(\beta) \in \{3,6,9\}\\
+   4 \Rightarrow dr(\beta) \in \{1,4,7\}\\
+   7 \Rightarrow dr(\beta) \in \{2,5,8\}
+  \end{cases}
+$$
+
+For an even number $y$ to have $dr(y) \in \{1,4,7\}$ of the form $9k+a$ where $a \in \{1,4,7\}$ and $k \in \{0,1,2,3...\}$. Specifically $k$ is even when $a = 0$ or $a = 4$ and odd otherwise. As such the smallest of these even numbers is $4 = 9\times 0 + 4$.
+
+Given $dr(y) = dr(3\beta + 1) \in \{1,4,7\}$  where $y$ is even and $\beta \in \{1,3,5...\}$ then $dr(3\beta) \in \{3,6,9\}$. Take the case when $dr(3\beta) = 3$ these are numbers of the form $9k+3$ where $k=\{0,1,2,3...\}$ we may observe the following:
+
+\begin{center}
+\begin{tabular}{ c c c } 
+ %\hline\hline
+ $dr(\frac{9\times 0 + 3}{3}) = 1$ & $dr(\frac{9\times 1 + 3}{3}) = 4$ & $dr(\frac{9\times 2 + 3}{3}) = 7$ \\  \\
+ $dr(\frac{9\times 3 + 3}{3}) = 1$ & $dr(\frac{9\times 4 + 3}{3}) = 4$ & $dr(\frac{9\times 5 + 3}{3}) = 7$ \\  \\
+ $dr(\frac{9\times 6 + 3}{3}) = 1$ & $dr(\frac{9\times 7 + 3}{3}) = 4$ & $dr(\frac{9\times 8 + 3}{3}) = 7$ \\ \\
+ ... & ... & ... \\ 
+ %\hline\hline
+\end{tabular}
+\end{center}
+
+More generally a number $dr(\frac{9\times k + 3}{3}) = 1 \iff k \equiv (0 \mod 3)$ simplifying $dr(3\times k + 1) = 1 \iff k \equiv (0 \mod 3)$ generally 
+
+\begin{table}[h!]
+\centering
+%\begin{center}
+\begin{tabular}{ c }
+ %\hline\hline
+ $dr(3\times k + 1) = 1 \iff k \equiv (0 \mod 3)$  \\  \\
+ $dr(3\times k + 1) = 4 \iff k \equiv (1 \mod 3)$  \\  \\
+ $dr(3\times k + 1) = 7 \iff k \equiv (2 \mod 3)$  \\  \\
+ %\hline\hline
+\end{tabular}
+\caption{Group 1 Values.}
+\label{table:1}
+%\end{center}
+\end{table}
+
+Equivalently $dr(\frac{9\times k + 6}{3}) = 2 \iff k \equiv (0 \mod 3)$
+
+\begin{table}[h!]
+\centering
+%\begin{center}
+\begin{tabular}{ c } 
+ %\hline\hline
+ $dr(3\times k + 2) = 2 \iff k \equiv (0 \mod 3)$  \\  \\
+ $dr(3\times k + 2) = 5 \iff k \equiv (1 \mod 3)$  \\  \\
+ $dr(3\times k + 2) = 8 \iff k \equiv (2 \mod 3)$  \\  \\
+ %\hline\hline
+\end{tabular}
+\caption{Group 2 Values.}
+\label{table:2}
+%\end{center}
+\end{table}
+
+Similarly $dr(\frac{9\times k + 9}{3}) = 3 \iff k \equiv (0 \mod 3)$
+
+\begin{table}[h!]
+\centering
+%\begin{center}
+\begin{tabular}{ c } 
+ %\hline\hline
+ $dr(3\times k + 3) = 3 \iff k \equiv (0 \mod 3)$  \\  \\
+ $dr(3\times k + 3) = 6 \iff k \equiv (1 \mod 3)$  \\  \\
+ $dr(3\times k + 3) = 9 \iff k \equiv (2 \mod 3)$  \\  \\
+ %\hline\hline
+\end{tabular}
+\caption{Group 3 Values.}
+\label{table:3}
+%\end{center}
+\end{table}
+
+It is instances of digital roots $dr(y) \in \{1,4,7\}$ that are produced by the operation $3\times k + 1$ where $k$ is odd, of the Collatz procedure, in Table 1(Group 1) above. However we shall see that the other values from the other tables becom important.  
+
+The operation $(3\times k + 1)$ where $k \equiv (x \mod 3)$, $k \in \{1,3,5,7...\}$ yields even numbers. 
+
+\subsection{Division by 2}
+
+The only possible digital roots of base 10 natural numbers are $dr(a) \in \{1,2,3,4,5,6,7,8,9\}$. 
+
+Consider multiplcation by 2 of the digital roots: $2\times 5 = 1$, $2\times 1 = 2$, $2\times 6 = 3$, $2\times 2 = 4$, $2\times 7 = 5$, $2\times 3 = 6$, $2\times 8 = 7$, $2\times 4 = 8$ and $2\times 9 = 9$. By this means we can establish the results of division by 2 as follows $\frac{1}{2} = 5$, $\frac{2}{2} = 1$, $\frac{3}{2} = 6$, $\frac{4}{2} = 2$, $\frac{5}{2} = 7$, $\frac{6}{2} = 3$, $\frac{7}{2} = 8$, $\frac{8}{2} = 4$ and $\frac{9}{2} = 9$.
+
+We may now investigate how digital roots $dr(y) \in \{1,4,7\}$ behave assuming division by 2 of even numbers.
+
+\begin{center}
+\begin{tabular}{ c | c } 
+ %\hline\hline
+ For the number $1$: & $1\rightarrow 5 \rightarrow 7 \rightarrow 8 \rightarrow 4 \rightarrow 2 \rightarrow 1$  \\
+%\hline
+For the number $4$: & $4\rightarrow 2 \rightarrow 1 \rightarrow 5 \rightarrow 7 \rightarrow 8 \rightarrow 4$  \\
+%\hline
+For the number $7$: & $7\rightarrow 8 \rightarrow 4 \rightarrow 2 \rightarrow 1 \rightarrow 5 \rightarrow 7$  \\
+ %\hline\hline
+\end{tabular}
+\end{center}
+
+All of which have a cycle of length 6.
+
+
+\section{The sequence of Collatz odd numbers}
+
+
+\subsection{Enumerating odd numbers} % and some useful terminology
+
+We will use a unique technique to enumerate the odd numbers. In this system and in general an odd number $x$ can be repreresented as $x = 2^k + \omega$. Where $\omega \in \mathbb{N}$ is an odd natural number, including zero, such that $\omega \le 2^k$. The following table provides a few examples:
+
+\begin{center}
+\begin{tabular}{ c | c | c c c}
+ %\hline\hline
+ $k = 0$ & $\omega = 0 $ & $\therefore x = 2^k + \omega$ & $= 2^0 + 0 =$ & $\textbf{1}$  \\
+%\hline
+ $k = 1$ & $\omega = 1$ & $\therefore x = 2^k + \omega$ & $ = 2^1 + 1 =$ & $\textbf{3}$  \\
+%\hline
+ $k = 2$ & $\omega = 1$ & ... & $ = 2^2 + 1 =$ & $\textbf{5}$  \\
+%\hline
+ $k = 2$ & $\omega = 3$ & ... & $ = 2^2 + 3 =$ & $\textbf{7}$  \\
+%\hline
+ $k = 3$ & $\omega = 1$ & ... & $ = 2^3 + 1 =$ & $\textbf{9}$  \\
+%\hline
+ $k = 3$ & $\omega = 3$ & ... & $ = 2^3 + 3 =$ & $\textbf{11}$  \\
+%\hline
+ $k = 3$ & $\omega = 5$ & ... & ... & $\textbf{13}$  \\
+%\hline
+ $k = 3$ & $\omega = 7$ & ... & ... & $\textbf{15}$  \\
+%\hline
+ $k = 4$ & $\omega = 1$ & ... & $ = 2^4 + 1 =$ & $\textbf{17}$  \\
+%\hline
+ ... & ... & ... & ... & ...\\
+%\hline
+ %\hline\hline
+\end{tabular}
+\end{center}
+
+This way of generating odd numbers lends itself to analysis of the even $z_{prev}$. In general we can analyze specific instances of these odd numbers $x$, for example in the case of $\omega = 5$, $x = 2^k + 5$. Recall that  $z_{prev} = \lfloor\frac{x_{prev}}{2}\rfloor$ or equivalently $z_{prev} = \frac{x_{prev } - 1}{2}$. in this case $x_{prev} = x = 2^k + 5$ and $z_{prev} = \frac{2^k + 5 - 1}{2} = \frac{2^k + 4}{2} = 2^{k-1} + 2$ which is clearly even.
+
+More generally we may set $\omega = 2n + 1$. We notice at once that $z_{prev}$ is only even if $n$ is even. Using this notation we can also see that $\frac{z_{prev}}{2} = \lfloor\frac{x_{prev}}{4}\rfloor = \frac{2^k + 2n + 1 - 1}{4} = \frac{2^k + 2n}{4}$
+
+\subsection{Definition ${\omega_{n}}^x$}
+
+\begin{definition}
+ Given an odd number $x$ under the Collatz procedure $\frac{3x+1}{2}$ is considered the first step. Every subsequent division by 2 is another step. The step count terminates when $\frac{3x+1}{2^n} = x_{next}$ is odd, where $n \in \{1,2,3,4...\}$. The number of steps $s = n$ where the number of steps $s \in \mathbb{N}_{\pmbb{>0}}$.
+\end{definition}
+
+\begin{definition}
+Let $x \in \mathbb{N}_{\pmbb{>0}}$ be a base 10 natural number where $dr(x) \in \{1,4,7\}$ then $x\times2^{n} = 3\times\alpha_{n} + 1$ where $ n = 2,4,6,8...$ is even and $\alpha_{n}$ is odd. If $x$ is odd, then $\alpha_{n}$ is a preimage of $x$ under the Collatz process.
+
+Define ${\omega_{n}}^x = \alpha_{n}$ for $x$.  We call this an even ${\omega_{n}}^x$ for $dr(x) \in \{1,4,7\}$. When ${\omega_{n}}^x$ is used in this way it will produce an even number of steps $s$ equal to $n$.
+\end{definition}
+%\begin{proof}
+ %The digital root $dr(2^{2n}) \in \{1,4,7\}$ also the digital root of $3\times\alpha \in \{3,6,9\}$ since $3\times\alpha$ is a multiple of 3. As such the $dr(3\times\alpha + 1) \in \{1,4,7\}$. Since $dr(x) \in \{1,4,7\}$ The product of $x\times2^{2n} \in \{1,4,7\}$ since $dr(a \times b) = dr(a) \times dr(b)$ and any number of the from $y = 3\times\alpha + 1$ has a $dr(y) \in \{1,4,7\}$ since, by the rules of digital root addition $3 + 1 = 4$, $6 + 1 = 7$ and $9 + 1 = 1$.
+%\end{proof}
+
+\begin{definition}
+ Let $x \in \mathbb{N}_{\pmbb{>0}}$ be a base 10 natural number where $dr(x) \in \{2,5,8\}$ then $x\times2^{n} = 3\times\alpha + 1, n = 1,3,5,7...$ and $\alpha$ is odd. If $x$ is odd, then $\alpha$ is a preimage of $x$ under the Collatz process.
+
+ Define ${\omega_{n}}^x = \alpha_{n}$ for $x$.  We call this an odd ${\omega_{n}}^x$ for $dr(x) \in \{2,5,8\}$.  When ${\omega_{n}}^x$ is used in this way it will produce an odd number of steps $s$ equal to $n$.
+\end{definition}
+%\begin{proof}
+ %Because the digital root $dr(2^{n}) \in \{2,5,8\}$, and $dr(x) \in \{2,5,8\}$ the argument proceeds analogously to the proof above. Since, by the rules of digital root multiplication $2\times 2 = 4$, $2 \times 5 = 1$, $2 \times 8 = 7$ and $5 \times 2 = 1$, $5 \times 5 = 7$, $5 \times 8 = 4,$ finally $8 \times 2 = 7$, $8 \times 5 = 4$ and $8 \times 8 = 1$ , generating the set $\{1,4,7\}$ in every instance.
+%\end{proof}
+
+Below are some examples where the $\omega$ is fixed. You will notice that the number of steps is also fixed.
+
+\begin{center}
+Below is a table of $2^{n}+1$ odd numbers and their working, in this case $\omega=1$ which is a preimage of $1$ or $1 = \frac{(1\times 2^2 - 1)}{3}$. The odd numbers in the column next x are the subsequent odd numbers:
+
+Even powers of  two $2^{2n}$
+\csvautotabular{TablePlain-output1_simple.csv}
+
+Odd powers of two $2^n$
+\csvautotabular{output1_simple.csv}
+
+\end{center}
+
+
+
+\begin{center}
+Below is a table of $2^{n}+5$ odd numbers and their working , in this case $\omega=5$ which is a preimage of $1$ or $5 = \frac{(1\times 2^4 - 1)}{3}$. The odd numbers in the column next x are the subsequent odd numbers:
+
+Even powers of  two $2^{2n}$
+\csvautotabular{TablePlain-output5_simple.csv}
+
+Odd powers of two $2^n$
+\csvautotabular{output5_simple.csv}
+
+\end{center}
+
+
+
+\subsection{A study of ${\omega_{n}}^x$}
+
+%We may examine the evolution of $\omega$ itself. The tables below show some formulae for $\omega$:
+
+
+\begin{center}
+Below is a table of $x$ where $dr(x) \in \{1,4,7\}$ odd numbers and the corresponding ${\omega_n}^x$. In the table below $k \in \{0,1,2,3...\}$. Note that $x = 6k + 1$.
+
+
+\csvautotabular{EvenOutput_simple.csv}
+
+
+
+\end{center}
+
+
+\begin{center}
+Below is a table of $x$ where $dr(x) \in \{2,5,8\}$ odd numbers and the corresponding ${\omega_n}^x$. In the table below $k \in \{0,1,2,3...\}$. Note that $x = 6k + 5$.
+
+
+\csvautotabular{OddOutput_simple.csv}
+
+
+
+\end{center}
+
+
+In each row in the above tables are preimages of the $x$ column. 
+
+The general form of the formulae for preimage columns of the tables above is $2^{n+1} + {\omega_n}^x$.
+
+%Moreover for the even steps, ${\omega_n}^x = \sum_{n=0} 2^{2n}$, for example the first few instaces of ${\omega_2}^x = 1 $, ${\omega_4}^x = 1 + 2^2 = 5$, ${\omega_6}^x = 1 + 2^2 + 2^4 = 21$ etc.
+
+%For the odd steps ${\omega_n}^x = 3 + \sum_{n=0} 5 \times 2^{n}$, for example the first few instaces of ${\omega_1}^x = 3 $, ${\omega_3}^x = 3 + 5 \times 2^1 = 13$, ${\omega_5}^x = 3 + 5 \times 2^1 + 5 \times 2^3  = 53$ etc.
+
+There is a recurrence relation for the preimages in both the above tables given by $a_n = 4a_{n-1} + 1$ where $a_0$ is in the first preimage column, $a_0$ can be obtained by $a_0 = \frac{4x - 1}{3}$ for the $8k + 1$ column in the first table above, while for the $4k + 3$ column in the second table $a_0 = \frac{2x - 1}{3}$. A solution to the $a_n = 4a_{n-1} + 1$ recurrence relation is $a_n = \frac{1}{3}(3\times4^n \times a_{n-1} + 4^n - 1)$
+
+
+\section{A proof of the Collatz conjecture}
+
+\subsection{An exploration of $3x + 1$}
+
+\begin{thm}
+ Every even number given by $3x + 1$ is of the form $2(3z + 2)$ where $x$ is a positive odd natural number.
+\end{thm}
+\begin{proof}
+Suppose $x$ is a positive odd natural number then $3x + 1 = 6(\frac{x - 1}{2}) + 4$
+
+Because $x$ is odd $x - 1$ is even. we may set $x - 1 = 2z$, therefore $3x + 1 = 6z + 4 = 2(3z + 2)$.  
+\end{proof}
+
+\begin{center} 
+A table of $3z+2$:
+
+\includegraphics{collatz_evens.png}
+\end{center}
+
+\begin{cor}
+ By the same token $3z_0 + 2 = 2(3z_1 + 1)$ where $z_1 = \lfloor{\frac{z_0}{2}}\rfloor$ since $3z_0 + 2 =2(\lfloor{\frac{3z_0}{2}}\rfloor + 1)$
+\end{cor}
+
+
+
+\subsubsection{Collatz even numbers}
+
+Given $y = 3x + 1$ where $x \in \{1,3,5...\}$, then $y$ is an even numbers such that its digital root $dr(y) \in \{1,4,7\}$ as we have seen before. 
+
+%Secondly, the even numbers produced by $3x+1$ provide us with two results as follows; Assume $y$ is such an even number, then $\frac{y - 1}{3}$ is the generating/previous odd number and $\frac{y}{2^n}$ is the next odd number, where $n = 1,2,3...$. 
+
+%The even numbers $y$ above can be generated by $3x+ 1 = y = 2(3z_0 + 2)$ where $z_0 = \frac{x - 1}{2}$. %If $z_0$ is even then $3z_0 + 2$ would also be even and the next even number after $y$ would be given by $y_1 = 3z_0 + 2$ similarly if $y_1$ is even the next even number would be $y_2 = \\frac{y_1}{2} = \frac{3z+2}{2} = 3z_1+1$. In general given a natural number $n$ then $\frac{3x + 1}{2^{2n}} = 3z_n + 1$ and if $n$ is odd then $\frac{3x + 1}{2^{n}} = 3z_n + 2$. In other words if the number of divisons by 2 is even we get the first expression, otherwise the secnd above. Furthermore $3z_n + 2$ is even when $z_n$ is even, whereas $3z_n + 1$ is even when $z_n$ is odd.
+
+Consider $y_0 = 3x+ 1 = 2(3z_0 + 2)$ then
+
+\begin{center}
+\begin{tabular}{ c | c  c  c}
+ %\hline\hline
+ $y_1 = $ & $\frac{y_0}{2} = \frac{3x + 1}{2}$ & $ = 3z_0 + 2$  & if $y_0$ is even\\
+%\hline
+ $y_2 = $ & $\frac{y_0}{4} = \frac{3x + 1}{4}r$ & $ = 3z_1 + 1$  & if $y_1$ is even\\
+%\hline
+ $y_3 = $ & $\frac{y_0}{8} = \frac{3x + 1}{8}$ & $ = 3z_2 + 2$  & if $y_2$ is even\\
+%\hline
+ $y_4 = $ & $\frac{y_0}{16} = \frac{3x + 1}{16}$ & $ = 3z_3 + 1$  & if $y_3$ is even\\
+%\hline
+ ... & ... \\
+ $y_n = $ & $\frac{y_0}{2^n} = \frac{3x + 1}{2^n}$ & $ = 3z_n + \{2$ or $1\}$  & if $y_{n-1}$ is even\\
+%\hline
+ %\hline\hline
+\end{tabular}
+\end{center}
+
+Where $z_1 = \lfloor\frac{z_0}{2}\rfloor$ and $z_2 = \lfloor\frac{z_1}{2}\rfloor$ and $z_n = \lfloor\frac{z_{n-1}}{2}\rfloor$ and so on. %whenever $z_1$ is odd.
+
+The procedure terminates when $y_n$ is odd or $z_n = 1$, consequently we may ignore the products $3z_n +2$ when $z_n$ is even or $3z_n+1$ when $z_n$ is odd. This is because $3z_n +2$ is only odd when $z_n$ is odd and $3z_n+1$ is odd when $z_n$ is even.
+
+
+This procedure can be further simplified. In fact the procedure depends only on the odd/even parity of $z_n$ and the termination criteria are equivalent to; terminate if $z_n$ is odd and its index $n$ is zero or even, otherwise terminate when $z_n$ is even and its index $n$ is odd. At which point the output is either $3z_n + 2$ in the former case or $3z_n + 1$ in the latter.
+
+
+\begin{thm}
+ $\frac{3x + 1}{2}$ is odd for all natural numbers of the form $x = 4n+3$ where $n \in \{0,1,2,3...\}$
+\end{thm}
+\begin{proof}
+ Suppose $x = 4n + 3$ and $z = \frac{x - 1}{2} = 2n + 1$. $z$ is clearly an odd number. It follows that $3z + 2$ will be an odd number.
+\end{proof}
+\begin{thm}
+ $\frac{3x + 1}{4}$ is odd for all natural numbers of the form $x = 8n+1$ where $n \in \{0,1,2,3...\}$
+\end{thm}
+\begin{proof}
+ Suppose $x = 8n + 1$ and $z = \frac{x - 1}{2} = 4n$. $z$ is clearly an even number. As such $3z + 2$ will be an even number. However the subsequent $3z_1 + 1$ will be odd since $z_1 = 2n$.
+\end{proof}
+
+Writing the odd numbers as some $2^n + \omega$, for example, writing all the odd numbers as $x = 8n+1$,$x = 8n+3$,$x = 8n+5$ and $x = 8n+7$ where $n \in \{0,1,2,3...\}$ and in this case $\omega \in \{1,3,5,7\}$ and using the procedure outlined above gives some insight into the process of obtaining the next odd number from some previous odd number. While the $8n+\omega$ where $\omega$ is evey odd number less than 8 gives some clarity, $32+\omega$, where $\omega$ is every odd number less than 32, would also work. See the appendices for some sample calculations and code for more details.
+
+An alternative method would involve working with the binary representation of $z_n$. This reduces  the problem to seeking occurences of zeros and ones. 
+
+
+\begin{center}
+A table of $32n+3$ odd numbers and their working. The odd numbers in the last column are the subsequent odd numbers:
+
+\includegraphics{table-32Nplus3.png}
+\end{center}
+
+
+\begin{center}
+A table of $32n+5$ odd numbers and their working. The odd numbers in the last column are the subsequent odd numbers:
+
+\includegraphics{table-32Nplus5.png}
+\end{center}
+
+%There are two general cases $\frac{3x + 1}{2^n}$ is odd for all natural numbers of the form $x = 2^k(2w+1)$ where $k,w \in \{0,1,2,3...\}$ and $w \in \{1,2,3...\}$
+
+%Suppose $x = 8n + 5$ and $z = \frac{x - 1}{2} = 4n + 2$. $z$ is clearly an even number, when $n$ is even $3z+2$ will be even. $z_1 = \frac{4n + 2}{2} = 2n + 1$ will be odd but $3z_1 +1$ will be even.$z_2 =\frac{2n + 1}{2} = n$ and $3z_2 + 2$ will be an odd number if $n$ is odd and even otherwise, further iterations will depend on the parity of $n$.
+
+
+
+
+%At which point the Collatz procedure dictates that $y_{n + 1} = 3y_n + 1 = 2(3z_n + 2)$ where $z_n = \frac{y_n - 1}{2}$.
+
+%Any even number of the form $m = 3z + 2 = 2(3q+1)$ where $m, z, q \in \mathbb{N}_{\pmbb{>0}}$ and $q$ can be determined by $q = ((\frac{3z + 2}{2}) - 1) \times \frac{1}{3} = \frac{z}{2}$.  $3x+2$ Collatz numbers are even when $z$ is even and odd otherwise. On the other hand when $q = \frac{z}{2}$ is odd $3q+1$ is even and vice versa.
+
+%and generally  $y_n = \frac{3z + 2}{2^n}$ , where $n = 0,1,2,3...$ this occurs only if $z$ is even. 
+
+%Notice that $y_n = \frac{3z + 2}{2^n}$ where $y_n \in \mathbb{N}_{\pmbb{>0}}$  implies that $3z+2$ must be an integer multiple of $2^n$, we may write $3z+2 = w\times 2^n$ where $w \in \mathbb{N}_{\pmbb{>0}}$. This constrains the potential values of Collatz evens. They must be even numbers of the form $m = 3z + 2$ where $m, z \in \mathbb{N}_{\pmbb{>0}}$ this is the same for the Collatz odd numbers. 
+
+\subsubsection{Collatz odd numbers}
+
+One can think of the Collatz procedure as a sequence of odd numbers, the conjecture being that this sequence always terminates at 1. Here we analyze and give an ``algebraic'' method for finding the next odd number form the previous odd number. We are working with two odd numbers $x_{prev}$ and $x_{next}$. We assume that $\frac{3x_{prev} + 1}{2^n} = x_{next}$ where $n \in \{1,2,3...\}$. In other words $x_{prev}$ is the Collatz preimage of $x_{next}$.  $z_{prev}$ and $z_{next}$ are both generalizations of $z$ encountered in earlier discussions. In general the $n\textsuperscript{th} = {z_{prev}^n} = \lfloor\frac{x_{prev}}{2^n}\rfloor$ and the first ${z_{next}^0} = \lfloor\frac{x_{next}}{2}\rfloor$ in relation to $x_{next}$.
+
+Following from the above discussion if $x_{next} = 3z_{prev} + 2$ is odd then $z_{prev}$ is also odd. In genral $z_{next}$ is defined as $z_{next} = \frac{x_{next} - 1}{2}$ therefore $x_{next} = 2z_{next} + 1$ it follows that $x_{next} = 2z_{next} + 1 = 3z_{prev} + 2$ and $z_{next} = \frac{3z_{prev} + 1}{2}$.
+
+%or equivalently $z_{next} = \lfloor\frac{x_{next}}{2}\rfloor$
+
+On the other hand, if $x_{next} = 3z_{prev} + 1$ is odd, then $z_{prev}$ is even. As before $z_{next}$ is defined as $z_{next} = \frac{m - 1}{2}$ and $x_{next} = 2z_{next} + 1$. It follows that $x_{next} = 2z_{next} + 1 = 3z_{prev} + 1$ and $z_{next} = \frac{3z_{prev}}{2}$.
+
+In this way, we can relate $z_{prev}$ to the next $z_{next}$ of the next odd number in the Collatz sequence. $z_{next}$ is either $z_{next} = \frac{3z_{prev} + 1}{2}$ where $z_{prev}$ is odd or $z_{next} = \frac{3z_{prev}}{2}$ where $z_{prev}$ is even.
+
+Furthermore $x_{next}$ the next odd number is $x_{next} = 2z_{next} + 1 =  3z_{prev} + 2$ if $z_{prev}$ is odd and $x_{next} = 2z_{next} + 1 = 3z_{prev} + 1$ otherwise.
+
+%Recall however that $z_{prev}$ is derived from $x_{prev}$ the previous odd number and in general if $z_0 = \frac{x_{prev} - 1}{2}$ or equvalently $z_0 = \lfloor\frac{x_{prev}}{2}\rfloor$, then $z_{prev} = \lfloor\frac{z_0}{2^n}\rfloor$ where $n \in \{0,1,2,3\}$. Moreover $z_{next} = \frac{3z_{prev} + 1}{2}$ or $z_{next} = \frac{3z_{prev}}{2}$.
+
+
+\begin{thm} %False - shoudl be improved to referencethe number of steps. greater than 1 for this condition
+ An odd number $x_{next}$ is strictly less than its odd preimage $x_{prev}$ in the Collatz process if $\lfloor\frac{x_{prev}}{2}\rfloor$ is even.
+\end{thm}
+\begin{proof}
+ We note that every odd number can be written as $2n +1$. Furthermore $\lfloor\frac{2n + 1}{2}\rfloor = n$. As a result we are concerned with odd numbers $2n +1$ where $n \in \{2,4,6,8...\}$
+ Recall the procedure outlined above in which $z_0 = \lfloor\frac{x_{prev}}{2}\rfloor$. In this case $z_0$ is even. The first step in the procedure is to check if $z_0$ is odd and if not divide by 2 again producing $z_1 = \lfloor\frac{z_0}{2}\rfloor$. If at that point $z_1$ is even then the next odd number $x_{next} = 3z_1 + 1$.
+ 
+ As such $z_1 = \lfloor\frac{z_0}{2}\rfloor = \lfloor\frac{x_{prev}}{4}\rfloor$.
+ In other words, any subsequent $z_n$ produced in the same way must obey  $z_n < z_1 = \lfloor\frac{x_{prev}}{4}\rfloor$ and at least $3z_1 + 1 < x_{prev}$
+\end{proof}
+
+\begin{thm} % False shoudl be changed to steps = 1
+ An odd number $x_{next}$ is strictly greater than its odd preimage $x_{prev}$ in the Collatz process if $\lfloor\frac{x_{prev}}{2}\rfloor$ is odd.
+\end{thm}
+\begin{proof}
+ We note that every odd number can be written as $2n +1$. Furthermore $\lfloor\frac{2n + 1}{2}\rfloor = n$. As a result we are concerned here with odd numbers $2n +1$ where $n \in \{1,3,5,7...\}$
+ Recall the procedure outlined above in which $z_0 = \lfloor\frac{x_{prev}}{2}\rfloor$. In this case $z_0$ is odd. The first step in the procedure is to check if $z_0$ is odd and if it is multiply by 3 and add 1  producing $x_{next} = 3z_0 + 1$.
+
+ As such $z_0 = \lfloor\frac{x_{prev}}{2}\rfloor$ and $3z_0 + 2 > x_{prev}$
+
+ Furthermore when $z_0 = z_{prev}$ is odd, $\frac{3\times x_{prev} + 1}{2}$ is also odd and $\frac{3\times x_{prev} + 1}{2} = x_{next}$
+
+\end{proof}
+
+
+
+
+%\begin{thm} - not true
+ %Consider an odd number $x_{next}$ produced by the Collatz process whose immediate odd preimage is $x_{prev}$ where  $z_{0_0} = \lfloor\frac{x_{prev}}{2^n}\rfloor$ is odd then; $z_{0_1} = \lfloor\frac{x_{next}}{2}\rfloor$ will be even.
+%\end{thm}
+%\begin{proof}
+ %We know that $z_{0_0} = \lfloor\frac{x_{prev}}{2^n}\rfloor$ is odd. As such we know that for the next odd number $x_{next}$ we have $z_{0_1} = \lfloor\frac{3z_{0_0}+ 1}{2}\rfloor$.
+ %We also know that every odd number can be written as $2q +1$. Furthermore $ \lfloor\frac{2q + 1}{2}\rfloor = q$ where $q \in \{1,3,5,7...\}$ with respect to $x_{prev}$
+%\end{proof}
+
+
+%As such $p$ is an even numnber with digital root $dr(p) = 7$. This implies $p  = 9z + 7 = 2(3z_1 + 2)$. Dividing by 2 gives $\frac{p}{2} = \frac{9z_0 + 7}{2} =  3z_1 + 2$. Recall that; given any natural number $a$ where $dr(a) = 7$ then $dr(\frac{a}{2}) = 8$ therefore $\frac{p}{2} = \frac{9z_0 + 7}{2} = 9k + 8 =  3z_1 + 2$. Note that: $9k + 8 - 2 = 3z_1$ and $z_1 = 3k + 2$. %In short $\frac{p}{2} = 9k + 8 =  3z_1 + 2$
+
+%where $w \in \mathbb{N}_{\pmbb{>0}}$. Substituting $y_n = \frac{w \times 2^p}{2^n} %= w \times 2^{p - n}$ take $p - n = m$ then $y_n = w \times 2^m$ where $ w = %\frac{3z+2}{2^p}$.
+%into $y_n = \frac{m \times 2^p}{2^n} = $ but since $ m = \frac{3z+2}{2^p}$ as such
+
+
+%It is possible to create a graph starting from the number $1$ showing the digital root of all the odd numbers in the whole Collatz sequence as follows:
+
+Let us examine the evolution of $z_{prev}$ and $z_{next}$ since these control the changes to successive $x_{next}$ throughout the calculation.
+
+Recall that $x_{next}$ is the imediate next odd number after $x_{prev}$ and as such $x_{next} = 2z_{next} + 1 =  3z_{prev} + 2$ if $z_{prev}$ is odd and $x_{next} = 2z_{next} + 1 = 3z_{prev} + 1$ if $z_{prev}$ is even.
+
+We can model the relationships between on $z_{prev}$ to another $z_{next}$ as a recurrence relation, one in which $z_{next} = 3(\lfloor\frac{z_{prev}}{2^n}\rfloor) + 1$ or $z_{next} = 3(\lfloor\frac{z_{prev}}{2^n}\rfloor)$ where $n$ is the number of steps. Solving this reccurence relation resullts in $z_{next} = \lfloor{(\frac{3}{2^n})}\times(z_{prev} + \frac{1}{2})\rfloor$ which is itself a recurrence relation. A similar recurrence realtion exists for $x_{prev}$ and $x_{next}$ as follows $x_{next} = \lfloor{(\frac{3}{2^n})}\times(x_{prev} + \frac{1}{2})\rfloor$ %when the number of steps is 1 or $z_n = \lfloor{(\frac{3}{2^n})}^nz_{n-1}\rfloor$ otherwise Note(x+1*3/2^n) might work, as in x+1...
+
+It is possible to execute the function $x_{next} = \lfloor{(\frac{3}{2^n})}\times(x_{prev} + \frac{1}{2})\rfloor$ even if $n$, the nubmer of steps, is unknown by gradually incrimenting $n$ from $n=1$ until the function produces the first odd number. The following Python code demonstrates how this might work
+
+
+
+
+
+
+
+%For odd $z_{prev}$ the next Collatz odd is easy to find, simply $\frac{3\times x_{prev} + 1}{2} = x_{next}$
+
+%We can further project into the sequence of odd numbers in relation to $x_{prev}$.
+%It also follows that there are $no_{x_{next}} = 2^k$ where k is a natural number, possible $x_{next}$ in each generation of the projection after $x_{prev}$ where $k$ is the generation, this is because there are two different outcomes depending on the odd/even parity of a given $z_{prev}$.
+
+%Since there are two possibilities $no_{x_{next}} = 2^1$, for $x_{next}$ in the first generation. For the sake of clarity let us label them  $x_{next} = x_{{even}_0}$ for the case when $\lfloor\frac{x_{prev}}{2^n}\rfloor$ is even and $x_{next} = x_{{odd}_0}$  in case $\lfloor\frac{x_{prev}}{2}\rfloor$ is odd. In the second generation this would be $x_{next} = x_{{even}_1}$ in the even case $\lfloor\frac{x_{next}}{2}\rfloor$ and $x_{next} = x_{{odd}_1}$ in the odd case.
+
+%We know that $x_{{even}_0} = 3z_{prev} + 1 = 3\lfloor\frac{x_{prev}}{2^{n}}\rfloor + 1$ when $z_{prev}$ is even. % and $n \in \{2,4,6,8...\}$ if $z_{next}$ is even, in other words $n$ is greater than $1$ and even. Whereas $n \in \{3,5,7,9...\}$ when $z_{next}$ is odd, in other words $n$ is greater than 2 and odd.
+
+%As before $x_{{odd}_1} = 3z_{prev} + 2 = 3\lfloor\frac{x_{prev}}{2}\rfloor + 2$ when $z_{prev}$ is odd. The odd $z_{prev}$ tend to resolve immediately, producing the next odd number in order.
+
+%In the following sections we will be analyzing instances of even $z_{prev} = \lfloor\frac{x_{prev}}{2}\rfloor$.
+
+\begin{lstlisting}
+
+ def nextX(x):
+    n = 1
+    xnext = 2
+    while xnext % 2 == 0:
+        xnext = math.floor((3/2**n)*(x + 0.5))
+        n += 1
+    return xnext
+
+\end{lstlisting}
+
+\subsubsection{Digital roots in the Collatz procedure}
+
+Digital roots and the number of steps are related. Given a pair of natural numbers which are Collatz orbitals, xprev and xnext then the table below relates a given input digital root $dr(xprev)$, the number of steps and the output digital root $dr(xnext)$.
+
+\begin{center}
+
+Below is an example of a table of where ${xprev}_n = (2^n\times 3^q) + xprev$ odd numbers and the corresponding ${xnext}_n = (2^{n - s}\times 3^{q + 1}) + xnext$. In the table below $n \in \{0,1,2,3...\}$ and $xprev = 3$, $ xnext = 5$ and the number of steps $s = 1$.
+
+\vspace{1cm}
+
+\csvreader[tabular = c | c c c c c c c,
+table head =  xprev digital root & xnext digital root \\\hline,
+late after line = \\
+]{digitalRootsReport.csv}{}{\csvcoli & \csvcolii & \csvcoliii & \csvcoliv & \csvcolv & \csvcolvi & \csvcolvii & \csvcolviii}
+
+
+
+\end{center}
+
+\vspace{1cm}
+
+The following Python code illustrates this procedure.
+
+
+\begin{lstlisting}
+
+ def getOutputDigitalRoot(n,  steps):
+        if n in [1, 4,7]:
+            x = 5
+        elif n in [2, 5, 8]:
+            x =3
+        elif n in [3,6,9]:
+            x = 1
+        mod6 = ((steps - 1) + x) % 6
+        return self.digitSum(5**mod6)
+
+\end{lstlisting}
+
+\vspace{1cm}
+
+This relationship between the digital roots is given by the following formulae, there are three cases:\\
+If $dr(xprev) \in \{1,4,7\}$ and the number of steps is $s$ then first obtain $$r = (5 + (s - 1)) \mod 6$$ then $$dr(xnext) = dr(5^{r})$$ \\
+If $dr(xprev) \in \{2,5,8\}$ and the number of steps is $s$ then first obtain $$r = (3 + (s - 1)) \mod 6$$ then $$dr(xnext) = dr(5^{r})$$ \\
+Finally if $dr(xprev) \in \{3,6,9\}$ and the number of steps is $s$ then first obtain $$r = (1 + (s - 1)) \mod 6$$ then $$dr(xnext) = dr(5^{r})$$
+
+
+
+
+\subsubsection{Type One Collatz sequences}
+
+
+For a pair of natural numbers which are Collatz orbitals, xprev and xnext, for example $xprev = 3$ and $ xnext = 5$ where $3\times 3 + 1 = 10, \frac{10}{2} = 5$, in this case  the number of steps $s = 1$ we deduce two different types of Collatz sequences. For Type One; one may create a table of values in which ${xprev}_n = (2^p\times 3^q)n + xprev$ and ${xnext}_n = (2^{p - s}\times 3^{q + 1})n + xnext$, below is an example:
+
+\vspace{1cm}
+
+\begin{center}
+
+Below is a table where ${xprev}_n = (2^p\times 3^q)n + xprev$ odd numbers and the corresponding and ${xnext}_n = (2^{p - s}\times 3^{q + 1})n + xnext$. In the table below $n \in \{0,1,2,3...\}$, $p = 2$, $q = 1$, $xprev = 3$, $ xnext = 5$ and the number of steps $s = 1$.
+
+
+\csvautotabular{Table315.csv}
+
+
+
+\end{center}
+
+\vspace{1cm}
+
+The table below demonstrates another Type One table with more than one orbit of the Collatz procedure.
+
+\vspace{1cm}
+
+\begin{center}
+
+Below is an example of a table of where ${xprev}_n = (2^p\times 3^q)n + xprev$ odd numbers and the corresponding and ${xnext}_n = (2^{p - s}\times 3^{q + 1})n + xnext$. In the table below $n \in \{0,1,2,3...\}$, $p = 2$, $q = 1$, $xprev = 3$, $ xnext = 5$ and the number of steps $s = 1$.
+
+
+\csvautotabular{Table121.csv}
+
+
+
+\end{center}
+
+\vspace{1cm}
+
+\subsubsection{Type Two Collatz sequences}
+
+Alternatively we may vary $n$ as follows ${xprev}_n = (2^n\times 3^q) + xprev$ and ${xnext}_n = (2^{n - s}\times 3^{q + 1}) + xnext$, this is the Type Two calculation which yields a table like this:
+
+\vspace{1cm}
+
+\begin{center}
+
+Below is a table of where ${xprev}_n = (2^n\times 3^q) + xprev$ odd numbers and the corresponding ${xnext}_n = (2^{n - s}\times 3^{q + 1}) + xnext$. In the table below $n \in \{0,1,2,3...\}$ and $xprev = 3$, $ xnext = 5$ and the number of steps $s = 1$.
+
+
+\csvautotabular{TypeOneTable315.csv}
+
+
+
+\end{center}
+
+\vspace{1cm}
+
+\begin{center}
+
+Below is an example of a table of where ${xprev}_n = 2^n\times 3^q + xprev$ odd numbers and the corresponding ${xnext}_n = 2^{n - s}\times 3^{q + 1} + xnext$. In the table below $n \in \{0,1,2,3...\}$ and $xprev = 3$, $ xnext = 5$ and the number of steps $s = 1$.
+
+
+\csvautotabular{TypeOneTable121.csv}
+
+
+
+\end{center}
+
+\vspace{1cm}
+
+\subsubsection{The Fundamental Collatz sequences}
+
+
+In the examples below we demonstrate what we call the Fundamental sequence because this formulation produces all odd numbers and the corresponding xnext orbital. Recall that in the Type One tables ${xprev}_n = (2^p \times 3^q)n + xprev$ where $q \ge 1$. In the Fundamental formulation initially $q = 0$ for the ${xprev}_n$ calculation, effectively this formulation means that ${xprev}_n = 2^p + xprev$ or ${xprev}_n = (2^p)n + xprev$ where $p \ge s + 1$  where $s$ is the number of steps and $n \in \{0,1,2,3...\}$. This means that ${xnext}_n = 2^{n - s}\times 3^1 + xnext$
+
+\vspace{1cm}
+
+\begin{center}
+
+As discussed above, in the table below we set $q = 0$ intially given that ${xprev}_n = (2^n\times 3^q) + xprev$ odd numbers and the corresponding ${xnext}_n = (2^{n - s}\times 3^{q + 1}) + xnext$. In the table below $n \in \{0,1,2,3...\}$ and $xprev = 1$, $ xnext = 1$ , initially $q = 0$ and the number of steps $s = 2$.
+
+
+\csvautotabular{Table12130.csv}
+
+
+
+\end{center}
+
+\vspace{1cm}
+
+
+\begin{center}
+
+Below is an example of a sequence of where ${xprev}_n = (2^n\times 3^q) + xprev$ odd numbers and the corresponding ${xnext}_n = (2^{n - s}\times 3^{q + 1}) + xnext$. In the table below $n \in \{0,1,2,3...\}$ and $xprev = 3$, $ xnext = 5$, initially $q = 0$ and the number of steps $s = 1$.
+
+
+\csvautotabular{Table31530.csv}
+
+
+
+\end{center}
+
+\vspace{1cm}
+%\subsubsection{Basic Formulation of the Collatz sequences}
+The folloing pairs of xprev and xnext produce all the Collatz odd number pairs for the given number of steps using the Fundamental formulation.
+\vspace{1cm}
+
+\begin{center}
+For even numbered steps
+\begin{tabular}{ c | c  c  }
+ %\hline\hline
+ 2 steps & $xprev = 1$ & $ xnext = 1$\\
+%\hline
+ 4 steps & $xprev = 5$ & $ xnext = 1$\\
+%\hline
+ 6 steps & $xprev = 21$ & $ xnext = 1$\\
+%\hline
+ 8 steps & $xprev = 85$ & $ xnext = 1$\\
+%\hline
+ ... & ... \\
+ n even steps & $xprev = \frac{(2^n - 1)}{3}$ or $4\times xprev + 1$ & $ xnext = 1$\\
+%\hline
+ %\hline\hline
+\end{tabular}
+\end{center}
+
+
+\vspace{1cm}
+
+\begin{center}
+For odd numbered steps
+\begin{tabular}{ c | c  c  }
+ %\hline\hline
+ 1 step & $xprev = 3$ & $ xnext = 5$\\
+%\hline
+ 3 steps & $xprev = 13$ & $ xnext = 5$\\
+%\hline
+ 5 steps & $xprev = 53$ & $ xnext = 5$\\
+%\hline
+ 7 steps & $xprev = 213$ & $ xnext = 5$\\
+%\hline
+ ... & ... \\
+ n odd steps & $xprev = \frac{(2^n \times 5 - 1)}{3} $ or $4\times xprev + 1$ & $ xnext = 5$\\
+%\hline
+ %\hline\hline
+\end{tabular}
+\end{center}
+
+We can obtain the xprev values using the preimage procedure descrivbed earlier in this paper.
+
+\subsubsection{Re-examination of the Collatz orbitals}
+
+Take the following Collatz products:
+
+\begin{center}
+
+Below a table of the Collatz procedure for 17, notice the cumulative difference column in particular. The cumulative difference is calculated by taking the previous product minus the next one and adding them up, for example in this case $17 - 13 = 4$ for the first difference. Notice that the final value $16$ is one less than the starting value $17$
+
+
+\csvautotabular{search17.csv}
+
+
+
+\end{center}
+
+Here is anothe example starting with 31:
+
+\begin{center}
+
+Below a table of the Collatz procedure for 31, as above notice the cumulative difference column in particular.
+
+
+\csvautotabular{search31.csv}
+
+
+
+\end{center}
+
+Since we can use the procedure to calculate $xprev$ and $xnext$ to calculate the difference, we may be able to boil the Collatz procedure to the calculation of a single number, the individual differences between $xprev$ and $xnext$.
+
+
+%Now that we have a recurrence relation mapping $x_{prev}$ to $x_{next}$ as follows $x_{next} = \lfloor{(\frac{3}{2^n})}\times(x_{prev} + \frac{1}{2})\rfloor$ where $n$ is the number of steps, whe may obtain this from the tables in previous section.Let us examine its convergence or divergence. We already know that when $n=1$ the sequence diverges(see \cite{Generalizations}). In the case when $n=1$ is equivalent to $x_{next} = \frac{3x_{prev} + 1}{2}$  diverges(\cite{mottaanalysis}). We will now show that $x_{next} = \lfloor{(\frac{3}{2^n})}\times(x_{prev} + \frac{1}{2})\rfloor$ converges  where $n>1$.
+
+%\begin{thm}
+% $x_{next} = \lfloor{(\frac{3}{2^n})}\times(x_{prev} + \frac{1}{2})\rfloor$ where $n$ is the number of steps, converges to one.
+%\end{thm}
+
+\subsubsection{Difference Formula}
+
+The output of the equation below ~\eqref{eq:evendiff} is interpreted as half of the difference between the image and the preimage of a Collatz orbital number. In this context, the preimage is restricted to integers congruent to $1 \pmod{6}$.  \eqref{eq:evendiff}  quantifies the difference between the image and the preimage between two Collatz orbitals.
+
+Here, $r$ denotes the row, $s$ the number of steps in the orbit, and $m \in \{0,1,5,21,85,\dots\}$ given by $m_n = 4m_{n -1} + 1$ is a parameter whose value depends on $s$, varying with the number of steps.
+
+%\begin{equation}\label{eq:evendiff}
+%de = r\bigl(2^{s} - 3\bigr)4^{q} + 2m
+%\end{equation}
+
+%\begin{equation}\label{eq:oddiff}
+%do = r\bigl(2^{s} - 3\bigr)4^{q} + 5m - 1
+%\end{equation}
+
+
+\begin{align}
+de &= r\bigl(2^{s} - 3\bigr)4^{q} + 2m_s,&& \text{for preimages } \equiv 1 \pmod{6},\label{eq:evendiff}\\[6pt]
+do &= r\bigl(2^{s} - 3\bigr)4^{q} + 5m_s - 1,&& \text{for preimages } \equiv 5 \pmod{6}.\label{eq:oddiff}
+\end{align}
+
+
+The output of equation~\eqref{eq:oddiff} represents the half of the difference between the image and the preimage of a Collatz orbital number in the complementary case to equation~\eqref{eq:evendiff}. In this setting, the preimage is restricted to integers congruent to $5 \pmod{6}$, in contrast with the $1 \pmod{6}$ condition used for equation~\eqref{eq:evendiff}. Here, $r$ denotes the row, $s$ the number of steps. Finally  $m \in \{0,1,5,21,85,\dots\}$ given by $m_n = 4m_{n -1} + 1$ is a parameter whose value depends on $s$, varying with the number of steps.
+
+Together, equations~\eqref{eq:evendiff} and~\eqref{eq:oddiff} characterize the difference between image and preimage values along Collatz orbital paths. The first case corresponds to preimages congruent to $1 \pmod{6}$, while the second describes preimages congruent to $5 \pmod{6}$. These two conditions exhaust the admissible congruence classes for odd preimages within the orbit, thereby capturing the structural transitions governing the Collatz trajectory.
+
+The exponent $q$ is included for completeness. When the preimages are congruent to $1 \pmod{6}$ or $5 \pmod{6}$, $q = 0$. The value of $q$ changes only if finer congruence classes of preimages are considered. For example, if the preimages are taken modulo $24$, for example preimages congruent to $1 \pmod{24}$ or $5 \pmod{24}$ would require $q = 1$, while classes such as $1 \pmod{24}$ versus $5 \pmod{24}$ could require $q = 1$. Thus, $q$ encodes deeper structural distinctions that emerge at higher modulus levels of the Collatz dynamics.
+
+To illustrate the role of the parameter $q$, we present examples for both $q=0$ and $q=1$. When $q=0$, the preimages are taken modulo $6$, corresponding to the two admissible congruence classes $1 \pmod{6}$ and $5 \pmod{6}$. In this setting, $q$ does not contribute additional factors of $4$, and the differences $de$ and $do$ follow directly from equations~\eqref{eq:evendiff} and~\eqref{eq:oddiff}.
+
+By contrast, when $q=1$, the preimages are refined to lie in congruence classes modulo $24$. In this case, the term $4^q$ enters nontrivially, scaling the contribution of $(2^s-3)$ and thereby modifying the values of $de$ and $do$. The following tables give sample values of these quantities for small $s$ and corresponding $m_s \in \{0,1,5,21,85,\dots\}$. In general we take the preimages to be $2^n\times3$ where $n \in \{1,3,5,7,\dots\}$. In this paper we primarily focus on $1 \pmod{6}$, $3 \pmod{6}$ and $5 \pmod{6}$ which are equivalence classes for all the odd numbers.
+
+\begin{center}
+
+Below are sample values of $de$ for small $s$ and corresponding $m_s \in \{0,1,5,21,85,\dots\}$ when $q = 0$. Here the preimages are confined to the congruence class $1$ modulo $6$,  so the factor $4^q$ does not contribute. In this case $s = 2$ for 2 steps and $m_s = 0$, $s = 4$ for 4 steps and $m_s = 1$, $s = 6$ for 6 steps and $m_s = 5$ etc. Take row 1, where $r = 1$, the number is 7, then the preimages of 7 are $7 + \bigl(2\times \mathbf{1}\bigr)$, or $7 + \bigl(2\times \mathbf{15}\bigr)$, or $7 + \bigl(2\times \mathbf{71}\bigr)$, or $7 + \bigl(2\times \mathbf{295}\bigr)$, or $7 + \bigl(2\times \mathbf{1191}\bigr)$, or $7 + \bigl(2\times \mathbf{4775}\bigr)$...etc.
+
+
+
+\csvautotabular{even_diff_0_69_7.csv}
+
+
+
+\end{center}
+
+\begin{center}
+
+Below are sample values of $do$ for small $s$ and corresponding $m_s \in \{0,1,5,21,85,\dots\}$ when $q = 0$. Here the preimages are confined to the congruence class $5$ modulo $6$,  so the factor $4^q$ does not contribute. In this case $s = 1$ for 1 steps and $m_s = 0$, $s = 3$ for 3 steps and $m_s = 1$, $s = 5$ for 5 steps and $m_s = 5$ etc. Take row 1, where $r = 1$, the number is 11, then the preimages of 11 are $11 + \bigl(2\times \mathbf{-2}\bigr)$, or $11 + \bigl(2\times \mathbf{9}\bigr)$, or $11 + \bigl(2\times \mathbf{53}\bigr)$, or $11 + \bigl(2\times \mathbf{229}\bigr)$, or $11 + \bigl(2\times \mathbf{933}\bigr)$, or $11 + \bigl(2\times \mathbf{3749}\bigr)$...etc.
+
+
+
+\csvautotabular{odd_diff_0_69_7.csv}
+
+
+
+\end{center}
+
+\begin{center}
+
+By contrast below are sample values of $de$ where $q = 1$ for small $s$ and corresponding $m_s \in \{0,1,5,21,85,\dots\}$. The preimages are confined to the congruence class $1$ modulo $24$. In this case $s = 2$ for 2 steps and $m_s = 0$, $s = 4$ for 4 steps and $m_s = 1$, $s = 6$ for 6 steps and $m_s = 5$ etc. Take row 1, where $r = 1$, the number is 25, then the preimages of 25 are $25 + \bigl(2\times \mathbf{4}\bigr)$, or $25 + \bigl(2\times \mathbf{54}\bigr)$, or $25 + \bigl(2\times \mathbf{254}\bigr)$, or $25 + \bigl(2\times \mathbf{1054}\bigr)$, or $25 + \bigl(2\times \mathbf{4254}\bigr)$, or $25 + \bigl(2\times \mathbf{17054}\bigr)$...etc.
+
+
+
+\csvautotabular{even_diff_1_69_7.csv}
+
+
+
+\end{center}
+
+\subsubsection{Succession Formulae\\}
+
+%describe the row column relationships
+
+\paragraph{\textbf{Collatz preimage arrays (odd classes $1$ and $5$ mod $6$).\\\\}}
+
+We work with two array–like structures, each indexed by \emph{rows} and \emph{columns}.
+The first array collects preimages of numbers congruent to \(1 \pmod{6}\);
+the second does the same for numbers congruent to \(5 \pmod{6}\).
+In both arrays, the \emph{row number} \(r\in\mathbb{N}_0\) is an index
+into the array (it labels the row), and the \emph{column number} \(j\in\mathbb{N}_0\)
+records the $j^{th}$ preimage.
+
+Let $G$ be the Collatz map and $G^{j}$ its $j^{th}$ preimage.
+For $p\in\{1,5\}$ and row index $r\in\mathbb{N}_0$, define the
+\emph{row image} (not displayed in the array)
+\[
+n^{(p)}_{r}\coloneqq 6r+p.
+\]
+The array itself contains \emph{only preimages}. We index columns
+by $j\in\mathbb{N}_0$ so that \emph{column $0$ lists the immediate
+(preimage-depth $0$) preimages}, column $1$ lists preimages of depth $1$, etc.:
+\[
+\mathcal{A}^{(p)}_{r,j}
+\;\coloneqq\;
+\bigl\{\,x\in\mathbb{N}\ \bigm|\ G^{\,j}(x)=n^{(p)}_{r},\ \ x\equiv p \pmod{6}\,\bigr\},
+\qquad r,j\in\mathbb{N}_0.
+\]
+Thus, given the row index $r$ and which array ($p=1$ or $p=5$), one
+recovers the image as $6r+p$, while the table cells $\mathcal{A}^{(p)}_{r,j}$
+list only the corresponding preimages.
+
+\medskip\noindent\textbf{Array for $p=1 \pmod{6}$ (preimages only).}
+\[
+\begin{array}{c|cccc}
+\text{row }r & j=0 & j=1 & j=2 & \cdots\\ \hline
+0 & \mathcal{A}^{(1)}_{0,0} & \mathcal{A}^{(1)}_{0,1} & \mathcal{A}^{(1)}_{0,2} & \cdots\\
+1 & \mathcal{A}^{(1)}_{1,0} & \mathcal{A}^{(1)}_{1,1} & \mathcal{A}^{(1)}_{1,2} & \cdots\\
+2 & \mathcal{A}^{(1)}_{2,0} & \mathcal{A}^{(1)}_{2,1} & \mathcal{A}^{(1)}_{2,2} & \cdots\\
+\vdots & \vdots & \vdots & \vdots &
+\end{array}
+\]
+
+\medskip\noindent\textbf{Array for $p=5 \pmod{6}$ (preimages only).}
+\[
+\begin{array}{c|cccc}
+\text{row }r & j=0 & j=1 & j=2 & \cdots\\ \hline
+0 & \mathcal{A}^{(5)}_{0,0} & \mathcal{A}^{(5)}_{0,1} & \mathcal{A}^{(5)}_{0,2} & \cdots\\
+1 & \mathcal{A}^{(5)}_{1,0} & \mathcal{A}^{(5)}_{1,1} & \mathcal{A}^{(5)}_{1,2} & \cdots\\
+2 & \mathcal{A}^{(5)}_{2,0} & \mathcal{A}^{(5)}_{2,1} & \mathcal{A}^{(5)}_{2,2} & \cdots\\
+\vdots & \vdots & \vdots & \vdots &
+\end{array}
+\]
+
+\noindent\emph{Indexing convention.} Column $j$ corresponds to preimage depth $j$
+under $G$. The values $n^{(p)}_{r}=6r+p$ are \emph{not} printed in the arrays;
+they are determined from the row index $r$ and the chosen array ($p=1$ or $p=5$).\\\\
+
+
+\begin{center}
+
+Below is an example with $p=1$. Incidentally the column $j=0$ is composed of numbers which are congruent to $1 \equiv \pmod 8$, all the other columns contain numbers which are congruent to $5 \equiv \pmod 8$. This provides an convenient algorithm to search this table for the row and column of an arbitrary odd number.\\
+
+
+\csvautotabular{even_49_7_formatted.csv}
+
+\end{center}
+
+\begin{center}
+
+Below is an example with $p=5$. Here the column $j=0$ is composed of numbers which are congruent to $3 \equiv \pmod 4$, all the other columns contain numbers which are congruent to $5 \equiv \pmod 8$. This provides an convenient algorithm to search this table for the row and column of an arbitrary odd number.\\
+
+
+\csvautotabular{odd_49_7_formatted.csv}
+
+\end{center}
+
+
+% Requires: \usepackage{amsmath}
+\begin{comment}
+\begin{subequations}\label{grp1}
+\begin{align}
+&2^{1}\cdot 7 \label{eq:g1a}\\
+&2^{7}\cdot 7 + 2^{1}\cdot 7 \label{eq:g1b}\\
+&2^{13}\cdot 7 + 2^{7}\cdot 7 + 2^{1}\cdot 7 \label{eq:g1c}
+\end{align}
+\end{subequations}
+
+\begin{subequations}\label{grp2}
+\begin{align}
+&2^{3}\cdot 49 + 6 \label{eq:g2a}\\
+&2^{9}\cdot 49 + 2^{3}\cdot 49 + 6 \label{eq:g2b}\\
+&2^{15}\cdot 49 + 2^{9}\cdot 49 + 2^{3}\cdot 49 + 6 \label{eq:g2c}
+\end{align}
+\end{subequations}
+
+\begin{subequations}\label{grp3}
+\begin{align}
+&2^{3}\cdot 7 \label{eq:g3a}\\
+&2^{9}\cdot 7 + 2^{3}\cdot 7 \label{eq:g3b}\\
+&2^{15}\cdot 7 + 2^{9}\cdot 7 + 2^{3}\cdot 7 \label{eq:g3c}
+\end{align}
+\end{subequations}
+
+\begin{subequations}\label{grp4}
+\begin{align}
+&2^{5}\cdot 49 + 24 \label{eq:g4a}\\
+&2^{11}\cdot 49 + 2^{5}\cdot 49 + 24 \label{eq:g4b}\\
+&2^{17}\cdot 49 + 2^{11}\cdot 49 + 2^{5}\cdot 49 + 24 \label{eq:g4c}
+\end{align}
+\end{subequations}
+
+\begin{subequations}\label{grp5}
+\begin{align}
+&2^{1}\cdot 91 + 2 \label{eq:g5a}\\
+&2^{7}\cdot 91 + 2^{1}\cdot 91 + 2 \label{eq:g5b}\\
+&2^{13}\cdot 91 + 2^{7}\cdot 91 + 2^{1}\cdot 91 + 2 \label{eq:g5c}
+\end{align}
+\end{subequations}
+
+\begin{subequations}\label{grp6}
+\begin{align}
+&2^{2}\cdot 35 + 2 \label{eq:g6a}\\
+&2^{8}\cdot 35 + 2^{2}\cdot 35 + 2 \label{eq:g6b}\\
+&2^{14}\cdot 35 + 2^{8}\cdot 35 + 2^{2}\cdot 35 + 2 \label{eq:g6c}
+\end{align}
+\end{subequations}
+
+\begin{subequations}\label{grp7}
+\begin{align}
+&2^{0}\cdot 77 + 1 \label{eq:g7a}\\
+&2^{6}\cdot 77 + 2^{0}\cdot 77 + 1 \label{eq:g7b}\\
+&2^{12}\cdot 77 + 2^{6}\cdot 77 + 2^{0}\cdot 77 + 1 \label{eq:g7c}
+\end{align}
+\end{subequations}
+
+\begin{subequations}\label{grp8}
+\begin{align}
+&2^{4}\cdot 119 + 30 \label{eq:g8a}\\
+&2^{10}\cdot 119 + 2^{4}\cdot 119 + 30 \label{eq:g8b}\\
+&2^{16}\cdot 119 + 2^{10}\cdot 119 + 2^{4}\cdot 119 + 30 \label{eq:g8c}
+\end{align}
+\end{subequations}
+
+\begin{subequations}\label{grp9}
+\begin{align}
+&2^{4}\cdot 35 + 8 \label{eq:g9a}\\
+&2^{10}\cdot 35 + 2^{4}\cdot 35 + 8 \label{eq:g9b}\\
+&2^{16}\cdot 35 + 2^{10}\cdot 35 + 2^{4}\cdot 35 + 8 \label{eq:g9c}
+\end{align}
+\end{subequations}
+
+\begin{subequations}\label{grp10}
+\begin{align}
+&2^{2}\cdot 77 + 4 \label{eq:g10a}\\
+&2^{8}\cdot 77 + 2^{2}\cdot 77 + 4 \label{eq:g10b}\\
+&2^{14}\cdot 77 + 2^{8}\cdot 77 + 2^{2}\cdot 77 + 4 \label{eq:g10c}
+\end{align}
+\end{subequations}
+
+\begin{subequations}\label{grp11}
+\begin{align}
+&2^{0}\cdot 119 + 1 \label{eq:g11a}\\
+&2^{6}\cdot 119 + 2^{0}\cdot 119 + 1 \label{eq:g11b}\\
+&2^{12}\cdot 119 + 2^{6}\cdot 119 + 2^{0}\cdot 119 + 1 \label{eq:g11c}
+\end{align}
+\end{subequations}
+\end{comment}
+
+\paragraph{\textbf{Succesive Collatz preimages.\\\\}}
+
+\begin{center}
+
+Below are two related tables, related by the Type column in each table. They are the starting point for a method for finding successive preimages. Later we find a general formula for $T_n$ and then a general formula for the row index $r_x$ of the preimage of a number $x$.
+
+\csvautotabular{calcFormula_69_7_key2.csv}
+
+
+
+\csvautotabular{calcFormula_69_7_edited_times_to_cdot.csv}
+
+\end{center}
+
+
+\paragraph{\textbf{\\\underline{General Case:}\\\\}}
+
+All the succession formulae have the following template:
+% One-line template (ratio 64)
+\[
+\text{If } T_n = A + C\sum_{j=0}^{n-2}64^{\,j} \text{ (so } T_1=A\text{ and the first added block is }C\text{), then }
+T_n = A + \frac{C}{63}\bigl(64^{\,n-1}-1\bigr), \qquad
+T_n - 64\,T_{n-1} = C - 63A.
+\]
+
+Or more generally:
+\[
+\text{If } T_n = A + C\sum_{j=0}^{n-2}r^{\,j}, \text{ then }
+T_n = A + \frac{C}{r-1}\bigl(r^{\,n-1}-1\bigr), \qquad
+T_n - r\,T_{n-1} = C - (r-1)A.
+\]
+
+
+
+
+\paragraph{\textbf{\underline{ee0:}}\\\\}
+
+We require \(T_1=0\)
+%\(7\cdot 2^{\,1+6j}\)
+\[
+T_n \coloneqq \sum_{j=0}^{n-2} 7\cdot 2^{\,1+6j}\qquad (n\ge 1).
+\]
+Thus
+\begin{align*}
+T_n
+  &= 7\cdot 2 \sum_{j=0}^{n-2} \bigl(2^{6}\bigr)^{j}
+   = 14 \sum_{j=0}^{n-2} 64^{\,j}
+   = 14\,\frac{64^{\,n-1}-1}{64-1}
+   = \frac{2}{9}\bigl(64^{\,n-1}-1\bigr).
+\end{align*}
+
+\begin{comment}
+This satisfies the recurrence
+\[
+T_1=0,\qquad T_n = 64\,T_{n-1}+14\quad(n\ge 2),
+\]
+since
+\[
+T_n - 64\,T_{n-1}
+= \frac{2}{9}\Bigl(64^{\,n-1}-1 - 64\bigl(64^{\,n-2}-1\bigr)\Bigr)
+= \frac{2}{9}\cdot 63
+= 14.
+\]
+\emph{Examples:} \(T_1=0\);
+\(T_2=\tfrac{2}{9}(64-1)=14=7\cdot 2^{1}\);
+\(T_3=\tfrac{2}{9}(64^2-1)=910=7\cdot 2^{7}+7\cdot 2^{1}\).\\
+\end{comment}
+
+
+\paragraph{\textbf{\underline{ee1:}}\\\\}
+
+
+Define the sequence by
+\[
+T_n \coloneqq 6 \;+\; 49\sum_{j=0}^{n-2} 2^{\,3+6j}
+     \;=\; 6 \;+\; 392\sum_{j=0}^{n-2} 64^{\,j}\qquad(n\ge 1).
+\]
+Summing the geometric series yields the closed form
+\[
+T_n \;=\; 6 \;+\; \frac{392}{63}\bigl(64^{\,n-1}-1\bigr)
+     \;=\; \frac{56}{9}\,64^{\,n-1} \;-\; \frac{2}{9},
+\qquad n\ge 1,
+\]
+which is equivalent to the recurrence
+\[
+T_1=6,\qquad T_n = 64\,T_{n-1}+14\quad(n\ge 2).
+\]
+\begin{comment}
+\emph{Checks:}
+\begin{align*}
+n=1:\;& T_1 = 6, \quad
+\frac{56}{9}\,64^{0} - \frac{2}{9} = 6.\\[3pt]
+n=2:\;& T_2 = 49\cdot 2^3 + 6 = 392 + 6 = 398,\quad
+\frac{56}{9}\,64 - \frac{2}{9} = 398.\\[3pt]
+n=3:\;& T_3 = 49\cdot 2^9 + 49\cdot 2^3 + 6
+      = 49\cdot 512 + 392 + 6 = 25{,}486,\\
+& \frac{56}{9}\,64^{2} - \frac{2}{9}
+  = \frac{56\cdot 4096 - 2}{9}
+  = 25{,}486.\\[3pt]
+n=4:\;& T_4 = 49\cdot 2^{15} + 49\cdot 2^{9} + 49\cdot 2^{3} + 6
+      = 1{,}605{,}632 + 25{,}088 + 392 + 6 = 1{,}631{,}118,\\
+& \frac{56}{9}\,64^{3} - \frac{2}{9}
+  = \frac{56\cdot 262{,}144 - 2}{9}
+  = 1{,}631{,}118.
+\end{align*}
+Finally,
+\[
+T_n - 64\,T_{n-1}
+= \Bigl(\frac{56}{9}64^{\,n-1} - \frac{2}{9}\Bigr)
+  - \Bigl(\frac{56}{9}64^{\,n-1} - \frac{128}{9}\Bigr)
+= \frac{126}{9} = 14,
+\]
+confirming the recurrence \(T_n = 64\,T_{n-1}+14\).\\
+\end{comment}
+
+\paragraph{\textbf{\underline{ee2:}}\\\\}
+
+Define, for $n\ge 1$,
+\[
+T_n \coloneqq 46 \;+\; 91\sum_{j=0}^{n-2} 2^{\,5+6j}
+           \;=\; 46 \;+\; 2912\sum_{j=0}^{n-2} 64^{\,j}.
+\]
+Summing the geometric series gives
+\[
+T_n \;=\; 46 \;+\; \frac{2912}{63}\bigl(64^{\,n-1}-1\bigr)
+     \;=\; \frac{416}{9}\,64^{\,n-1} \;-\; \frac{2}{9},
+\]
+which is equivalent to the recurrence
+\[
+T_1=46,\qquad T_n = 64\,T_{n-1}+14\quad(n\ge 2).
+\]
+
+\begin{comment}
+\emph{Quick check: } \(T_2=91\cdot 2^{5}+46=2912+46=2958\),
+while \(64\cdot 46+14=2958\).\\
+\end{comment}
+
+\paragraph{\textbf{\underline{eo0:}}\\\\}
+
+Define, for $n\ge 1$,
+\[
+T_n \coloneqq 7\sum_{j=0}^{n-2} 2^{\,3+6j}
+           \;=\; 56\sum_{j=0}^{n-2} 64^{\,j}.
+\]
+Summing the geometric series gives the closed form
+\[
+T_n \;=\; \frac{56}{63}\bigl(64^{\,n-1}-1\bigr)
+       \;=\; \frac{8}{9}\,\bigl(64^{\,n-1}-1\bigr).
+\]
+Equivalently, the recurrence is
+\[
+T_1=0,\qquad T_n = 64\,T_{n-1}+56\quad(n\ge 2).
+\]
+
+\begin{comment}
+\emph{Checks:}
+$T_1=0$;
+$T_2=\tfrac{8}{9}(64-1)=56=7\cdot2^3$;
+$T_3=\tfrac{8}{9}(64^2-1)=3640=7\cdot2^9+7\cdot2^3$;
+$T_4=\tfrac{8}{9}(64^3-1)=233{,}016=7\cdot2^{15}+7\cdot2^9+7\cdot2^3$.\\
+\end{comment}
+
+\paragraph{\textbf{\underline{eo1:}}\\\\}
+
+Define, for $n\ge 1$ (empty sum $=0$ so $T_1=24$),
+\[
+T_n \coloneqq 24 \;+\; 49\sum_{j=0}^{n-2} 2^{\,5+6j}
+           \;=\; 24 \;+\; 1568\sum_{j=0}^{n-2} 64^{\,j}.
+\]
+Summing the geometric series gives the closed form
+\[
+T_n \;=\; 24 \;+\; \frac{1568}{63}\bigl(64^{\,n-1}-1\bigr)
+       \;=\; \frac{224}{9}\,64^{\,n-1} \;-\; \frac{8}{9},
+\qquad n\ge 1.
+\]
+Equivalently, the recurrence is
+\[
+T_1=24,\qquad T_n = 64\,T_{n-1}+56\quad(n\ge 2).
+\]
+
+\begin{comment}
+\emph{Checks:}
+\begin{align*}
+n=1:\;& T_1=24,\quad
+\frac{224}{9}\,64^{0}-\frac{8}{9}=\frac{224-8}{9}=24.\\[3pt]
+n=2:\;& T_2=49\cdot 2^{5}+24=1568+24=1592,\quad
+\frac{224}{9}\,64-\frac{8}{9}=\frac{14336-8}{9}=1592.\\[3pt]
+n=3:\;& T_3=49\cdot 2^{11}+49\cdot 2^{5}+24
+      =49\cdot(2048+32)+24=49\cdot 2080+24=101{,}944,\\
+& \frac{224}{9}\,64^{2}-\frac{8}{9}
+  =\frac{224\cdot 4096-8}{9}
+  =\frac{917{,}504-8}{9}
+  =101{,}944.
+\end{align*}
+\end{comment}
+
+\paragraph{\textbf{\underline{eo2:}}\\\\}
+
+Define, for $n\ge 1$ (empty sum $=0$ so $T_1=2$),
+\[
+T_n \coloneqq 2 \;+\; 91\sum_{j=0}^{n-2} 2^{\,1+6j}
+           \;=\; 2 \;+\; 182\sum_{j=0}^{n-2} 64^{\,j}.
+\]
+Summing the geometric series yields the closed form
+\[
+T_n \;=\; 2 \;+\; \frac{182}{63}\bigl(64^{\,n-1}-1\bigr)
+       \;=\; \frac{26}{9}\,64^{\,n-1} \;-\; \frac{8}{9},
+\qquad n\ge 1.
+\]
+Equivalently, the recurrence is
+\[
+T_1=2,\qquad T_n = 64\,T_{n-1}+56\quad(n\ge 2).
+\]
+
+\begin{comment}
+\emph{Checks:}
+\[
+T_2=91\cdot 2^1+2=182+2=184
+\quad\text{and}\quad
+\frac{26}{9}\,64-\frac{8}{9}=184;
+\]
+\[
+T_3=91\cdot 2^7+91\cdot 2^1+2
+=91\cdot(128+2)+2=11{,}832,
+\quad
+64\cdot 184+56=11{,}832.
+\]\\
+\end{comment}
+
+\paragraph{\textbf{\underline{oe0:}}\\\\}
+
+Define, for $n\ge 1$ (empty sum $=0$ so $T_1=2$),
+\[
+T_n \coloneqq 2 \;+\; 35\sum_{j=0}^{n-2} 2^{\,2+6j}
+           \;=\; 2 \;+\; 140\sum_{j=0}^{n-2} 64^{\,j}.
+\]
+Summing the geometric series gives the closed form
+\[
+T_n \;=\; 2 \;+\; \frac{140}{63}\bigl(64^{\,n-1}-1\bigr)
+       \;=\; \frac{20}{9}\,64^{\,n-1} \;-\; \frac{2}{9},
+\qquad n\ge 1.
+\]
+Equivalently, the recurrence is
+\[
+T_1=2,\qquad T_n = 64\,T_{n-1}+14\quad(n\ge 2).
+\]
+
+\begin{comment}
+\emph{Checks:}
+\[
+T_2=35\cdot 2^2+2=140+2=142
+\quad\text{and}\quad
+\frac{20}{9}\,64-\frac{2}{9}=142;
+\]
+\[
+T_3=35\cdot 2^8+35\cdot 2^2+2
+=35\cdot(256+4)+2=9{,}102,
+\quad
+\frac{20}{9}\,64^{2}-\frac{2}{9}=9{,}102;
+\]
+\[
+T_4=35\cdot 2^{14}+35\cdot 2^{8}+35\cdot 2^{2}+2
+=35\cdot(16384+256+4)+2=582{,}542,
+\quad
+\frac{20}{9}\,64^{3}-\frac{2}{9}=582{,}542.
+\]\\
+\end{comment}
+
+\paragraph{\textbf{\underline{oe1:}}\\\\}
+
+Define, for $n\ge 1$ (empty sum $=0$ so $T_1=1$),
+\[
+T_n \coloneqq 1 \;+\; 77\sum_{j=0}^{n-2} 2^{\,6j}
+           \;=\; 1 \;+\; 77\sum_{j=0}^{n-2} 64^{\,j}.
+\]
+Summing the geometric series gives the closed form
+\[
+T_n \;=\; 1 \;+\; \frac{77}{63}\bigl(64^{\,n-1}-1\bigr)
+       \;=\; \frac{11}{9}\,64^{\,n-1} \;-\; \frac{2}{9},
+\qquad n\ge 1.
+\]
+Equivalently, the recurrence is
+\[
+T_1=1,\qquad T_n = 64\,T_{n-1}+14\quad(n\ge 2).
+\]
+
+\begin{comment}
+\emph{Checks:}
+\[
+T_2=77\cdot 2^{0}+1=78
+\quad\text{and}\quad
+\frac{11}{9}\,64-\frac{2}{9}=78;
+\]
+\[
+T_3=77\cdot 2^{6}+77\cdot 2^{0}+1
+=77\cdot(64+1)+1=5{,}006,
+\quad
+\frac{11}{9}\,64^{2}-\frac{2}{9}
+=\frac{11\cdot 4096-2}{9}=5{,}006;
+\]
+\[
+T_4=77\cdot 2^{12}+77\cdot 2^{6}+77\cdot 2^{0}+1
+=77\cdot(4096+64+1)+1=320{,}398,
+\quad
+\frac{11}{9}\,64^{3}-\frac{2}{9}
+=\frac{11\cdot 262{,}144-2}{9}=320{,}398.
+\]\\
+\end{comment}
+
+\paragraph{\textbf{\underline{oe2:}}\\\\}
+
+Define, for $n\ge 1$ (empty sum $=0$ so $T_1=30$),
+\[
+T_n \coloneqq 30 \;+\; 119\sum_{j=0}^{n-2} 2^{\,4+6j}
+           \;=\; 30 \;+\; 1904\sum_{j=0}^{n-2} 64^{\,j}.
+\]
+Summing the geometric series gives the closed form
+\[
+T_n \;=\; 30 \;+\; \frac{1904}{63}\bigl(64^{\,n-1}-1\bigr)
+       \;=\; \frac{272}{9}\,64^{\,n-1} \;-\; \frac{2}{9},
+\qquad n\ge 1.
+\]
+Equivalently, the recurrence is
+\[
+T_1=30,\qquad T_n = 64\,T_{n-1}+14\quad(n\ge 2).
+\]
+
+\begin{comment}
+\emph{Checks:}
+\[
+T_2=119\cdot 2^{4}+30=1904+30=1934
+\quad\text{and}\quad
+\frac{272}{9}\,64-\frac{2}{9}=1934;
+\]
+\[
+T_3=119\cdot 2^{10}+119\cdot 2^{4}+30
+=119\cdot(1024+16)+30=123{,}790,
+\quad
+\frac{272}{9}\,64^{2}-\frac{2}{9}=123{,}790;
+\]
+\[
+T_4=119\cdot 2^{16}+119\cdot 2^{10}+119\cdot 2^{4}+30
+=119\cdot(65536+1024+16)+30=7{,}922{,}574,
+\quad
+\frac{272}{9}\,64^{3}-\frac{2}{9}=7{,}922{,}574.
+\]\\
+\end{comment}
+
+\paragraph{\textbf{\underline{oo0:}}\\\\}
+
+Define, for $n\ge 1$ (empty sum $=0$ so $T_1=8$),
+\[
+T_n \coloneqq 8 \;+\; 35\sum_{j=0}^{n-2} 2^{\,4+6j}
+           \;=\; 8 \;+\; 560\sum_{j=0}^{n-2} 64^{\,j}.
+\]
+Summing the geometric series gives the closed form
+\[
+T_n \;=\; 8 \;+\; \frac{560}{63}\bigl(64^{\,n-1}-1\bigr)
+       \;=\; \frac{80}{9}\,64^{\,n-1} \;-\; \frac{8}{9},
+\qquad n\ge 1.
+\]
+Equivalently, the recurrence is
+\[
+T_1=8,\qquad T_n = 64\,T_{n-1}+56\quad(n\ge 2).
+\]
+
+\begin{comment}
+\emph{Checks:}
+\[
+T_2=35\cdot 2^{4}+8=560+8=568
+\quad\text{and}\quad
+\frac{80}{9}\,64-\frac{8}{9}=568;
+\]
+\[
+T_3=35\cdot 2^{10}+35\cdot 2^{4}+8
+=35\cdot(1024+16)+8=36{,}408,
+\quad
+\frac{80}{9}\,64^{2}-\frac{8}{9}=36{,}408;
+\]
+\[
+T_4=35\cdot 2^{16}+35\cdot 2^{10}+35\cdot 2^{4}+8
+=35\cdot(65536+1024+16)+8=2{,}330{,}168,
+\quad
+\frac{80}{9}\,64^{3}-\frac{8}{9}=2{,}330{,}168.
+\]\\
+\end{comment}
+
+\paragraph{\textbf{\underline{oo1:}}\\\\}
+
+Define, for $n\ge 1$ (empty sum $=0$ so $T_1=4$),
+\[
+T_n \coloneqq 4 \;+\; 77\sum_{j=0}^{n-2} 2^{\,2+6j}
+           \;=\; 4 \;+\; 308\sum_{j=0}^{n-2} 64^{\,j}.
+\]
+Summing the geometric series gives the closed form
+\[
+T_n \;=\; 4 \;+\; \frac{308}{63}\bigl(64^{\,n-1}-1\bigr)
+       \;=\; \frac{44}{9}\,64^{\,n-1} \;-\; \frac{8}{9},
+\qquad n\ge 1.
+\]
+Equivalently, the recurrence is
+\[
+T_1=4,\qquad T_n = 64\,T_{n-1}+56\quad(n\ge 2).
+\]
+
+\begin{comment}
+\emph{Checks:}
+\[
+T_2=77\cdot 2^{2}+4=308+4=312
+\quad\text{and}\quad
+\frac{44}{9}\,64-\frac{8}{9}=312;
+\]
+\[
+T_3=77\cdot 2^{8}+77\cdot 2^{2}+4
+=77\cdot(256+4)+4=20{,}024,
+\quad
+\frac{44}{9}\,64^{2}-\frac{8}{9}=20{,}024;
+\]
+\[
+T_4=77\cdot 2^{14}+77\cdot 2^{8}+77\cdot 2^{2}+4
+=77\cdot(16384+256+4)+4=1{,}281{,}592,
+\quad
+\frac{44}{9}\,64^{3}-\frac{8}{9}=1{,}281{,}592.
+\]\\
+\end{comment}
+
+\paragraph{\textbf{\underline{oo2:}}\\\\}
+
+Define, for $n\ge 1$ (empty sum $=0$ so $T_1=1$),
+\[
+T_n \coloneqq 1 \;+\; 119\sum_{j=0}^{n-2} 2^{\,6j}
+           \;=\; 1 \;+\; 119\sum_{j=0}^{n-2} 64^{\,j}.
+\]
+Summing the geometric series gives the closed form
+\[
+T_n \;=\; 1 \;+\; \frac{119}{63}\bigl(64^{\,n-1}-1\bigr)
+       \;=\; \frac{17}{9}\,64^{\,n-1} \;-\; \frac{8}{9},
+\qquad n\ge 1.
+\]
+Equivalently, the recurrence is
+\[
+T_1=1,\qquad T_n = 64\,T_{n-1}+56\quad(n\ge 2).
+\]
+
+\begin{comment}
+\emph{Checks:}
+\begin{align*}
+n=2:\;& T_2=119\cdot 2^{0}+1=119+1=120,\\
+& \frac{17}{9}\,64-\frac{8}{9}=\frac{1088-8}{9}=120.\\[3pt]
+n=3:\;& T_3=119\cdot 2^{6}+119\cdot 2^{0}+1
+      =119\cdot(64+1)+1=7{,}736,\\
+& \frac{17}{9}\,64^{2}-\frac{8}{9}
+  = \frac{17\cdot 4096 - 8}{9}
+  = 7{,}736.\\[3pt]
+n=4:\;& T_4=119\cdot 2^{12}+119\cdot 2^{6}+119\cdot 2^{0}+1
+      =119\cdot(4096+64+1)+1=495{,}160,\\
+& \frac{17}{9}\,64^{3}-\frac{8}{9}
+  = \frac{17\cdot 262{,}144 - 8}{9}
+  = 495{,}160.
+\end{align*}
+\end{comment}
+
+\textbf{\underline{\\\\Applications}}\\\\
+
+\begin{comment}
+First define:
+For $x\in\mathbb{N}_0$, set
+\[
+x_6 \coloneqq \Bigl\lfloor \frac{x}{6}\Bigr\rfloor,
+\qquad
+x_3 \coloneqq \Bigl\lfloor \frac{x_6}{3}\Bigr\rfloor
+           = \Bigl\lfloor \frac{x}{18}\Bigr\rfloor.
+\]
+Define
+\[
+Q(x) \coloneqq
+\begin{cases}
+\displaystyle \Bigl\lfloor \dfrac{x_6 - x_3}{3} \Bigr\rfloor,
+& \text{if } x_6 - x_3 > 3,\\[8pt]
+0, & \text{otherwise.}
+\end{cases}
+\]
+
+\paragraph{Quotient cascade (integer-only).}
+For $x\in\mathbb{N}_0$, set
+\[
+x_6 \coloneqq \Bigl\lfloor \frac{x}{6}\Bigr\rfloor,\qquad
+x_3 \coloneqq \Bigl\lfloor \frac{x_6}{3}\Bigr\rfloor
+           = \Bigl\lfloor \frac{x}{18}\Bigr\rfloor,\qquad
+y \coloneqq x_6 - x_3 .
+\]
+Define the output
+\[
+Q(x) \;=\; \mathbf{1}_{\{y>3\}} \,\Bigl\lfloor \frac{y}{3}\Bigr\rfloor
+\;=\;
+\mathbf{1}_{\{\lfloor x/6\rfloor - \lfloor x/18\rfloor > 3\}}\,
+\Biggl\lfloor
+\frac{\lfloor x/6\rfloor - \lfloor x/18\rfloor}{3}
+\Biggr\rfloor .
+\]
+\end{comment}
+
+%\paragraph{Why this works (lemma).}
+\begin{comment}
+Explanation\\
+For positive integers \(a,b\) and real \(x\),
+\[
+\Bigl\lfloor \frac{\lfloor x/a\rfloor}{\,b}\Bigr\rfloor
+\;=\;
+\Bigl\lfloor \frac{x}{ab}\Bigr\rfloor.
+\]
+\emph{Proof.} Write \(x=a q + r\) with \(0\le r<a\). Then \(\lfloor x/a\rfloor=q\), so
+\[
+\Bigl\lfloor \frac{\lfloor x/a\rfloor}{\,b}\Bigr\rfloor
+= \Bigl\lfloor \frac{q}{b}\Bigr\rfloor
+= \Bigl\lfloor \frac{a q}{ab}\Bigr\rfloor
+\le \Bigl\lfloor \frac{a q + r}{ab}\Bigr\rfloor
+= \Bigl\lfloor \frac{x}{ab}\Bigr\rfloor.
+\]
+Conversely, since \(r<a\),
+\(\frac{x}{ab}=\frac{q}{b}+\frac{r}{ab}<\frac{q}{b}+1\), hence
+\(\bigl\lfloor x/(ab)\bigr\rfloor \le \bigl\lfloor q/b \bigr\rfloor\).
+Combining the two inequalities gives equality.
+\qed
+\end{comment}
+
+
+%=====================================
+% Table 1: sequences 1–6
+%=====================================
+\begin{table}[H]
+\centering
+\caption{Functions, $1 \pmod 6$}
+\label{tab:mod1}
+\begin{tabular}{@{}r l l@{}}
+\toprule
+Type & Augend $F_m$  & Addend $T_n, n = c+1$ \\
+\midrule
+$ee0$  & $2^{2+6m}$ & $\dfrac{2}{9}\,64^{\,n-1} - \dfrac{2}{9}$ \\\\
+$ee1$  & $2^{4+6m}$ & $\dfrac{56}{9}\,64^{\,n-1} - \dfrac{2}{9}$ \\\\
+$ee2$  & $2^{6+6m}$ & $\dfrac{416}{9}\,64^{\,n-1} - \dfrac{2}{9}$ \\\\
+$eo0$  & $2^{4+6m}$ & $\dfrac{8}{9}\,64^{\,n-1} - \dfrac{8}{9}$ \\\\
+$eo1$  & $2^{6+6m}$ & $\dfrac{224}{9}\,64^{\,n-1} - \dfrac{8}{9}$ \\\\
+$eo2$  & $2^{2+6m}$ & $\dfrac{26}{9}\,64^{\,n-1} - \dfrac{8}{9}$ \\\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%=====================================
+% Table 2: sequences 7–12
+%=====================================
+\begin{table}[H]
+\centering
+\caption{Functions, $5 \pmod 6$}
+\label{tab:mod5}
+\begin{tabular}{@{}r l l@{}}
+\toprule
+Type & Augend $F_m$ & Addend $T_n, n=c+1$ \\
+\midrule
+$oe0$  & $2^{3+6m}$ & $\dfrac{20}{9}\,64^{\,n-1} - \dfrac{2}{9}$ \\\\
+$oe1$  & $2^{1+6m}$ & $\dfrac{11}{9}\,64^{\,n-1} - \dfrac{2}{9}$ \\\\
+$oe2$  & $2^{5+6m}$ & $\dfrac{272}{9}\,64^{\,n-1} - \dfrac{2}{9}$ \\\\
+$oo0$  & $2^{5+6m}$ & $\dfrac{80}{9}\,64^{\,n-1} - \dfrac{8}{9}$ \\\\
+$oo1$  & $2^{3+6m}$ & $\dfrac{44}{9}\,64^{\,n-1} - \dfrac{8}{9}$ \\\\
+$oo2$  & $2^{1+6m}$ & $\dfrac{17}{9}\,64^{\,n-1} - \dfrac{8}{9}$ \\\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{From geometric sums to the lifted row formula.}
+Fix a unified-table row with parameters $(\alpha,\beta,c,\delta)$ and parent indices $(s,j)$.
+At $p=0$ the row acts by
+\[
+x' \;=\; 6\bigl(2^{\alpha} m + k\bigr) + \delta,
+\qquad
+k \;=\; \frac{\beta + c}{9}\in\mathbb Z.
+\]
+Advancing one column ($p\mapsto p+1$) multiplies the ``column constant'' by $64=2^6$.
+Thus the sequence of column constants is a geometric progression with ratio $64$, and for any
+$p\ge 0$ we have
+\[
+k_p \;=\; \frac{\beta\,64^{\,p}+c}{9}\in\mathbb Z
+\qquad\text{(since $64\equiv 1\pmod 9$ and $\beta+c\equiv 0\pmod 9$).}
+\]
+
+At the same time, each column lift multiplies the $m$--slope by $2^6$ (the $2$-adic
+“column factor”). Therefore, after $p$ lifts, the slope is $2^{\alpha+6p}$.
+Combining both effects yields the \emph{lifted row}:
+\[
+x'_p \;=\; 6\!\left(2^{\alpha+6p} m + \frac{\beta\,64^{\,p}+c}{9}\right) + \delta.
+\tag{$\star$}
+\]
+
+\paragraph{Forward identity.}
+Writing the parent in normal form $x = 18m + 6j + p_6$ with $p_6=1$ if $s=\mathrm e$ and $p_6=5$ if $s=\mathrm o$,
+the row parameters satisfy
+\[
+\beta \;=\; 2^{\alpha-1}(6j+p_6), \qquad c \;=\; -\frac{3\delta+1}{2}.
+\]
+A direct expansion shows
+\[
+3x'_p+1 \;=\; 2^{\alpha+6p}\,x,
+\]
+so $U(x'_p)=x$ holds for every $p\ge 0$.
+
+\paragraph{Geometric-sum viewpoint (intuition).}
+If $C$ denotes the increment that gets multiplied by $64$ per column, then
+\[
+A + C\sum_{r=0}^{p-1} 64^{\,r}
+\;=\;
+A + \frac{C}{63}\bigl(64^{\,p}-1\bigr),
+\]
+is the generic closed form of any column-accumulated quantity.
+In \emph{our} case that quantity is precisely the constant term inside $(\star)$:
+$k_p = (\beta\,64^{\,p}+c)/9$, while the slope multiplies by $2^{6}$ each lift,
+hence $2^{\alpha}\mapsto 2^{\alpha+6p}$.
+
+
+%A general formula for the successive preimage
+
+Given an odd integer \(x_{image}\ge 0\),  we define:\\
+\[
+r_{x_{image}} = {x_{image}}_6 \coloneqq \Bigl\lfloor \frac{{x_{image}}}{6} \Bigr\rfloor.
+\]
+
+\[
+{c_{image}} \coloneqq \Bigl\lfloor \frac{\lfloor {x_{image}}/6\rfloor}{3}\Bigr\rfloor
+=
+\Bigl\lfloor \frac{{x_{image}}_6}{3} \Bigr\rfloor
+=
+\Bigl\lfloor \frac{{x_{image}}}{18}\Bigr\rfloor.
+\]
+
+Using $r_{x_{image}}$ and ${c_{image}}$ we identify the type of $x$ from among\\
+$type \in \lbrace ee0, ee1, ee2, eo0, eo1, eo2, oe0, oe1, oe2, oo0, oo1, oo2 \rbrace$.
+Since we use two input variables $r_{x_{image}}$ and ${c_{image}}$
+there are two options for the output $r_{x_{preimage}}$.
+For example if $r_{x_{image}} = 1$ and ${c_{image}} = 0$ the preimage would be of both $type \in \{ee0, eo0\}$.
+
+Finally to get the actual preimage row $r_{x_{preimage}} = F_m \cdot {c_{image}} + T_n, m \in \mathbb{N}_0, n = m + 1$, the actual $x_{preimage} = 6 \cdot r_{x_{preimage}} + p$ where p is 1 when ${x_{{preimage}_6}} \equiv {x_{preimage}} \in 1 \equiv \pmod 6$ and 5 when ${x_{{preimage}_6}} \equiv {x_{preimage}} \in 5 \equiv \pmod 6$, the ${x_{{preimage}_6}}$ is available in the key table above(column: $preimage \pmod 6$). The equations above can further be consolidated into a single equation as below,\\
+
+\paragraph{ee0.\\}
+\[
+A_(m,n)\;\coloneqq\; \frac{\bigl(9m\cdot 2^{2}+2\bigr)\,64^{n}+(0 -2)}{9}
+\]
+\begin{comment}
+\emph{Integrality.}
+Since \(64\equiv 1 \pmod 9\), the numerator
+\((36m+2)64^{p}-2 \equiv (36m+2)-2 \equiv 36m \equiv 0 \pmod 9\),
+so \(A_p(m)\in\mathbb{Z}\).
+
+\emph{Initial value and recurrence.}
+\[
+A_0(m)=\frac{(36m+2)-2}{9}=4m,\qquad
+A_{p+1}(m)=64\,A_p(m)+14\quad(p\ge 0).
+\]
+
+\emph{Check.}
+For \(p=1\),
+\[
+A_1(m)=\frac{(36m+2)\cdot 64 - 2}{9}
+= \frac{2304m+126}{9}=256m+14
+=64\cdot (4m)+14.
+\]
+\end{comment}
+
+\paragraph{ee1.\\}
+\[
+A_(m,n)\;\coloneqq\; \frac{\bigl(9m\cdot 2^{4}+56\bigr)\,64^{n}+(54-56)}{9}
+\]
+\begin{comment}
+\emph{Integrality.}
+Since \(64\equiv 1 \pmod 9\), the numerator satisfies
+\((144m+56)64^{p}-2 \equiv (144m+56)-2 \equiv 144m+54 \equiv 0 \pmod 9\),
+hence \(B_p(m)\in\mathbb{Z}\).
+
+\emph{Initial value and recurrence.}
+\[
+B_0(m)=\frac{(144m+56)-2}{9}=16m+6,\qquad
+B_{p+1}(m)=64\,B_p(m)+14\quad(p\ge 0).
+\]
+
+\emph{Check.}
+\[
+B_1(m)=\frac{(144m+56)\cdot 64 - 2}{9}
+= \frac{9216m+3582}{9}
+= 1024m+398
+= 64\,(16m+6)+14.
+\]
+\end{comment}
+
+\paragraph{ee2.\\}
+\[
+A_(m,n)\;\coloneqq\; \frac{\bigl(9m\cdot 2^{6}+416\bigr)\,64^{n}+(414-416)}{9}
+\]
+
+\begin{comment}
+\emph{Integrality.}
+Since \(64\equiv 1 \pmod 9\),
+\((576m+416)64^{p}-2 \equiv (576m+416)-2 \equiv 576m+414 \equiv 0 \pmod 9\),
+so \(C_p(m)\in\mathbb{Z}\) and no floor is needed.
+
+\emph{Initial value and recurrence.}
+\[
+C_0(m)=\frac{(576m+416)-2}{9}=64m+46,\qquad
+C_{p+1}(m)=64\,C_p(m)+14\quad(p\ge 0).
+\]
+
+\emph{Check.}
+\[
+C_1(m)=\frac{(576m+416)\cdot 64 - 2}{9}
+= \frac{36{,}864\,m+26{,}622}{9}
+= 4096\,m+2958
+= 64\,(64m+46)+14.
+\]
+\end{comment}
+
+\paragraph{eo0.\\}
+\[
+A_(m,n)\;\coloneqq\; \frac{\bigl(9m\cdot 2^{4}+8\bigr)\,64^{n}+(0-8)}{9}
+\]
+
+\begin{comment}
+\emph{Integrality.}
+Since \(64\equiv 1 \pmod 9\),
+\((144m+8)64^{p}-8 \equiv (144m+8)-8 \equiv 144m \equiv 0 \pmod 9\),
+so \(D_p(m)\in\mathbb{Z}\).
+
+\emph{Initial value and recurrence.}
+\[
+D_0(m)=\frac{(144m+8)-8}{9}=16m,\qquad
+D_{p+1}(m)=64\,D_p(m)+56\quad(p\ge 0).
+\]
+
+\emph{Check.}
+\[
+D_1(m)=\frac{(144m+8)\cdot 64 - 8}{9}
+= \frac{9216m+504}{9}
+= 1024m+56
+= 64\cdot(16m)+56.
+\]
+\end{comment}
+
+\paragraph{eo1.\\}
+\[
+A_(m,n)\;\coloneqq\; \frac{\bigl(9m\cdot 2^{6}+224\bigr)\,64^{n}+(216-224)}{9}
+\]
+
+\begin{comment}
+\emph{Integrality.}
+Since \(64\equiv 1 \pmod 9\),
+\((576m+224)64^{p}-8 \equiv (576m+224)-8 \equiv 576m+216 \equiv 0 \pmod 9\),
+so \(E_p(m)\in\mathbb{Z}\).
+
+\emph{Initial value and recurrence.}
+\[
+E_0(m)=\frac{(576m+224)-8}{9}=64m+24,\qquad
+E_{p+1}(m)=64\,E_p(m)+56\quad(p\ge 0).
+\]
+
+\emph{Check.}
+\[
+E_1(m)=\frac{(576m+224)\cdot 64 - 8}{9}
+= \frac{36{,}864\,m+14{,}328}{9}
+= 4096\,m+1592
+= 64\,(64m+24)+56.
+\]
+\end{comment}
+
+\paragraph{eo2.\\}
+\[
+A_(m,n)\;\coloneqq\; \frac{\bigl(9m\cdot 2^{2}+26\bigr)\,64^{n}+(18-26)}{9}
+\]
+
+\begin{comment}
+\emph{Integrality.}
+Since \(64\equiv 1 \pmod 9\),
+\((36m+26)64^{p}-8 \equiv (36m+26)-8 \equiv 36m+18 \equiv 0 \pmod 9\),
+so \(F_p(m)\in\mathbb{Z}\).
+
+\emph{Initial value and recurrence.}
+\[
+F_0(m)=\frac{(36m+26)-8}{9}=4m+2,\qquad
+F_{p+1}(m)=64\,F_p(m)+56\quad(p\ge 0).
+\]
+
+\emph{Check.}
+\[
+F_1(m)=\frac{(36m+26)\cdot 64 - 8}{9}
+= \frac{2304\,m+1656}{9}
+= 256\,m+184
+= 64\,(4m+2)+56.
+\]
+\end{comment}
+
+\paragraph{oe0.\\}
+\[
+A_(m,n)\;\coloneqq\; \frac{\bigl(9m\cdot 2^{3}+20\bigr)\,64^{n}+(18-20)}{9}
+\]
+
+\begin{comment}
+\emph{Integrality.}
+Since \(64\equiv 1 \pmod 9\),
+\((72m+20)64^{p}-2 \equiv (72m+20)-2 \equiv 72m+18 \equiv 0 \pmod 9\),
+so \(G_p(m)\in\mathbb{Z}\).
+
+\emph{Initial value and recurrence.}
+\[
+G_0(m)=\frac{(72m+20)-2}{9}=8m+2,\qquad
+G_{p+1}(m)=64\,G_p(m)+14\quad(p\ge 0).
+\]
+
+\emph{Check.}
+\[
+G_1(m)=\frac{(72m+20)\cdot 64 - 2}{9}
+= \frac{4608\,m+1278}{9}
+= 512\,m+142
+= 64\,(8m+2)+14.
+\]
+\end{comment}
+
+\paragraph{oe1.\\}
+\[
+A_(m,n)\;\coloneqq\; \frac{\bigl(9m\cdot 2^{1}+11\bigr)\,64^{n}+(9-11)}{9}
+\]
+
+\begin{comment}
+\emph{Integrality.}
+Since \(64\equiv 1 \pmod 9\),
+\((18m+11)64^{p}-2 \equiv (18m+11)-2 \equiv 18m+9 \equiv 0 \pmod 9\),
+so \(H_p(m)\in\mathbb{Z}\).
+
+\emph{Initial value and recurrence.}
+\[
+H_0(m)=\frac{(18m+11)-2}{9}=2m+1,\qquad
+H_{p+1}(m)=64\,H_p(m)+14\quad(p\ge 0).
+\]
+
+\emph{Check.}
+\[
+H_1(m)=\frac{(18m+11)\cdot 64 - 2}{9}
+= \frac{1152\,m+702}{9}
+= 128\,m+78
+= 64\,(2m+1)+14.
+\]
+\end{comment}
+
+\paragraph{oe2.\\}
+\[
+A_(m,n)\;\coloneqq\; \frac{\bigl(9m\cdot 2^{5}+272\bigr)\,64^{n}+(270-272)}{9}
+\]
+
+\begin{comment}
+\emph{Integrality.}
+Since \(64\equiv 1 \pmod 9\),
+\((288m+272)64^{p}-2 \equiv (288m+272)-2 \equiv 288m+270 \equiv 0 \pmod 9\),
+so \(I_p(m)\in\mathbb{Z}\).
+
+\emph{Initial value and recurrence.}
+\[
+I_0(m)=\frac{(288m+272)-2}{9}=32m+30,\qquad
+I_{p+1}(m)=64\,I_p(m)+14\quad(p\ge 0).
+\]
+
+\emph{Check.}
+\[
+I_1(m)=\frac{(288m+272)\cdot 64 - 2}{9}
+= \frac{18{,}432\,m+17{,}406}{9}
+= 2{,}048\,m+1{,}934
+= 64\,(32m+30)+14.
+\]
+\end{comment}
+
+\paragraph{oo0.\\}
+\[
+A_(m,n)\;\coloneqq\; \frac{\bigl(9m\cdot 2^{5}+80\bigr)\,64^{n}+(72-80)}{9}
+\]
+
+\begin{comment}
+\emph{Integrality.}
+Since \(64\equiv 1 \pmod 9\),
+\((288m+80)64^{p}-8 \equiv (288m+80)-8 \equiv 288m+72 \equiv 0 \pmod 9\),
+so \(J_p(m)\in\mathbb{Z}\).
+
+\emph{Initial value and recurrence.}
+\[
+J_0(m)=\frac{(288m+80)-8}{9}=32m+8,\qquad
+J_{p+1}(m)=64\,J_p(m)+56\quad(p\ge 0).
+\]
+
+\emph{Check.}
+\[
+J_1(m)=\frac{(288m+80)\cdot 64 - 8}{9}
+= \frac{18{,}432\,m+5{,}120-8}{9}
+= \frac{18{,}432\,m+5{,}112}{9}
+= 2{,}048\,m+568
+= 64\,(32m+8)+56.
+\]
+\end{comment}
+
+\paragraph{oo1.\\}
+\[
+A_(m,n)\;\coloneqq\; \frac{\bigl(9m\cdot 2^{3}+44\bigr)\,64^{n}+(36-44)}{9}
+\]
+
+\begin{comment}
+\emph{Integrality.}
+Since \(64\equiv 1 \pmod 9\),
+\((72m+44)64^{p}-8 \equiv (72m+44)-8 \equiv 72m+36 \equiv 0 \pmod 9\),
+so \(K_p(m)\in\mathbb{Z}\).
+
+\emph{Initial value and recurrence.}
+\[
+K_0(m)=\frac{(72m+44)-8}{9}=8m+4,\qquad
+K_{p+1}(m)=64\,K_p(m)+56\quad(p\ge 0).
+\]
+
+\emph{Check.}
+\[
+K_1(m)=\frac{(72m+44)\cdot 64 - 8}{9}
+= \frac{4{,}608\,m+2{,}808}{9}
+= 512\,m+312
+= 64\,(8m+4)+56.
+\]
+\end{comment}
+
+\paragraph{oo2.\\}
+\[
+A_(m,n)\;\coloneqq\; \frac{\bigl(9m\cdot 2^{1}+17\bigr)\,64^{n}+(9-17)}{9}
+\]
+
+\begin{comment}
+\emph{Integrality.}
+Since \(64\equiv 1 \pmod 9\),
+\((18m+17)64^{p}-8 \equiv (18m+17)-8 \equiv 18m+9 \equiv 0 \pmod 9\),
+so \(L_p(m)\in\mathbb{Z}\).
+
+\emph{Initial value and recurrence.}
+\[
+L_0(m)=\frac{(18m+17)-8}{9}=2m+1,\qquad
+L_{p+1}(m)=64\,L_p(m)+56\quad(p\ge 0).
+\]
+
+\emph{Check.}
+\[
+L_1(m)=\frac{(18m+17)\cdot 64 - 8}{9}
+= \frac{1152\,m+1088-8}{9}
+= \frac{1152\,m+1080}{9}
+= 128\,m+120
+= 64\,(2m+1)+56.
+\]
+\end{comment}
+
+
+In practice the parameters $m,n$ also restrict the columns from which the preimage could be taken.\\
+
+
+% Optional note:
+% For each row, C - 63*A equals the recurrence constant
+% (+14 in the first table, +56 in the second).
+
+\begin{center}
+
+Below is an example with ${x_{image}} \equiv 1 \pmod 6$. Here the column is represented by $j$. Each value in each column of any row represents the preimage of the previous value in the row. All the row values are $v \equiv 1 \pmod 6$.\\
+
+
+\csvautotabular{even_even_169_6_formatted.csv}
+
+\end{center}
+
+\begin{center}
+
+Below is an example with ${x_{image}} \equiv 5 \pmod 6$. Here the column is represented by $j$. Each value in each column of any row represents the preimage of the previous value in the row. All the row values are $v \equiv 5 \pmod 6$.\\
+
+
+\csvautotabular{next/odd_odd_169_6_formatted.csv}
+
+\end{center}
+
+
+\paragraph{In general.\\}
+For integers $n\ge 0$ and $m\in\mathbb{Z}$, and parameters
+$\alpha\in\{1,2,3,4,5,6\}$, $c\in\{-2,-8\}$, and $\beta\in\mathbb{Z}$
+satisfying $\beta \equiv -c \pmod{9}$, define
+\[
+F_{\alpha,\beta,c}(n,m)
+\;\coloneqq\;
+\frac{\bigl(9\,m\,2^{\alpha}+\beta\bigr)\,64^{\,n}+c}{9}.
+\]
+
+\emph{Integrality.} Since $64^{n}\equiv 1 \pmod 9$,
+\[
+(9m2^{\alpha}+\beta)64^{n}+c \equiv \beta+c \equiv 0 \pmod 9,
+\]
+so $F_{\alpha,\beta,c}(n,m)\in\mathbb{Z}$.
+
+\emph{Initial value and recurrence in $n$.}
+\[
+F_{\alpha,\beta,c}(0,m)=2^{\alpha}m+\frac{\beta+c}{9},\qquad
+F_{\alpha,\beta,c}(n+1,m)=64\,F_{\alpha,\beta,c}(n,m)\;-\;7c.
+\]
+
+\medskip
+\noindent\emph{The series as instances.}
+\[
+\begin{array}{lcl}
+\text{(+14 family, }c=-2): &
+(\alpha,\beta)\in\{(2,2),(4,56),(6,416),(3,20),(1,11),(5,272)\},\\[3pt]
+\text{(+56 family, }c=-8): &
+(\alpha,\beta)\in\{(4,8),(6,224),(2,26),(5,80),(3,44),(1,17)\}.
+\end{array}
+\]
+
+%____________________________________________________________________________________
+% Requires: \usepackage{amsmath}
+% Optional (for theorem styling): \usepackage{amsthm}
+% If using amsthm, define:
+% \newtheorem{lemma}{Lemma}
+
+%fromn here down, need to edit p and change it to n
+
+\paragraph{Master form.}
+For integers $p\ge 0$ and $m\in\mathbb{Z}$, with parameters
+$\alpha\in\{1,2,3,4,5,6\}$, $c\in\{-2,-8\}$ and $\beta\equiv -c\pmod{9}$, define
+\[
+F_{\alpha,\beta,c}(p,m)
+=\frac{\bigl(9\,m\,2^{\alpha}+\beta\bigr)\,64^{\,p}+c}{9}.
+\]
+
+\noindent\textbf{Label $\to$ parameters.}
+\[
+\begin{array}{lcl@{\qquad}lcl}
+\text{ee0}:(2,2,-2) &\quad& \text{eo0}:(4,8,-8) &
+\text{oe0}:(3,20,-2) &\quad& \text{oo0}:(5,80,-8)\\
+\text{ee1}:(4,56,-2)&& \text{eo1}:(6,224,-8) &
+\text{oe1}:(1,11,-2)&& \text{oo1}:(3,44,-8)\\
+\text{ee2}:(6,416,-2)&& \text{eo2}:(2,26,-8) &
+\text{oe2}:(5,272,-2)&& \text{oo2}:(1,17,-8)
+\end{array}
+\]
+
+\begin{lemma}[Series selection and output map]
+Let $x$ be odd with $x\equiv 1$ or $5\pmod{6}$. Set
+\[
+m=\Bigl\lfloor \frac{x}{18}\Bigr\rfloor,\qquad
+x_6=\Bigl\lfloor \frac{x}{6}\Bigr\rfloor,\qquad
+j\equiv x_6\pmod 3 \in\{0,1,2\}.
+\]
+Let $\text{start}=\text{e}$ if $x\equiv 1\pmod 6$ and $\text{start}=\text{o}$ if $x\equiv 5\pmod 6$.
+Choose a target class $\text{targ}\in\{\text{e},\text{o}\}$, form the label
+$\text{start}\,\text{targ}\,j$, read $(\alpha,\beta,c)$ from the table above, and set
+$F=F_{\alpha,\beta,c}(p,m)$. Then the output integer
+\[
+n_{\mathrm{out}} \;=\;
+\begin{cases}
+6F+1, & \text{if }\text{targ}=\text{e},\\
+6F+5, & \text{if }\text{targ}=\text{o},
+\end{cases}
+\]
+satisfies $n_{\mathrm{out}}\equiv 1 \pmod 6$ (resp.\ $\equiv 5 \pmod 6$). Moreover,
+\[
+F_{\alpha,\beta,c}(0,m)=2^{\alpha}m+\frac{\beta+c}{9},\qquad
+F_{\alpha,\beta,c}(p+1,m)=64\,F_{\alpha,\beta,c}(p,m)-7c .
+\]
+\end{lemma}
+
+\begin{proof}
+Since $64^p\equiv 1\pmod 9$ and $\beta\equiv -c\pmod 9$, the numerator of
+$F_{\alpha,\beta,c}(p,m)$ is $\equiv \beta+c\equiv 0\pmod 9$, so $F\in\mathbb{Z}$. The
+recurrence follows by direct algebra:
+\[
+F(p+1)=\frac{((9m2^\alpha+\beta)64^{p+1}+c)}{9}
+=64\,F(p)-\frac{64c-c}{9}=64\,F(p)-7c .
+\]
+Finally, $6F+1\equiv 1\pmod 6$ and $6F+5\equiv 5\pmod 6$, so the residue class matches the chosen target.
+\end{proof}
+
+
+\begin{lemma}[Minimum-path rule at $p=0$]
+Let $x$ be odd with $x\equiv 1$ or $5 \pmod 6$, and set
+\[
+m=\Big\lfloor \frac{x}{18}\Big\rfloor,\qquad
+j=\Big(\Big\lfloor \frac{x}{6}\Big\rfloor\Big)\bmod 3,\qquad
+s=\begin{cases}\mathrm{e},& x\equiv 1\pmod 6\\ \mathrm{o},& x\equiv 5\pmod 6.\end{cases}
+\]
+For the two one-step candidates (ending in $\mathrm{e}$ or $\mathrm{o}$) the minimum
+is independent of $m$ and is given by the following fixed choice:
+\[
+x'=\min\{x_{\mathrm{e}},x_{\mathrm{o}}\}=
+\begin{cases}
+\textbf{ee0: }\,24m+1, & s=\mathrm{e},\ j=0,\\[2pt]
+\textbf{ee1: }\,96m+37, & s=\mathrm{e},\ j=1,\\[2pt]
+\textbf{eo2: }\,24m+17, & s=\mathrm{e},\ j=2,\\[4pt]
+\textbf{oe0: }\,48m+13, & s=\mathrm{o},\ j=0,\\[2pt]
+\textbf{oe1: }\,12m+7,  & s=\mathrm{o},\ j=1,\\[2pt]
+\textbf{oo2: }\,12m+11, & s=\mathrm{o},\ j=2.
+\end{cases}
+\]
+Equivalently, writing $F=2^{\alpha}m+k$ for the chosen row above (so $x'=6F+\delta$),
+the state updates deterministically by
+\[
+m'=\Big\lfloor \frac{F}{3}\Big\rfloor,\qquad
+j'=F \bmod 3,\qquad
+s'=\begin{cases}\mathrm{e},& \delta=1,\\ \mathrm{o},& \delta=5.\end{cases}
+\]
+\end{lemma}
+% Requires: amsmath, amsthm (for the theorem envs). Optional: booktabs if you prefer \toprule.
+% \usepackage{amsmath,amsthm}
+% \newtheorem{lemma}{Lemma}
+
+\begin{lemma}[Minimum path at $p=0$ uses only six labels]
+Let $x$ be odd with $x\equiv 1$ or $5 \pmod 6$, and set
+\[
+m=\Bigl\lfloor \frac{x}{18}\Bigr\rfloor,\qquad
+j=\Bigl(\Bigl\lfloor \frac{x}{6}\Bigr\rfloor\Bigr)\bmod 3,\qquad
+s=\begin{cases}\mathrm{e},&x\equiv 1\pmod 6\\ \mathrm{o},&x\equiv 5\pmod 6.\end{cases}
+\]
+At depth $p=0$, the two one-step candidates (end in $\mathrm{e}$ or end in $\mathrm{o}$) are affine in $m$:
+\[
+x_{\mathrm{e}}(m)=6\bigl(2^{\alpha_{sej}}\,m+k_{sej}\bigr)+1,\qquad
+x_{\mathrm{o}}(m)=6\bigl(2^{\alpha_{soj}}\,m+k_{soj}\bigr)+5,
+\]
+where $(\alpha_{(\cdot)},k_{(\cdot)})$ are the fixed parameters of the label $sej$ or $soj$.
+For each fixed pair $(s,j)$, the minimum $\min\{x_{\mathrm{e}}(m),x_{\mathrm{o}}(m)\}$ is \emph{independent of $m$} (for all $m\ge 0$); the winner is always the line with the smaller slope $6\cdot 2^\alpha$ (and if slopes tied, the smaller intercept).
+\end{lemma}
+
+Consequently, the minimum-path step uses exactly the following six labels:
+\[
+\begin{array}{c|c|c}
+(s,j) & \text{winner label} & x'(m)=6\bigl(2^{\alpha}m+k\bigr)+\delta \\ \hline
+(\mathrm{e},0) & \textbf{ee0} & 24m+1 \\
+(\mathrm{e},1) & \textbf{ee1} & 96m+37 \\
+(\mathrm{e},2) & \textbf{eo2} & 24m+17 \\ \hline
+(\mathrm{o},0) & \textbf{oe0} & 48m+13 \\
+(\mathrm{o},1) & \textbf{oe1} & 12m+7 \\
+(\mathrm{o},2) & \textbf{oo2} & 12m+11
+\end{array}
+\]
+and the complementary six labels are never chosen in the minimum path at $p=0$:
+\[
+\text{never used: }\;\; \mathrm{eo}0,\ \mathrm{eo}1,\ \mathrm{ee}2,\ \mathrm{oo}0,\ \mathrm{oo}1,\ \mathrm{oe}2.
+\]
+
+\emph{Proof (sketch).}
+Fix $(s,j)$. Then $x_{\mathrm{e}}(m)=a_{\mathrm{e}}\,m+b_{\mathrm{e}}$ and
+$x_{\mathrm{o}}(m)=a_{\mathrm{o}}\,m+b_{\mathrm{o}}$ with
+$a_{\mathrm{e}}=6\cdot 2^{\alpha_{sej}}$, $a_{\mathrm{o}}=6\cdot 2^{\alpha_{soj}}$ and constants
+$b_{\mathrm{e}}=6k_{sej}+1$, $b_{\mathrm{o}}=6k_{soj}+5$. Since $m\ge 0$, if $a_{\mathrm{e}}\neq a_{\mathrm{o}}$
+the smaller slope line is strictly below the other for all $m\ge 0$; if $a_{\mathrm{e}}=a_{\mathrm{o}}$ (which
+does not occur among these pairs), the smaller intercept wins. A direct check with the
+known parameters yields the six winners listed above:
+\[
+\begin{aligned}
+&(\mathrm{e},0):\; \text{ee0 }(24m+1) \text{ vs eo0 }(96m+5)\ \Rightarrow\ \text{ee0}; \\
+&(\mathrm{e},1):\; \text{ee1 }(96m+37) \text{ vs eo1 }(384m+149)\ \Rightarrow\ \text{ee1}; \\
+&(\mathrm{e},2):\; \text{ee2 }(384m+277) \text{ vs eo2 }(24m+17)\ \Rightarrow\ \text{eo2}; \\
+&(\mathrm{o},0):\; \text{oe0 }(48m+13) \text{ vs oo0 }(192m+53)\ \Rightarrow\ \text{oe0}; \\
+&(\mathrm{o},1):\; \text{oe1 }(12m+7) \text{ vs oo1 }(48m+29)\ \Rightarrow\ \text{oe1}; \\
+&(\mathrm{o},2):\; \text{oe2 }(192m+181) \text{ vs oo2 }(12m+11)\ \Rightarrow\ \text{oo2}.
+\end{aligned}
+\]
+Thus, for $p=0$ the minimum-path choice depends only on $(s,j)$ and never on $m$, and only the six labels above are ever taken. \qed
+
+% Requires: \usepackage{amsmath,amsthm}
+% If not already defined:
+% \newtheorem{corollary}{Corollary}
+
+\begin{corollary}[Deterministic state update at $p=0$]
+With $x$, $m=\lfloor x/18\rfloor$, $j=(\lfloor x/6\rfloor)\bmod 3$, and
+$s\in\{\mathrm{e},\mathrm{o}\}$ as in the lemma, define the parameters
+\[
+(\alpha_{s,j},\,k_{s,j},\,\delta_{s,j}) \;=\;
+\begin{cases}
+(2,0,1),  & (s,j)=(\mathrm{e},0)\quad\text{\textbf{ee0}},\\
+(4,6,1),  & (s,j)=(\mathrm{e},1)\quad\text{\textbf{ee1}},\\
+(2,2,5),  & (s,j)=(\mathrm{e},2)\quad\text{\textbf{eo2}},\\\
+(3,2,1),  & (s,j)=(\mathrm{o},0)\quad\text{\textbf{oe0}},\\
+(1,1,1),  & (s,j)=(\mathrm{o},1)\quad\text{\textbf{oe1}},\\
+(1,1,5),  & (s,j)=(\mathrm{o},2)\quad\text{\textbf{oo2}}.
+\end{cases}
+\]
+Let
+\[
+F_{s,j}(m)\;=\;2^{\alpha_{s,j}}\,m+k_{s,j},
+\qquad
+x'\;=\;6\,F_{s,j}(m)+\delta_{s,j}.
+\]
+Then the one-step minimum-path update is deterministic and given by
+\[
+m'=\Bigl\lfloor \tfrac{F_{s,j}(m)}{3}\Bigr\rfloor,\qquad
+j'=F_{s,j}(m)\bmod 3,\qquad
+s'=\begin{cases}\mathrm{e},&\delta_{s,j}=1,\\ \mathrm{o},&\delta_{s,j}=5.\end{cases}
+\]
+Moreover, $x'\equiv 1\pmod 6$ when $\delta_{s,j}=1$ and $x'\equiv 5\pmod 6$ when $\delta_{s,j}=5$.
+\end{corollary}
+
+% Requires: \usepackage{amsmath,amsthm}
+% \newtheorem{theorem}{Theorem}
+% \newtheorem{lemma}{Lemma}
+
+\begin{lemma}[Odd preimages of a given odd image]
+Let $r$ be odd. The odd preimages $y$ with $U(y)=r$ for the accelerated odd map
+$U(y)=\dfrac{3y+1}{2^{\nu_2(3y+1)}}$ are exactly
+\[
+y_s \;=\; \frac{2^{\,s}r-1}{3},\qquad s\ge 1,\quad 2^{\,s}r\equiv 1\pmod 3.
+\]
+If $r\equiv 1\pmod 6$ then $s$ must be even; if $r\equiv 5\pmod 6$ then $s$ must be odd.
+Moreover $y_s$ is strictly increasing in $s$.
+\end{lemma}
+
+\begin{thm}[Six-rule $p=0$ step gives the minimal admissible preimage]
+Fix an odd image $r\equiv 1$ or $5\pmod 6$ and write
+\[
+r \;=\; 18m + \rho,\qquad \rho\in\{1,7,13,5,11,17\}.
+\]
+Set $j \coloneqq \bigl\lfloor r/6\bigr\rfloor \bmod 3$ and
+$s=\mathrm{e}$ if $r\equiv 1\pmod 6$, $s=\mathrm{o}$ if $r\equiv 5\pmod 6$.
+Among all odd preimages $y$ of $r$ that are \emph{admissible}
+(i.e.\ $y\equiv 1$ or $5\pmod 6$), the smallest is given by the corresponding
+row in the following six deterministic $p=0$ rules:
+\[
+\begin{array}{c|c|c}
+(s,j) & \text{label} & y_{\min}(r) \\ \hline
+(\mathrm{e},0) & \textbf{ee0} & \dfrac{4r-1}{3} \;=\; 24m+1 \\[6pt]
+(\mathrm{e},1) & \textbf{ee1} & \dfrac{16r-1}{3} \;=\; 96m+37 \\[6pt]
+(\mathrm{e},2) & \textbf{eo2} & \dfrac{4r-1}{3} \;=\; 24m+17 \\[6pt]
+(\mathrm{o},0) & \textbf{oe0} & \dfrac{8r-1}{3} \;=\; 48m+13 \\[6pt]
+(\mathrm{o},1) & \textbf{oe1} & \dfrac{2r-1}{3} \;=\; 12m+7 \\[6pt]
+(\mathrm{o},2) & \textbf{oo2} & \dfrac{2r-1}{3} \;=\; 12m+11
+\end{array}
+\]
+In particular, the $p=0$ six-rule output is the \emph{minimum} among all odd
+preimages that avoid the class $3\bmod 6$.
+\end{thm}
+
+\begin{proof}
+By the lemma, every odd preimage has the form $y_s=(2^s r-1)/3$ with $s$
+of fixed parity and $y_s$ strictly increasing in $s$.
+
+\emph{Case $r\equiv 1\pmod 6$.}
+Write $r=6t+1$ with $t\in\mathbb Z_{\ge 0}$; allowed exponents are even $s=2u$.
+For the smallest $u=1$ we obtain
+\[
+y_2=\frac{4r-1}{3}=\frac{4(6t+1)-1}{3}=8t+1.
+\]
+Modulo $6$ this is $y_2\equiv 2t+1\pmod 6$, hence
+\[
+y_2\equiv
+\begin{cases}
+1 \pmod 6,& t\equiv 0\pmod 3,\\
+3 \pmod 6,& t\equiv 1\pmod 3,\\
+5 \pmod 6,& t\equiv 2\pmod 3.
+\end{cases}
+\]
+Thus $y_2$ is admissible unless $t\equiv 1\pmod 3$ (i.e.\ $j=\lfloor r/6\rfloor\bmod 3=1$).
+If $t\equiv 1\pmod 3$, we go to the next admissible exponent $s=4$:
+\[
+y_4=\frac{16r-1}{3}=\frac{16(6t+1)-1}{3}=32t+5\equiv 2t+5\pmod 6.
+\]
+When $t\equiv 1\pmod 3$, $2t+5\equiv 7\equiv 1\pmod 6$, hence $y_4$ is admissible.
+Since $y_s$ increases with $s$, $y_4$ is then the \emph{minimal} admissible preimage.
+Translating $t$ back to $m$ and the row residue $\rho$ gives the three lines
+\[
+\begin{aligned}
+\rho=1\ (j=0):\ &y_{\min}=y_2=\frac{4r-1}{3}=24m+1\quad(\text{\textbf{ee0}}),\\
+\rho=7\ (j=1):\ &y_{\min}=y_4=\frac{16r-1}{3}=96m+37\quad(\text{\textbf{ee1}}),\\
+\rho=13\ (j=2):\ &y_{\min}=y_2=\frac{4r-1}{3}=24m+17\quad(\text{\textbf{eo2}}).
+\end{aligned}
+\]
+
+\emph{Case $r\equiv 5\pmod 6$.}
+Write $r=6t+5$; allowed exponents are odd $s=2u-1$.
+For the smallest $u=1$ we have
+\[
+y_1=\frac{2r-1}{3}=\frac{2(6t+5)-1}{3}=4t+3.
+\]
+Modulo $6$ this is $y_1\equiv 4t+3\pmod 6$, hence
+\[
+y_1\equiv
+\begin{cases}
+3 \pmod 6,& t\equiv 0\pmod 3,\\
+1 \pmod 6,& t\equiv 1\pmod 3,\\
+5 \pmod 6,& t\equiv 2\pmod 3.
+\end{cases}
+\]
+Thus $y_1$ is admissible unless $t\equiv 0\pmod 3$ (i.e.\ $j=0$).
+If $t\equiv 0\pmod 3$, go to $s=3$:
+\[
+y_3=\frac{8r-1}{3}=\frac{8(6t+5)-1}{3}=16t+13\equiv 4t+1\pmod 6.
+\]
+When $t\equiv 0\pmod 3$, $4t+1\equiv 1\pmod 6$, so $y_3$ is admissible and
+minimal among admissible preimages. Converting to $(m,\rho)$ yields
+\[
+\begin{aligned}
+\rho=5\ (j=0):\ &y_{\min}=y_3=\frac{8r-1}{3}=48m+13\quad(\text{\textbf{oe0}}),\\
+\rho=11\ (j=1):\ &y_{\min}=y_1=\frac{2r-1}{3}=12m+7\quad(\text{\textbf{oe1}}),\\
+\rho=17\ (j=2):\ &y_{\min}=y_1=\frac{2r-1}{3}=12m+11\quad(\text{\textbf{oo2}}).
+\end{aligned}
+\]
+
+In both cases the $p=0$ six-rule value equals the \emph{smallest} odd preimage
+that is not $3\bmod 6$. Since every other admissible preimage corresponds to
+a larger exponent $s+2k$ (and hence a larger value $y_{s+2k}>y_s$), the listed
+value is indeed minimal among admissible preimages.
+\end{proof}
+
+% Requires: \usepackage{amsmath,amsthm}
+% \newtheorem{lemma}{Lemma}
+% \newtheorem{corollary}{Corollary}
+
+\begin{lemma}[Maximum-path rule at $p=0$]
+Let $x$ be odd with $x\equiv 1$ or $5 \pmod 6$, and set
+\[
+m=\Big\lfloor \frac{x}{18}\Big\rfloor,\qquad
+j=\Big(\Big\lfloor \frac{x}{6}\Big\rfloor\Big)\bmod 3,\qquad
+s=\begin{cases}\mathrm{e},&x\equiv 1\pmod 6\\ \mathrm{o},&x\equiv 5\pmod 6.\end{cases}
+\]
+Among the two $p=0$ one-step candidates
+\(
+x_{\mathrm{e}}=6(2^{\alpha_{sej}}m+k_{sej})+1
+\)
+and
+\(
+x_{\mathrm{o}}=6(2^{\alpha_{soj}}m+k_{soj})+5
+\),
+the larger is independent of $m$ and is given by the complementary six labels
+(opposite to the minimum-path winners):
+\[
+\begin{array}{c|c|c}
+(s,j) & \text{label} & x_{\max}(m)=6(2^{\alpha}m+k)+\delta \\ \hline
+(\mathrm{e},0) & \textbf{eo0} & 96m+5 \\
+(\mathrm{e},1) & \textbf{eo1} & 384m+149 \\
+(\mathrm{e},2) & \textbf{ee2} & 384m+277 \\ \hline
+(\mathrm{o},0) & \textbf{oo0} & 192m+53 \\
+(\mathrm{o},1) & \textbf{oo1} & 48m+29 \\
+(\mathrm{o},2) & \textbf{oe2} & 192m+181
+\end{array}
+\]
+In other words, for $(s,j)$ fixed, the larger of the two affine functions in $m$
+is always the one with larger slope $6\cdot 2^\alpha$ (ties do not occur here),
+so the choice does not depend on $m\ge 0$.
+\end{lemma}
+
+\begin{corollary}[Deterministic state update for the max-path at $p=0$]
+For the chosen row $(\alpha,k,\delta)$ above, let
+\[
+F_{s,j}(m)=2^{\alpha}m+k,\qquad x' = 6F_{s,j}(m)+\delta.
+\]
+Then the next state is
+\[
+m'=\Big\lfloor \frac{F_{s,j}(m)}{3}\Big\rfloor,\qquad
+j'=F_{s,j}(m)\bmod 3,\qquad
+s'=\begin{cases}\mathrm{e},&\delta=1\\ \mathrm{o},&\delta=5.\end{cases}
+\]
+\end{corollary}
+
+\noindent\emph{Remark.}
+Allowing $n>0$ in $F_{\alpha,\beta,c}(n,m)$ strictly increases the step value
+(because of the $64^n$ factor), so there is no finite “maximum” unless one fixes $n=0$.
+
+
+% Proof sketch:
+% Immediate from the lemma’s fixed winner per (s,j) and the definition of F_{s,j}(m).
+
+% Needs: \usepackage{amsmath,amsthm}
+% \newtheorem{theorem}{Theorem}
+
+\begin{thm}[Exhaustion and uniqueness of the two preimage arrays]
+Define the accelerated odd Collatz map
+\[
+U(y)\;=\;\frac{3y+1}{2^{\nu_2(3y+1)}}\qquad (y\ \text{odd}),
+\]
+and two infinite arrays as follows.
+
+\medskip
+\noindent\textbf{E-array (rows $r\equiv 1\pmod 6$):}
+for each odd \(r\equiv 1\pmod 6\), define the column sequence
+\[
+E_{r,1}\coloneqq \frac{4r-1}{3},\qquad
+E_{r,t+1}\coloneqq 4\,E_{r,t}+1\quad(t\ge 1).
+\]
+Equivalently,
+\[
+E_{r,t} \;=\; \frac{r\cdot 2^{\,2t}-1}{3}\qquad(t\ge 1).
+\]
+
+\medskip
+\noindent\textbf{O-array (rows $r\equiv 5\pmod 6$):}
+for each odd \(r\equiv 5\pmod 6\), define
+\[
+O_{r,1}\coloneqq \frac{2r-1}{3},\qquad
+O_{r,t+1}\coloneqq 4\,O_{r,t}+1\quad(t\ge 1).
+\]
+Equivalently,
+\[
+O_{r,t} \;=\; \frac{r\cdot 2^{\,2t-1}-1}{3}\qquad(t\ge 1).
+\]
+
+Then every positive odd integer \(y\) occurs \emph{in exactly one place} in the union of these two arrays: there exists a unique odd \(r\equiv 1\) or \(5\pmod 6\) and a unique \(t\ge 1\) such that
+\[
+y \;=\; E_{r,t}\quad\text{or}\quad y \;=\; O_{r,t}.
+\]
+\end{thm}
+
+\begin{proof}
+(\emph{Existence}). Fix an odd \(y\ge 1\), and write
+\[
+3y+1 \;=\; r\cdot 2^{\,s},\qquad s\coloneqq \nu_2(3y+1)\ge 1,\quad r\ \text{odd}.
+\]
+Reducing modulo \(3\), we have \(3y+1\equiv 1\pmod 3\), hence
+\(r\equiv 2^{-s}\pmod 3\in\{1,2\}\). Thus \(r\) is odd and not divisible
+by \(3\), i.e. \(r\equiv 1\) or \(5\pmod 6\); moreover
+\[
+y \;=\; \frac{r\cdot 2^{\,s}-1}{3}.
+\]
+
+If \(r\equiv 1\pmod 3\) (equivalently \(r\equiv 1\pmod 6\)), then \(2^{s}\equiv 1\pmod 3\),
+so \(s\) is even: write \(s=2t\) with \(t\ge 1\). Hence
+\[
+y \;=\; \frac{r\cdot 2^{\,2t}-1}{3} \;=\; E_{r,t},
+\]
+placing \(y\) in the E-array (row \(r\), column \(t\)).
+
+If \(r\equiv 2\pmod 3\) (equivalently \(r\equiv 5\pmod 6\)), then \(2^{s}\equiv 2\pmod 3\),
+so \(s\) is odd: write \(s=2t-1\) with \(t\ge 1\). Hence
+\[
+y \;=\; \frac{r\cdot 2^{\,2t-1}-1}{3} \;=\; O_{r,t},
+\]
+placing \(y\) in the O-array (row \(r\), column \(t\)).
+
+Thus every odd \(y\) appears in at least one of the arrays.
+
+\medskip
+(\emph{Uniqueness}). Suppose \(y\) appears twice, say
+\[
+y \;=\; \frac{r\cdot 2^{\,s}-1}{3} \;=\; \frac{r'\cdot 2^{\,s'}-1}{3}
+\]
+with \(r,r'\) odd and \(s,s'\ge 1\). Then \(r\cdot 2^{\,s}=r'\cdot 2^{\,s'}\).
+Since \(r,r'\) are odd, the powers of \(2\) must match, i.e. \(s=s'\),
+and then necessarily \(r=r'\). In the E-array the exponent is \(s=2t\) and in
+the O-array it is \(s=2t-1\), so the column index \(t\) is also determined
+uniquely. Hence \(y\) occurs in exactly one row and one column of exactly
+one of the two arrays.
+\end{proof}
+
+\begin{remark}[Congruence fingerprints]
+In the E-array, \(E_{r,1}\equiv 1\pmod 8\) and \(E_{r,t}\equiv 5\pmod 8\) for \(t\ge 2\).
+In the O-array, \(O_{r,1}\equiv 3\pmod 4\) and \(O_{r,t}\equiv 5\pmod 8\) for \(t\ge 2\).
+This follows from the recurrences \(y\mapsto 4y+1\) and the base columns.
+\end{remark}
+
+
+% Requires: \usepackage{amsmath,amsthm}
+% \newtheorem{lemma}{Lemma}
+% \newtheorem{proposition}{Proposition}
+% \newtheorem{corollary}{Corollary}
+
+\emph{In what follows we parameterize odd preimages by the chosen number of divisions $s$ after $3y+1$; equivalently $s=\nu_2(3y+1)$, with parity fixed by the row (even $s$ when $r\equiv 1\pmod{3}$, odd $s$ when $r\equiv 2\pmod{3}$); moreover, the column operation $y\mapsto 4y+1$ increases $s$ by $2$.}
+
+
+\begin{lemma}[Inverse generators]
+Define
+\[
+\Phi_{1}(x)\coloneqq \frac{2x-1}{3}\quad(\text{defined when }2x\equiv 1\!\!\pmod 3),\qquad
+\Phi_{2}(x)\coloneqq \frac{4x-1}{3}\quad(\text{defined when }4x\equiv 1\!\!\pmod 3),
+\]
+\[
+\Psi(x)\coloneqq 4x+1.
+\]
+For odd \(x\), whenever \(\Phi_{1},\Phi_{2}\) are defined, their values are odd. Moreover,
+\[
+U( \Phi_{1}(x) )=U( \Phi_{2}(x) )=x,\qquad U(\Psi(x))=U(x),
+\]
+for the accelerated odd map \(U(y)=\frac{3y+1}{2^{\nu_2(3y+1)}}\).
+\end{lemma}
+
+\begin{proposition}[Residue lifting modulo \(3\cdot 2^K\)]
+Fix \(K\ge 1\) and set \(M=3\cdot 2^K\). Work with \emph{odd} residue classes modulo \(M\).
+From a class \(a\bmod M\) one step of the generators induces the following transitions:
+\[
+\Psi:\ a\ \longmapsto\ 4a+1 \pmod M,
+\]
+\[
+\Phi_{1}:\ \text{if }a\equiv 2\!\!\pmod 3,\ \text{then }
+a\ \longmapsto\ \bigl\{ \tfrac{2a-1}{3}+t\cdot 2^K\ \bmod M \mid t=0,1,2 \bigr\},
+\]
+\[
+\Phi_{2}:\ \text{if }a\equiv 1\!\!\pmod 3,\ \text{then }
+a\ \longmapsto\ \bigl\{ \tfrac{4a-1}{3}+t\cdot 2^K\ \bmod M \mid t=0,1,2 \bigr\}.
+\]
+(In each case the integer divisions are valid because the congruence conditions ensure
+divisibility by \(3\).)
+\end{proposition}
+
+\begin{corollary}[Residue-surjectivity implies Collatz (odd case)]
+Let \(S_K\subseteq (\mathbb Z/M\mathbb Z)^\times\) be the set of \emph{odd} residue classes modulo
+\(M=3\cdot 2^K\) that are reachable from \(1\bmod M\) by a finite word in
+\(\{\Phi_1,\Phi_2,\Psi\}\) using the transitions above.
+If for every \(K\ge 1\) we have \(S_K\) equal to \emph{all} odd classes modulo \(M\),
+then every positive odd integer has an accelerated Collatz orbit that reaches \(1\).
+\end{corollary}
+
+\begin{proof}[Proof sketch]
+Fix an odd \(y\). For each \(K\) let \([y]_K\) be its class modulo \(M=3\cdot 2^K\).
+By hypothesis \([y]_K\in S_K\), so there is a word \(W_K\in\{\Phi_1,\Phi_2,\Psi\}^\ast\)
+with \(W_K(1)\equiv [y]_K\ (\mathrm{mod}\ M)\).
+A standard lifting/diagonal argument (compatibility of transitions when passing
+from \(K\) to \(K+1\)) yields a single infinite word \(W\) that maps \(1\) to \(y\) exactly,
+hence \(y\) is in the backward orbit of \(1\) under the generators. Since \(\Psi\) preserves
+\(U\)-images and \(\Phi_1,\Phi_2\) are true inverse steps for \(U\), the forward (accelerated)
+orbit of \(y\) reaches \(1\).
+\end{proof}
+
+\begin{lemma}[A 2-adic “shift” identity along $2^q3^t n+1$ families]
+Fix integers $q\ge 2$, $t\ge 0$, and an \emph{odd} integer $n\ge 1$, and set
+\[
+x \;=\; 2^{q}\,3^{t}\,n \;+\; 1 \qquad\text{(so $x$ is odd).}
+\]
+For the accelerated odd Collatz map $U(y)=\dfrac{3y+1}{2^{\nu_2(3y+1)}}$ we have
+\[
+U(x) \;=\; 2^{\,q-2}\,3^{\,t+1}\,n \;+\; 1.
+\]
+Equivalently, one step of $U$ transforms the pair of exponents by
+\[
+(q,t) \longmapsto (q-2,\ t+1),
+\]
+leaving the coefficient $n$ and the trailing “$+1$” unchanged.
+\end{lemma}
+
+\begin{proof}
+Compute
+\[
+3x+1 \;=\; 3\bigl(2^{q}3^{t}n+1\bigr)+1 \;=\; 2^{q}3^{t+1}n \;+\; 4.
+\]
+Since $q\ge 2$ and $n$ is odd, we may factor exactly $4$:
+\[
+3x+1 \;=\; 4\Bigl(2^{q-2}\,3^{t+1}\,n \;+\; 1\Bigr),
+\]
+and the parenthesis is odd. Hence $\nu_2(3x+1)=2$ and
+\[
+U(x)\;=\;\frac{3x+1}{2^{2}} \;=\; 2^{\,q-2}\,3^{\,t+1}\,n + 1.\qedhere
+\]
+\end{proof}
+
+\begin{corollary}[Iteration while $q\ge 2$]
+With the same hypotheses, for any $k$ with $0\le k\le \lfloor q/2\rfloor$,
+\[
+U^{\,k}(x) \;=\; 2^{\,q-2k}\,3^{\,t+k}\,n \;+\; 1.
+\]
+\end{corollary}
+
+\begin{remark}[Why modulus $24$ is convenient]
+If $q\ge 3$ then $x\equiv 1\pmod 8$, so $3x+1\equiv 3\cdot 1+1\equiv 4\pmod 8$ and thus
+$\nu_2(3x+1)=2$ immediately; the lemma follows at a glance. Your example
+$2^{3}\cdot 3n + 1 \mapsto 2\cdot 3^{2}n + 1$ is the special case $(q,t)=(3,1)$.
+\end{remark}
+
+\begin{remark}[Edge cases $q=0,1$]
+If $q=1$ and $n$ is odd, then $3x+1=2\bigl(3^{t+1}n+2\bigr)$ with $\nu_2=1$, so
+$U(x)=3^{t+1}n+2$ (still odd but no longer of the displayed $2^{q'}3^{t'}n+1$ form).
+If $q=0$, $x=3^t n+1$ is odd only when $n$ is even; then $\nu_2(3x+1)\ge 2$ but the
+exact valuation depends on $n$. The clean shift $(q,t)\mapsto(q-2,t+1)$ therefore
+holds uniformly in the regime $q\ge 2$ with $n$ odd.
+\end{remark}
+
+% Requires: amsmath, amsthm, booktabs
+% \usepackage{amsmath,amsthm,booktabs}
+% \newtheorem{lemma}{Lemma}
+% \newtheorem{proposition}{Proposition}
+% \newtheorem{corollary}{Corollary}
+
+\begin{lemma}[Inverse generators and compatibility]
+Define, for odd integers,
+\[
+\Phi_{1}(x)=\frac{2x-1}{3}\quad(\text{defined when }2x\equiv1\!\!\pmod3),\qquad
+\Phi_{2}(x)=\frac{4x-1}{3}\quad(\text{defined when }4x\equiv1\!\!\pmod3),
+\]
+\[
+\Psi(x)=4x+1.
+\]
+Let $U(y)=\dfrac{3y+1}{2^{\nu_2(3y+1)}}$ be the accelerated odd Collatz map. Then
+\[
+U(\Phi_1(x))=U(\Phi_2(x))=x,\qquad U(\Psi(x))=U(x).
+\]
+For $K\ge1$ put $M_K=3\cdot 2^K$. The induced maps on odd residue classes modulo $M_K$
+satisfy the commutation
+\[
+\pi_K\circ \Phi_i \;=\; \widehat{\Phi}_i\circ \pi_K,\qquad
+\pi_K\circ \Psi \;=\; \widehat{\Psi}\circ \pi_K,
+\]
+where $\pi_K:\mathbb Z/M_{K+1}\mathbb Z\to \mathbb Z/M_K\mathbb Z$ is the natural projection
+and $\widehat{\Phi}_i,\widehat{\Psi}$ are the induced maps modulo $M_K$.
+\end{lemma}
+
+\begin{proposition}[Residue surjectivity lifts from $K$ to $K{+}1$]
+Fix $K\ge 1$ and write $M_K=3\cdot 2^K$. Suppose that from $1\bmod M_K$, the closure
+under $\{\Phi_1,\Phi_2,\Psi\}$ hits \emph{every odd residue class modulo $M_K$}.
+Then from $1\bmod M_{K+1}$, the closure under $\{\Phi_1,\Phi_2,\Psi\}$ hits
+\emph{every odd residue class modulo $M_{K+1}$}.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+Let $a\in(\mathbb Z/M_{K+1}\mathbb Z)$ be odd. Its projection $\pi_K(a)$ is an odd
+class modulo $M_K$, hence by hypothesis there is a word $W$ in $\{\Phi_1,\Phi_2,\Psi\}$
+with $W(1)\equiv \pi_K(a)\ (\mathrm{mod}\ M_K)$. Because $\pi_K$ commutes with the induced
+maps (lemma), any lift of the intermediate choices for $\Phi_1,\Phi_2$ (their three
+cosets differ by $2^K$) yields a word $\widetilde W$ modulo $M_{K+1}$ with
+$\widetilde W(1)\equiv a\ (\mathrm{mod}\ M_{K+1})$. Thus every odd class at level $K{+}1$
+is reachable from $1$.
+\end{proof}
+
+\begin{corollary}[Reachability on all $3\cdot 2^K$]
+If for one base level $K_0\ge 1$ (e.g.\ $K_0=3$, modulus $24$) the inverse closure of
+$1$ hits every odd residue class modulo $M_{K_0}$, then it hits every odd class modulo
+$M_K$ for all $K\ge K_0$.
+\end{corollary}
+
+\begin{corollary}[Odd Collatz reachability from $1$]
+Assume the hypothesis of the previous corollary \emph{for all $K\ge1$}.
+Then for every positive odd $y$ there exists a word $W\in\{\Phi_1,\Phi_2,\Psi\}^\ast$
+with $W(1)=y$. Equivalently, every odd $y$ lies in the backward orbit of $1$,
+so its forward accelerated orbit under $U$ reaches $1$.
+\end{corollary}
+
+
+\begin{tabular}{r r l}
+\toprule
+$a \bmod 24$ & len & word \\
+\midrule
+1  & 0 & \texttt{} \\
+3  & 2 & \texttt{Psi\,Phi1} \\
+5  & 1 & \texttt{Psi} \\
+7  & 3 & \texttt{Psi\,Phi1\,Phi1} \\
+9  & 1 & \texttt{Phi2} \\
+11 & 2 & \texttt{Psi\,Phi1} \\
+13 & 2 & \texttt{Phi2\,Psi} \\
+15 & 3 & \texttt{Psi\,Phi1\,Phi1} \\
+17 & 1 & \texttt{Phi2} \\
+19 & 2 & \texttt{Psi\,Phi1} \\
+21 & 2 & \texttt{Psi\,Psi} \\
+23 & 3 & \texttt{Psi\,Phi1\,Phi1} \\
+\bottomrule
+\end{tabular}
+
+
+%_______________________________________________________________________________________________
+
+
+\printbibliography
+\end{document}

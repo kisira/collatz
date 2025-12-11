@@ -6,5 +6,5 @@ Every Teorem, lemma and corollary had been fully proven, in a few cases an axiom
 
 Every .v file has been made stand-alone to the extent possible and there may be facts that are proven more than once throughout the different sections.
 
-Below is an overview of the fomalisation:
+Please review Appendix H Formalisation Index of the paper for an index of the formalisation proofs.
 
