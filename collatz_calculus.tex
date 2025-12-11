@@ -279,7 +279,7 @@ The main contribution of this work is a unified, certified inverse--word calculu
 
 \subsection{Main Claim and Method}
 
-Our main claim (Theorem~\ref{thm:odd-layer-global-1}) is that every odd \(x\equiv 1,5\pmod 6\) reaches \(1\) in finitely many accelerated odd Collatz steps. The method is modular:
+Our main claim (Theorem~\ref{thm:exact-reachability}) is that every odd \(x\equiv 1,5\pmod 6\) reaches \(1\) in finitely many accelerated odd Collatz steps. The method is modular:
 (i) certify row-level inverses \(U(x')=x\);
 (ii) show any admissible word yields an affine form in \(m\) with controlled terminal family;
 (iii) furnish base witnesses modulo \(24\);
@@ -559,6 +559,7 @@ This confirms that $\omega_1$ produces negative drift (descent) for sufficiently
 \end{example}
 
 \begin{corollary}[Drift Bounds]
+\label{cor:drift-bounds}
 \begin{itemize}
     \item For family \(\mathrm{e}\) (\(\varepsilon=1\)), the drift is always non-negative (\(d \ge 0\)).
     \item For family \(\mathrm{o}\) (\(\varepsilon=5\)), the drift is negative (\(d < 0\)) if and only if \(p=0\) and \(r=0\) (or low \(\alpha\) at low \(r\)).
@@ -1112,6 +1113,7 @@ u \;:=\; \log A \quad \text{(Gain)}, \qquad v \;:=\; \frac{B_\varepsilon}{A-1} \
 \end{definition}
 
 \begin{remark}[Semigroup Law]
+\label{rem:uv-law-2}
 In $(u, v)$ coordinates, the composition of two steps $(u_1, v_1)$ followed by $(u_2, v_2)$ obeys a semidirect product law:
 \[
 (u, v)_{\mathrm{net}} \;=\; (u_1 + u_2, \ v_2 + e^{-u_2} v_1).
@@ -1202,7 +1204,7 @@ The complexity of the Collatz orbit is strictly isomorphic to the symbolic dynam
 
 \subsection{Visualization and usage}\label{subsec:viz-usage}
 A practical picture is the $(\alpha,p)$ grid colored by $u=\log A$ (gain), with two dots per cell at the corresponding $v$ (families).
-Routing problems become: \emph{pick a dot in a cell} (choose $\varepsilon$) and \emph{pick a cell} (choose $(\alpha,p)$) to meet a congruence (Lemma~\ref{lem:route-target}) and a drift band (Cor.~\ref{cor:drift-bounds}).
+Routing problems become: \emph{pick a dot in a cell} (choose $\varepsilon$) and \emph{pick a cell} (choose $(\alpha,p)$) to meet a congruence (Lemma~\ref{lem:last-row-p}) and a drift band (Cor.~\ref{cor:drift-bounds}).
 
 \begin{figure}[t]
 \centering
@@ -1217,7 +1219,7 @@ Schematic: gain $u=\log A$ over $(\alpha,p)$; for each cell, two fixed-point val
 \paragraph{Layered workflow.}
 (i) Project to $(u,v)$ for composition, bounds, and optimization;
 (ii) check the discrete fiber for residue targeting and admissibility;
-(iii) assemble $n$ steps via the semidirect sum in $(u,v)$ (Remark~\ref{rem:uv-law-2}) or the affine closure (Cor.~\ref{cor:nstep-affine}).
+(iii) assemble $n$ steps via the semidirect sum in $(u,v)$ (Remark~\ref{rem:uv-law-2}) or the affine closure (Lem.~\ref{lem:affine-word}).
 
 \begin{algorithm}
 \caption{Generate operator portrait $(u,v)$ over $(\alpha,p)$}\label{alg:param-portrait}
@@ -1584,10 +1586,6 @@ $7$ & $7$ or $31$ & $\omega_1$ or $\omega_1\to\psi_2$ & As above: single-step pa
 \bottomrule
 \end{tabularx}
 \end{table}
-
-\begin{example}[Explicit calculation for $17\bmod 24 \to 41\bmod 48$]\label{ex:17to41}
-This is the two-step tail $\omega_1\to\psi_2$ with the router/floor arithmetic spelled out in the main text (see the worked example in Section~\ref{sec:menu-all-p}).
-\end{example}
 
 
 \newpage
