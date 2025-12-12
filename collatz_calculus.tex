@@ -4,7 +4,7 @@
 \usepackage[utf8]{inputenc}  % (or none if Lua/XeLaTeX)
 \usepackage{lmodern}
 \usepackage{geometry}
-\geometry{margin=1in}
+\geometry{left=1in, right=1in, top=1in, bottom=1.5in}
 
 \usepackage{amsmath,amssymb,mathtools}
 \usepackage{mathrsfs} % Ralph Smith’s Formal Script
@@ -44,6 +44,7 @@
 
 % in preamble
 \usepackage{tabularx} % for automatic column wrapping
+\usepackage{xltabular}
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X} % ragged-right X
 
 
@@ -1795,16 +1796,31 @@ A reference implementation of the unified inverse table, the word evaluator, and
 \section*{Appendix H: Formalization Index}
 The logical core of this paper has been mechanically verified in the Coq Proof Assistant. The formalization covers the algebraic foundations, the dynamical properties (drift, expansion), and the algorithmic construction (steering, lifting).
 
-\begin{table}[H]
-\centering
-\caption{Mapping of main theoretical results to formal proofs.}
-\label{tab:coq-index}
+% Note: Remove \begin{table}[H] wrapper. xltabular handles placement itself.
+
+\begingroup
 \renewcommand{\arraystretch}{1.2}
 \small
-\begin{tabularx}{\linewidth}{@{}l X l@{}}
+\begin{xltabular}{\linewidth}{@{}l X l@{}}
+\caption{Mapping of main theoretical results to formal proofs.} \label{tab:coq-index} \\
+
+% --- HEADER FOR FIRST PAGE ---
 \toprule
 \textbf{Concept} & \textbf{Description} & \textbf{Coq File \& Theorem} \\
 \midrule
+\endfirsthead
+
+% --- HEADER FOR SUBSEQUENT PAGES (if it breaks) ---
+\toprule
+\textbf{Concept} & \textbf{Description} & \textbf{Coq File \& Theorem} \\
+\midrule
+\endhead
+
+% --- FOOTER ---
+\bottomrule
+\endfoot
+
+% --- TABLE CONTENT ---
 \multicolumn{3}{@{}l}{\textit{Part I: Algebraic Foundations}} \\
 \midrule
 \textbf{CRT Indices} &
@@ -1957,9 +1973,9 @@ The logical core of this paper has been mechanically verified in the Coq Proof A
   Witness existence $\implies$ Collatz Truth. &
   \texttt{Sec35\_synthesis...v} \newline
   \texttt{thm\_odd\_layer\_convergence} \\
-\bottomrule
-\end{tabularx}
-\end{table}
+
+\end{xltabular}
+\endgroup
 
 \begin{thebibliography}{99}
 
