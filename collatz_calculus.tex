@@ -22,6 +22,7 @@
 \usepackage{needspace}
 \usepackage{cleveref}
 \usepackage{float}
+\usepackage{tikz}
 %lmodern or mathptmx
 %\usepackage[utf8]{inputenc}  % (or none if Lua/XeLaTeX)
 %\usepackage{tabularx}                % ok anywhere after microtype
@@ -412,7 +413,7 @@ To reach arbitrarily high powers of 2, we extend the base table with a column--l
 
 For any row in Table~\ref{tab:parameters-abc}, define the lifted transform:
 \begin{equation}
-\label{eq:unified-F}
+\label{eq:unified-F-def}
 F(p,m) \;:=\; \frac{(9m\,2^{\alpha}+\beta)\,64^{\,p}+c}{9},
 \qquad
 x' \;:=\; 6\,F(p,m)+\delta.
@@ -1303,7 +1304,7 @@ Schematic: gain $u=\log A$ over $(\alpha,p)$; for each cell, two fixed-point val
     \centering
     \includegraphics[width=0.8\linewidth]{operator_geometry_v2.png}
     \caption{\textbf{Operator Geometry and Vertical Fibers.} We project the admissible tokens into the continuous \((u,v)\) operator space, where \(u=\ln(A)\) is the logarithmic gain and \(v = B/(A-1)\) is the geometric fixed point. The plot reveals the ``Vertical Fiber'' structure predicted by Lemma~\ref{lem:continuity-clusters}: tokens with the same hardware parameters \((\alpha, p)\) share the same gain \(u\) (same vertical line) but split into two distinct fixed points based on the input family (blue vs.\ red).}
-    \label{fig:operator_geometry}
+    \label{fig:operator_geometry-v2}
 \end{figure}
 
 \begin{figure}[H]
@@ -1340,9 +1341,138 @@ Consider the path \(209 \xrightarrow{\omega_1} 139 \xrightarrow{\psi_2} 185\).
 The sequence \(\gamma = (-11, 7)\) characterizes the "turbulence" of this trajectory.
 \end{example}
 
+% =========================================================================
+% NEW PART V: GLOBAL NETWORK TOPOLOGY
+% Insert this AFTER Part IV and BEFORE the Conclusion Part.
+% =========================================================================
+
+\part{Global Network Topology}
+\label{part:network-topology}
+
+While the operator geometry (Part IV) analyzes the map as an affine transformation over $\mathbb{Q}$, the discrete modular constraints form a rigid topological network. In this part, we analyze the inverse map as a directed graph modulo 9, establishing that the system is strongly connected, ergodic, and possesses a unique topological mechanism for geometric contraction.
+
+\section{The Modulo-9 Partition}
+
+Recall the CRT tag $t = (x-1)/2$ and the internal index $m = \lfloor t/9 \rfloor$. The parameter selection is strictly determined by the residue $\rho = t \bmod 9$. Although there are 12 parameter families, they partition into 6 active equivalence classes based on $\rho$, alongside 3 forbidden classes.
+
+\begin{lemma}[The Ghost Residues]
+The residues $\rho \in \{1, 4, 7\}$ correspond to integers $x$ divisible by 3. Since $\text{Im}(U) \cap 3\mathbb{Z} = \emptyset$, these nodes are topologically unreachable in the inverse graph.
+\end{lemma}
+
+The remaining six residues form the state space $S = \{0, 2, 3, 5, 6, 8\}$. We classify them by their router index $j = \lfloor \rho/3 \rfloor$:
+\begin{itemize}
+    \item \textbf{Base ($j=0$):} $\rho=0$ (Attractor), $\rho=2$ (Distributor).
+    \item \textbf{Middle ($j=1$):} $\rho=3$ (Twin of 0), $\rho=5$ (Odd Heart).
+    \item \textbf{High ($j=2$):} $\rho=6$ (Transit), $\rho=8$ (Recycler).
+\end{itemize}
+
+\section{The State Transition Network}
+
+The inverse operations ``Stay'' (preserving parity) and ``Switch'' (toggling parity) induce a deterministic transition map on $S$. The adjacency structure is given by $f: S \times \{\text{Stay, Switch}\} \to S$.
+
+\begin{table}[H]
+\centering
+\caption{State Transition Table (Input $\to$ Output)}
+\label{tab:transitions}
+\begin{tabular}{@{}c c | c c@{}}
+\toprule
+Input Node & Family & \textbf{Op A (Stay)} $\to$ & \textbf{Op B (Switch)} $\to$ \\
+\midrule
+\textbf{0} & e & 0 & 2 \\
+\textbf{3} & e & 0 & 2 \\
+\textbf{6} & e & 3 & 8 \\
+\midrule
+\textbf{2} & o & 8 & 6 \\
+\textbf{5} & o & 5 & 3 \\
+\textbf{8} & o & 5 & 0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\begin{tikzpicture}[->, >=stealth, shorten >=1pt, auto, node distance=2.8cm, semithick]
+    \tikzstyle{every state}=[fill=white, draw=black, text=black]
+
+    % --- NODES (Hexagonal Layout) ---
+    % Arranged counter-clockwise starting from top
+    \node[state] (0) at (90:3) {0};   % Top
+    \node[state] (3) at (150:3) {3};  % Top-Left
+    \node[state] (6) at (210:3) {6};  % Bottom-Left
+    \node[state] (5) at (270:3) {5};  % Bottom
+    \node[state] (8) at (330:3) {8};  % Bottom-Right
+    \node[state] (2) at (30:3) {2};   % Top-Right
+
+    % --- EDGES ---
+    % From 0 (The Even Attractor)
+    \path (0) edge [loop above] node {A} (0)
+          (0) edge node {B} (2);
+
+    % From 3 (The 0-Twin)
+    \path (3) edge node {A} (0)
+          (3) edge [bend left=20] node [near start] {B} (2);
+
+    % From 2 (The Distributor)
+    \path (2) edge node {A} (8)
+          (2) edge [bend right=20] node [above, sloped] {B} (6);
+
+    % From 6 (The Transit)
+    \path (6) edge node {A} (3)
+          (6) edge [bend right=20] node [below, sloped] {B} (8);
+
+    % From 8 (The Recycler)
+    \path (8) edge node {A} (5)
+          (8) edge [bend right=15] node [right] {B} (0);
+
+    % From 5 (The Odd Attractor)
+    \path (5) edge [loop below] node {A} (5)
+          (5) edge [bend left=20] node {B} (3);
+
+\end{tikzpicture}
+\caption{The State Transition Diagram of the Inverse Map Modulo 9. The graph is strongly connected and aperiodic, implying global mixing.}
+\label{fig:network}
+\end{figure}
+
+
+\begin{theorem}[Global Connectivity]
+The state transition graph is strongly connected and aperiodic. Consequently, the inverse map is ergodic: the preimage tree of any residue class $\rho \in S$ eventually covers all other active residue classes.
+\end{theorem}
+
+\section{Probabilistic Dynamics}
+
+We model the inverse map as a discrete-time Markov chain. Assuming a stochastic driver where operations are chosen with equal probability ($p=0.5$), we compute the stationary distribution $\pi$.
+
+\begin{table}[H]
+\centering
+\caption{Stationary Distribution ($\pi$) and Average Expansion.}
+\label{tab:stationary}
+\begin{tabular}{@{}l c c c c@{}}
+\toprule
+\textbf{State} & \textbf{Router} & \textbf{Prob ($\pi$)} & \textbf{Avg $\alpha$} & \textbf{Role} \\
+\midrule
+\textbf{0} & 0 & \textbf{0.275} & 3.0 & Dominant Attractor \\
+\textbf{2} & 0 & 0.200 & 4.0 & Distributor \\
+\textbf{5} & 1 & 0.150 & 2.0 & Odd Heart \\
+\textbf{8} & 2 & 0.150 & 3.0 & Recycler \\
+\textbf{3} & 1 & 0.125 & 5.0 & Twin of 0 \\
+\textbf{6} & 2 & 0.100 & 4.0 & Transit \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{The Descent Chute}
+The distribution highlights a critical topological constraint on geometric contraction. In the inverse map, contraction ($x' < x$) requires a slope $\alpha < \log_2 3$, which occurs only when $\alpha=1$. These parameters are topologically localized to exactly two edges: $8 \xrightarrow{A} 5$ and $5 \xrightarrow{B} 3$.
+
+\begin{corollary}[The Descent Barrier]
+Geometric contraction is not globally available; it is confined to the path $8 \to 5 \to 3$ (the ``Descent Chute''). Any globally bounded orbit must recurrently traverse this specific path with a frequency sufficient to counteract the mean expansion factor of $\approx 3.51$ per step derived from the stationary distribution.
+\end{corollary}
+
+% =========================================================================
+% END NEW PART V
+% =========================================================================
+
 
 % =========================================================
-% PART V: END MATTER
+% PART VI: END MATTER
 % =========================================================
 \part{Conclusion and Appendices}
 
@@ -1367,7 +1497,7 @@ The result is a constructive proof that every odd integer \(x\) acts as the root
 
 %\section*{Appendix A\texorpdfstring{$^\prime$}: Mod-\pdfmath{3} steering (valuation \& residue control)}
 \section*{Appendix A: Mod-\pdfmath{3} steering (valuation \& residue control)}
-\label{app:mod3-steering}
+\label{app:mod3-steering-app}
 
 We strengthen the steering toolkit by showing that, in addition to toggling $B_W \bmod 2$ and raising $v_2(A_W)$, one can \emph{steer $B_W$ to any desired residue modulo $3$} while remaining in the same family. This closes the divisibility-by-$3$ gap in the exact-lifting step.
 
@@ -1576,7 +1706,7 @@ Each row lists a residue $r\bmod 24$, a short admissible tail producing $r'\bmod
 \begin{tabularx}{\linewidth}{@{}c c c X@{}}
 \toprule
 $r\bmod 24$ & $r'\bmod 48$ & Tail & Reason \\ \midrule
-$17$ & $41$ & $\omega_1\to\psi_2$ & Congruence regime for $\psi_2$: $x'=24m+17$, choose class with $m$ odd; admissibility shown in Ex.~\ref{ex:17to41}.\\
+$17$ & $41$ & $\omega_1\to\psi_2$ & Congruence regime for $\psi_2$: $x'=24m+17$, choose class with $m$ odd.\\
 $13$ & $13$ & $\Psi_1$ & Pinning: $\alpha=4\ge K=4$ gives $x'\equiv 6k+\delta\equiv 37\equiv 13\ (\bmod 48)$. \\
 $23$ & $23$ or $47$ & $\Omega_2$ or $\omega_1\to\psi_2$ & $\Omega_2$ yields $x'=12m+11$ so parity classes hit $11,23$; a cross-family two-step can target $47$ as needed. \\
 $7$ & $7$ or $31$ & $\omega_1$ or $\omega_1\to\psi_2$ & As above: single-step parity split, or two-step tail for the other odd residue. \\
