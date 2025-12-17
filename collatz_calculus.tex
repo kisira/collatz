@@ -1437,6 +1437,43 @@ Input Node & Family & \textbf{Op A (Stay)} $\to$ & \textbf{Op B (Switch)} $\to$ 
 The state transition graph is strongly connected and aperiodic. Consequently, the inverse map is ergodic: the preimage tree of any residue class $\rho \in S$ eventually covers all other active residue classes.
 \end{theorem}
 
+\subsection{The Topological Metric}
+
+The strong connectivity of the graph allows us to define a metric on the residue families. We define the \textbf{Collatz Distance} $d(u, v)$ as the length of the shortest path from node $u$ to node $v$ in the state transition graph.
+
+\begin{definition}[Geodesic Distance]
+For any two residue families $\rho_1, \rho_2 \in S$, the distance $d(\rho_1, \rho_2)$ is the minimum number of inverse steps required to transform a number of type $\rho_1$ into a number of type $\rho_2$.
+\end{definition}
+
+This metric reveals the ``arithmetic stiffness'' of the network. For instance, while Node 0 (Pure Evens) and Node 2 (Base Odds) are adjacent ($d(0,2)=1$), reaching the ``Odd Heart'' at Node 5 from Node 0 requires traversing a path of length 3 ($0 \to 2 \to 8 \to 5$).
+
+\begin{proposition}[Minimum Cycle Constraints]
+The metric imposes lower bounds on the length of any non-trivial cycle passing through a specific family. The \textbf{Recurrence Time} $T(\rho) = d(\rho, \rho)$ is the length of the shortest cycle containing $\rho$.
+\begin{itemize}
+    \item For $\rho=0$ and $\rho=5$, $T(\rho)=1$ (Self-loops).
+    \item For $\rho=6$ (High Evens), the shortest return path is $6 \to 3 \to 0 \to 2 \to 6$, implying $T(6)=4$.
+\end{itemize}
+Consequently, no integer $x \equiv 13 \pmod{18}$ (Type 6) can belong to a Collatz cycle of length less than 4.
+\end{proposition}
+
+\subsection{The Generation Metric (Layer Depth)}
+
+In addition to the topological distance between families, we define the \textbf{Inverse Depth} (or Generation) of a specific integer $x$. Let $L_0 = \{1\}$. We define the layers recursively:
+\[
+L_{k+1} \;=\; \{ x \in 2\mathbb{Z}+1 : U(x) \in L_k \} \setminus \bigcup_{i=0}^k L_i.
+\]
+The metric $\delta(x) = k$ assigns each integer to its generation layer, representing the exact number of accelerated steps required to reach 1.
+
+\begin{example}[The First Generations]
+\begin{itemize}
+    \item $\mathbf{L_0}$: $\{1\}$
+    \item $\mathbf{L_1}$: $\{5, 85, 341, 5461, \dots\}$ (The direct children of 1).
+    \item $\mathbf{L_2}$: Includes $\{7\}$ (preimage of 5), $\{113\}$ (preimage of 85 via $\Psi_0$), etc.
+\end{itemize}
+Unlike the standard Collatz tree where nodes have finite degree, the column-lift $p$ implies that every set $L_k$ (for $k \ge 1$) is infinite. This metric $\delta(x)$ corresponds precisely to the \textbf{Total Stopping Time} of $x$ under the accelerated map.
+\end{example}
+
+
 \section{Probabilistic Dynamics}
 
 We model the inverse map as a discrete-time Markov chain. Assuming a stochastic driver where operations are chosen with equal probability ($p=0.5$), we compute the stationary distribution $\pi$.
@@ -1517,8 +1554,7 @@ B'\;\equiv\;2^{\alpha}B+k\pmod{3},
 \]
 because $x\mapsto 6(2^{\alpha}m+k)+\delta$ contributes $2^{\alpha}$ on the $m$–slope and adds $k$ to the intercept, and $2^{\alpha}\equiv 1$ or $2$ modulo $3$ depending on $\alpha$.
 
-\smallskip
-\noindent\emph{Family $\mathrm e$ (type \texttt{ee}, $\delta=1$).}
+\smallskip\noindent\emph{Family $\mathrm e$ (type \texttt{ee}, $\delta=1$).}
 From Table~\ref{tab:parameters-abc}, the \texttt{ee} rows have
 \[
 (\alpha,k)\in\{(2,0),(4,6),(6,46)\}.
