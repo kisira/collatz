@@ -23,6 +23,7 @@
 \usepackage{cleveref}
 \usepackage{float}
 \usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, automata}
 %lmodern or mathptmx
 %\usepackage[utf8]{inputenc}  % (or none if Lua/XeLaTeX)
 %\usepackage{tabularx}                % ok anywhere after microtype
@@ -357,6 +358,29 @@ We define a set of tokens $\mathcal{A} = \{\Psi, \psi, \omega, \Omega\}$ represe
 \end{itemize}
 A sequence of these tokens is called a \emph{word} $W$.
 
+\subsection{Summary of Notation (Quick Reference)}
+To aid the reader, we summarize the hierarchy of indices used to classify odd integers in the inverse map.
+
+\begin{table}[H]
+\centering
+\caption{Nomenclature and Variable Hierarchy.}
+\label{tab:nomenclature}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\linewidth}{@{}l l X@{}}
+\toprule
+\textbf{Symbol} & \textbf{Definition} & \textbf{Role / Intuition} \\
+\midrule
+$x$ & $x \in 2\mathbb{Z}+1$ & The \textbf{Odd Integer} (the value itself). \\
+$t$ & $(x-1)/2$ & The \textbf{CRT Tag}. A continuous index $0,1,2\dots$ that linearizes the geometry. \\
+$\rho$ & $t \bmod 9$ & The \textbf{Topological Node}. Determines the parameter family and network role (e.g., Attractor, Heart). \\
+$m$ & $\lfloor t/9 \rfloor$ & The \textbf{Internal Index}. The operand for the affine map $x' = A m + B$. \\
+$j$ & $\lfloor t/3 \rfloor \bmod 3$ & The \textbf{Router}. Determines the "next-hop" admissibility modulo 3. \\
+$s(x)$ & $x \bmod 6$ & The \textbf{Parity Family}. $\mathrm{e}$ (if $x \equiv 1$) or $\mathrm{o}$ (if $x \equiv 5$). \\
+$p$ & $p \ge 0$ & The \textbf{Column Lift}. Scales the step size (multiplies slope by $64^p$). \\
+$\alpha$ & Table constant & The \textbf{Base Valuation}. The minimal power of 2 removed in a forward step. \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 \section{The Unified Inverse Table}
 \label{sec:unified-table}
@@ -688,7 +712,7 @@ Because these gadgets preserve the terminal family, they allow us to "steer" the
 \subsection{The Finite Steering Menu}
 We fix a finite set of canonical gadgets $\mathcal{S}_p$ for each column $p \ge 0$. These are sufficient to generate any required 2-adic lift and parity.
 
-\begin{table}[h]
+\begin{table}[H]
 \centering
 \caption{Canonical Steering Gadgets (Base $p=0$).}
 \label{tab:steering-menu}
@@ -1538,7 +1562,7 @@ The result is a constructive proof that every odd integer \(x\) acts as the root
 
 We strengthen the steering toolkit by showing that, in addition to toggling $B_W \bmod 2$ and raising $v_2(A_W)$, one can \emph{steer $B_W$ to any desired residue modulo $3$} while remaining in the same family. This closes the divisibility-by-$3$ gap in the exact-lifting step.
 
-\begin{lemma}[Mod-$3$ steering lemma]\label{lem:mod3-steering}
+\begin{lemma}[Mod-$3$ steering lemma]\label{lem:mod3-steering-app}
 Let $W$ be an admissible word with affine form $x_W(m)=6(A_W m+B_W)+\delta_W$, where $A_W=3\cdot 2^{\alpha(W)}$ and $\delta_W\in\{1,5\}$. For each family $s\in\{\mathrm e,\mathrm o\}$ there exist short same–family gadgets $P^{(r)}_s$ ($r\in\{0,1,2\}$) such that
 \[
 x_{W\cdot P^{(r)}_s}(m)=6(A' m+B'_s)+\delta_W,\qquad
@@ -1554,7 +1578,8 @@ B'\;\equiv\;2^{\alpha}B+k\pmod{3},
 \]
 because $x\mapsto 6(2^{\alpha}m+k)+\delta$ contributes $2^{\alpha}$ on the $m$–slope and adds $k$ to the intercept, and $2^{\alpha}\equiv 1$ or $2$ modulo $3$ depending on $\alpha$.
 
-\smallskip\noindent\emph{Family $\mathrm e$ (type \texttt{ee}, $\delta=1$).}
+
+\smallskip\noindent\emph{Family $\mathrm e$ (type \textup{\texttt{ee}}, $\delta=1$).}
 From Table~\ref{tab:parameters-abc}, the \texttt{ee} rows have
 \[
 (\alpha,k)\in\{(2,0),(4,6),(6,46)\}.
@@ -1565,8 +1590,7 @@ B'\equiv B \quad\text{or}\quad B'\equiv B+1 \pmod{3}.
 \]
 Thus in at most two \texttt{ee} steps we can set $B'\equiv r$ for any prescribed $r\in\{0,1,2\}$. Each step multiplies $A$ by $2^{\alpha}\ge 4$, so $v_2(A)$ strictly increases.
 
-\smallskip
-\noindent\emph{Family $\mathrm o$ (type \texttt{oo}, $\delta=5$).}
+\smallskip\noindent\emph{Family $\mathrm o$ (type \textup{\texttt{oo}}, $\delta=5$).}
 From Table~\ref{tab:parameters-abc}, the \texttt{oo} rows have
 \[
 (\alpha,k)\in\{(5,8),(3,4),(1,1)\}.
@@ -1656,7 +1680,8 @@ With \(B\equiv 1\pmod 3\) (take \(B=1\) concretely),
 So \(2^{7}m \equiv 170 \pmod{512}\).
 
 \emph{(3) Ensure \(2\)-adic solvability by padding.}
-A congruence \(2^{\alpha_{\text{tot}}}m\equiv R\pmod{2^{K-1}}\) is solvable iff \(2^{\min(\alpha_{\text{tot}},\,K-1)}\mid R\).
+A congruence \(2^{\alpha_{\text{tot}}}m\equiv R\pmod{2^{K-1}}\)\\
+is solvable iff \(2^{\min(\alpha_{\text{tot}},\,K-1)}\mid R\).
 Here \(\min(7,9)=7\) but \(170\not\equiv 0\pmod{128}\).
 Use same-family odd padding (\(\Omega_0,\Omega_1,\Omega_2\)) to:
 \begin{itemize}
@@ -1778,25 +1803,24 @@ $5,11,17,23,29,35,41,47$ & $\mathrm o$ & e.g.\ $\psi$, $\psi\Omega$, etc.\ ($\de
 
 % =========================
 % WORKED EXAMPLES: mod 48
-% (A few concrete rows you can cite)
+% (Fixed: wraps long text using tabularx)
 % =========================
 \begin{table}[!htbp]
 \centering
-\caption{Selected concrete witnesses modulo $48$.
-Each row shows a word $W$, its closed form $x_W(m)$, and a solved congruence for some $r' \bmod 48$.}
+\caption{Selected concrete witnesses modulo $48$. Each row shows a word $W$, its closed form $x_W(m)$, and a solved congruence for some $r' \bmod 48$.}
 \label{tab:witnesses-mod-48-examples}
-\begin{tabular}{@{}c l l l@{}}
+\renewcommand{\arraystretch}{1.2} % Adds a little breathing room between wrapped rows
+\begin{tabularx}{\linewidth}{@{}c l l Y@{}}
 \toprule
 $r' \ (\bmod 48)$ & Word $W$ & Closed form $x_W(m)$ & One solution for $m$ \\ \midrule
-$5$  & $\psi$ & $x(m)=96m+5$ & any $m$ (always $5\ (\bmod 48)$) \\
-$13$ & $\psi\,\omega$ & $x(m)=\;6(3\cdot 2^{5}m+B)+\delta$ (affine) & $m\equiv m_0\pmod{8}$ (solve $A m\equiv\frac{13-\delta}{6}-B$) \\
-$23$ & $\psi\,\omega\,\psi\,\Omega$ & affine as above & $m\equiv m_0\pmod{8}$ \\
-$29$ & $\psi\,\Omega$ & $x(m)=192m+53$ & $192m+53\equiv 29\Rightarrow 0\cdot m\equiv -24$ (no sol.)\footnotemark \\
-$41$ & $\Omega$ (from an $o$ start) & $x(m)=192m+53$ & always $5\ (\bmod 48)$; add an $o\!\to\!o$ steering gadget to shift to $41$ \\
+$5$  & $\psi$ & $x(m)=96m+5$ & Any $m$ (always $5\pmod{48}$). \\
+$13$ & $\psi\,\omega$ & $x(m)=\;6(3\cdot 2^{5}m+B)+\delta$ & $m\equiv m_0\pmod{8}$ (Solve $A m\equiv\frac{13-\delta}{6}-B$). \\
+$23$ & $\psi\,\omega\,\psi\,\Omega$ & (affine as above) & $m\equiv m_0\pmod{8}$. \\
+$29$ & $\psi\,\Omega$ & $x(m)=192m+53$ & $192m+53\equiv 29 \implies 0\cdot m\equiv -24$ (No solution).\footnotemark\phantomsection\addtocounter{Hfootnote}{1} \\
+$41$ & $\Omega$ (from $o$) & $x(m)=192m+53$ & Always $5\pmod{48}$; add an $o\!\to\!o$ steering gadget to shift to $41$. \\
 \bottomrule
-\end{tabular}
-
-\footnotetext{If a basic $W$ fixes the residue (slope $\equiv 0\ (\bmod 48)$), append a short same-family \emph{steering gadget} (e.g.\ $o\!\to\!o$: $\Omega_2$ then $\omega$ then $\psi$) to adjust the intercept and re-solve.}
+\end{tabularx}
+\footnotetext{If a basic $W$ fixes the residue (slope $\equiv 0\pmod{48}$), append a short same-family \emph{steering gadget} (e.g., $o\!\to\!o$: $\Omega_2$ then $\omega$ then $\psi$) to adjust the intercept and re-solve.}
 \end{table}
 
 % =========================
