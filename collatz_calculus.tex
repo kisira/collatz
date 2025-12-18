@@ -2184,14 +2184,11 @@ The code is pure Python~3 (standard library + \texttt{pandas} for CSV I/O). A mi
 python -m venv .venv
 . .venv/bin/activate
 pip install -r requirements.txt
-\cite{BernsteinLagarias1996}\cite{BernsteinLagarias1996}\end{verbatim}\cite{BernsteinLagarias1996}
 
-\paragraph{Stepwise identity checks (\(U(x')=x\)).}
-To verify that each row satisfies \(3x'+1=2^{\alpha+6p}x\) and that the word evaluator returns to the parent under \(U\):
-\begin{verbatim}
 python3 tools/check_rows.py             # verifies all rows and their p-lifts
 python3 tools/evaluate_word.py --word psi,Omega,omega,psi --x0 1 --csv out.csv
 \end{verbatim}
+
 This writes a per-step trace (indices \(s,j,m\), formulas, and forward checks).
 
 \paragraph{Regenerating witness tables.}
@@ -2225,7 +2222,7 @@ python reverse_construct.py --mode chain --y 497 --stop 1 --csv chain_497_to_1.c
 
 
 \paragraph{Archival guarantee.}
-A reference implementation of the unified inverse table, the word evaluator, and the example generators is archived at
+A reference implementation of the unified inverse table, the word evaluator, and the example generators as well as all the Rocq/Coq 9.1.0 formlization files is archived at
 \href{https://doi.org/ 10.5281/zenodo.17905038}{Zenodo DOI: 10.5281/zenodo.17905038} and mirrored at
 \href{git@github.com:kisira/collatz.git}{github.com/kisira/collatz}.
 
