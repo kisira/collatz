@@ -2108,7 +2108,7 @@ Then \(F(p,m)=2^{1+6p}m+\frac{11\cdot 64^{\,p}-2}{9}\) and the lemma yields \(3x
 
 \newpage
 
-\section*{Appendix G: Derivation of the Stationary Distribution}
+\section*{Appendix F: Derivation of the Stationary Distribution}
 \label{app:stationary-derivation}
 
 We compute the stationary distribution $\pi$ for the inverse Markov chain defined in Part VI. Let $\pi_i$ denote the probability of occupying Node $i$. We assume unbiased branching ($p=0.5$) at Nodes 0 and 2.
@@ -2143,7 +2143,7 @@ Since $\Sigma = 1$, we find $\pi_2 = 1/5 = 0.2$.
 Multiplying the proportions by 0.2 yields the distribution in Table~\ref{tab:stationary}:
 $\pi_0=0.275$, $\pi_2=0.200$, $\pi_3=0.125$, $\pi_5=0.150$, $\pi_6=0.100$, $\pi_8=0.150$.
 
-\section*{Appendix H: Derivation of Active vs. Ghost Nodes}
+\section*{Appendix G: Derivation of Active vs. Ghost Nodes}
 \label{app:ghost-nodes}
 
 We justify the partition of the modulo-9 state space into 6 active nodes and 3 ``ghost'' nodes based on the divisibility of the corresponding odd integer $x$.
@@ -2171,6 +2171,37 @@ The condition $t \equiv 1 \pmod 3$ lifts to exactly three residue classes modulo
     \item \textbf{Ghost Nodes ($\rho \in \{1, 4, 7\}$):} correspond to $x \in 3\mathbb{Z}$. Since the range of the map $U(y) = (3y+1)/2^k$ never contains multiples of 3, these nodes have no incoming edges in the inverse graph. They are topologically unreachable from the root $1$.
     \item \textbf{Active Nodes ($\rho \in \{0, 2, 3, 5, 6, 8\}$):} correspond to $x \not\equiv 0 \pmod 3$. These form the strongly connected component of the inverse map.
 \end{itemize}
+
+\section*{Appendix H: The Token-Node Correlation Map}
+\label{app:token-correlation}
+
+The structure of the Collatz Automaton is strictly deterministic. The topological state of an integer, defined by its CRT tag $\rho = t \bmod 9$, uniquely determines its Family ($s$), its Router index ($j$), and the specific subset of admissible inverse operations (Tokens) from the Unified Parameter Table.
+
+Table~\ref{tab:token-map} provides the complete lookup for valid operations at each node.
+
+\begin{table}[H]
+\centering
+\caption{Correlation between Topological Node and Admissible Tokens.}
+\label{tab:token-map}
+\begin{tabular}{@{}c c c c l@{}}
+\toprule
+\textbf{Node ($\rho$)} & \textbf{Family ($s$)} & \textbf{Router ($j$)} & \textbf{Admissible Tokens} & \textbf{Description} \\
+\midrule
+\textbf{0} & $\mathrm{e}$ (Even) & 0 & $\{ \Psi_0, \psi_0 \}$ & Attractor Hub (Low slope) \\
+\textbf{2} & $\mathrm{o}$ (Odd) & 0 & $\{ \Omega_0, \omega_0 \}$ & Distributor Hub \\
+\midrule
+\textbf{3} & $\mathrm{e}$ (Even) & 1 & $\{ \Psi_1, \psi_1 \}$ & Twin of Node 0 \\
+\textbf{5} & $\mathrm{o}$ (Odd) & 1 & $\{ \Omega_1, \omega_1 \}$ & The ``Odd Heart'' Trap \\
+\midrule
+\textbf{6} & $\mathrm{e}$ (Even) & 2 & $\{ \Psi_2, \psi_2 \}$ & Transit Node (High slope) \\
+\textbf{8} & $\mathrm{o}$ (Odd) & 2 & $\{ \Omega_2, \omega_2 \}$ & Recycler Node \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Usage Rule:}
+An inverse trajectory currently at residue $\rho$ may \emph{only} execute the tokens listed for that row. Attempting to apply a token from a different router index (e.g., applying $\Omega_1$ to a number at Node 0) results in a parity violation, as the resulting pre-image would not be an integer.
+
 
 \section*{Appendix I: Code and Data Availability}
 A reference implementation of the unified inverse table, the word evaluator, and the example generators is archived at
@@ -2230,7 +2261,7 @@ A reference implementation of the unified inverse table, the word evaluator, and
 \href{https://doi.org/ 10.5281/zenodo.17905038}{Zenodo DOI: 10.5281/zenodo.17905038} and mirrored at
 \href{git@github.com:kisira/collatz.git}{github.com/kisira/collatz}.
 
-\section*{Appendix J: Formalization Index}
+\section*{Appendix K: Formalization Index}
 The logical core of this paper has been mechanically verified in the Coq Proof Assistant. The formalization covers the algebraic foundations, the dynamical properties (drift, expansion), and the algorithmic construction (steering, lifting).
 
 % Note: Remove \begin{table}[H] wrapper. xltabular handles placement itself.
