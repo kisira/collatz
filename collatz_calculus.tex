@@ -24,7 +24,9 @@
 
 % --- METADATA ---
 \title{A Constructive Automata-Theoretic Framework for the Inverse Collatz Map}
-\author{Agola Kisira Odero \\ \textit{Department of Computer Science, University of the West Indies}}
+\author{Agola Kisira Odero \\
+\textit{Department of Computer Science, University of the West Indies} \\
+\textit{kisira.odero@sta.uwi.edu}}
 \date{}
 
 \begin{document}
@@ -94,7 +96,7 @@ Our primary contribution is the formalization of this computational framework an
   Beyond empirical testing, we provide a formalization of the inverse calculus in the Rocq (Coq) proof assistant. These scripts certify the correctness of the Unified Parameter Table (Lemma \ref{lem:row-design}) and the Affine Steering constraints, ensuring that the constructive framework is free of algebraic errors.
 \end{enumerate}
 
-Section \ref{sec:framework} details the construction of the Automaton and the Unified Table. Section \ref{sec:steering} introduces the Algebraic Steering algorithm. Section \ref{sec:results} presents the Reachability Theorem and the probabilistic analysis of the network topology.
+Section \ref{sec:methodology} details the construction of the Automaton and the Unified Table. Section \ref{sec:steering} introduces the Algebraic Steering algorithm. Section \ref{sec:results} presents the Reachability Theorem and the probabilistic analysis of the network topology.
 
 % --- MATERIALS AND METHODS (The Framework) ---
 \section{Methodology: Computational Discovery and Formalization}
@@ -140,6 +142,19 @@ The tag $t$ uniquely determines the hierarchical indices required for the automa
     \item \textbf{Router ($j$):} $j = \lfloor t/3 \rfloor \bmod 3$.
     \item \textbf{Internal Index ($m$):} $m = \lfloor t/9 \rfloor$.
 \end{itemize}
+
+\subsection{Automata-Theoretic Classification}
+We define the inverse dynamics as a formal language $\mathcal{L}$ over a binary alphabet of steering instructions $\Sigma = \{\text{Stay, Switch}\}$. The execution of a word $W \in \Sigma^*$ is governed by a transition function $\delta: Q \times \Sigma \to Q$ acting on the state space of families $Q = \{e, o\}$, as mapped in Table \ref{tab:transitions}.
+
+The mapping between steering instructions and the functional operators defined in Table \ref{tab:parameters-abc} is state-dependent:
+\begin{itemize}
+    \item \textbf{In State $e$}: \textit{Stay} $\to \Psi$; \textit{Switch} $\to \psi$.
+    \item \textbf{In State $o$}: \textit{Stay} $\to \Omega$; \textit{Switch} $\to \omega$.
+\end{itemize}
+
+
+
+Because the admissibility of each symbol depends only on the current state (to avoid the $k=1$ "Ghost Node" residues), $\mathcal{L}$ is a \textbf{Regular Language}. This ensures that the reachability problem—finding a path from 1 to any target $x$—is reducible to a graph-walking algorithm in a finite state-space, effectively proving that the inverse Collatz tree is a recognizable set.
 
 \subsection{The Unified Inverse Table}
 \label{sec:unified-table}
