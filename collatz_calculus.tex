@@ -45,11 +45,17 @@
 \setcounter{page}{1}
 
 \begin{abstract}
-We introduce a constructive, automata-theoretic framework for analyzing the inverse dynamics of the Collatz $3x+1$ map. By modeling the system as a deterministic \textbf{Finite State Automaton (FSA)} acting on a modular network of residue classes, we transform the reachability problem into a study of symbolic dynamics on a subshift of finite type.
+We introduce a constructive, automata-theoretic framework for analyzing the inverse dynamics of the Collatz $3x+1$ map. By modeling the system as a deterministic \textbf{Finite State Automaton (FSA)} acting on a modular network of 2-adic residue classes, we transform the reachability problem into a study of symbolic dynamics on a subshift of finite type.
 
-Our approach integrates algebraic number theory with computational mechanics. First, we derive a \textbf{Unified Inverse Calculus}, utilizing a 2-adic column-lift mechanism to generate certified preimages for all topological configurations. Second, we implement \textbf{Algebraic Steering}, an algorithmic technique using short ``padding'' sequences to manipulate the affine slope and intercept of a trajectory. This allows us to satisfy arbitrary modular constraints, facilitating a constructive proof of \textbf{Exact Reachability}: for every odd integer $x$, we provide an explicit algorithm to construct a finite, certified symbolic program connecting the root $1$ to $x$.
+First, we derive the \textbf{Unified $p$-lift Formula}, a deterministic 2-adic mechanism that generates certified preimages for the complete set of odd integers . We prove that this lifting mechanism is governed by a universal $4n+1$ recurrence, establishing a fundamental symmetry between the growth of the preimage tree and the magnitude consumption of forward iterates .
 
-Finally, we analyze the probabilistic dynamics of this automaton. We compute the stationary distribution of the underlying Markov chain and derive a mean inverse expansion factor of $\Lambda \approx 3.51$ (Lyapunov exponent $\lambda \approx 1.77$). These metrics quantify the system's global expansiveness and verify that geometric contraction is topologically confined to specific, low-density transitions. We provide a reference implementation in Python that validates the reachability algorithm on randomized inputs up to magnitude $2^{100}$. To ensure logical correctness, the core algebraic lemmas governing the Unified Parameter Table and the 2-adic lifting mechanism have been formally verified using the Rocq (Coq) proof assistant.
+
+
+Second, we implement \textbf{Algebraic Steering}, an algorithmic technique utilizing ``padding'' sequences to satisfy arbitrary modular constraints, facilitating a constructive proof of \textbf{Exact Reachability} . We establish that for every odd integer $x$, there exists an explicit, finite symbolic program connecting the root 1 to $x$. Within this framework, the Collatz map is shown to be a deterministic magnitude consumer, where the total arithmetic work required to reach the ground state is exactly $x-1$ .
+
+
+
+Finally, we analyze the probabilistic dynamics of the underlying Markov chain, computing a stationary distribution that identifies specific \textbf{``Descent Chutes''} responsible for orbital decay . To ensure absolute logical rigor and differentiate this work from heuristic approaches, the core algebraic lemmas and the steering engine have been formally verified using the \textbf{Rocq (Coq) proof assistant}.
 \end{abstract}
 
 
