@@ -824,6 +824,30 @@ Substituting the unified expressions for $d_e$ and $d_o$, the magnitude consumed
 
 In these expressions, $q_p$ follows the universal $4n+1$ recurrence ($q_p = 4q_{p-1} + 1$), which is identical to the recurrence relation governing the columns of the preimage arrays. This mathematical symmetry proves that the lifting mechanism used to construct the Collatz tree is the exact inverse of the mechanism that consumes integer magnitude during forward iteration.
 
+\paragraph{Unified Drift Equations with $4^p$ Scaling}
+
+By substituting the cumulative 2-adic exponent $s = \alpha + 6p$ and the closed-form recurrence solution $q_p = \frac{4^p - 1}{3}$, the orbital velocity $d$ is shown to be a geometrically scaled affine transformation.
+
+\begin{itemize}
+    \item \textbf{E-Array Drift ($x \equiv 1 \pmod 6$):}
+    \begin{equation}
+        d_e = r(2^{\alpha + 6p} - 3)4^p + 2\left(\frac{4^p - 1}{3}\right)
+    \end{equation}
+    Factoring out $4^p$ reveals the scaling engine:
+    \begin{equation}
+        d_e = 4^p \left[ r(2^{\alpha + 6p} - 3) + \frac{2}{3} \right] - \frac{2}{3}
+    \end{equation}
+
+    \item \textbf{O-Array Drift ($x \equiv 5 \pmod 6$):}
+    \begin{equation}
+        d_o = r(2^{\alpha + 6p} - 3)4^p + 5\left(\frac{4^p - 1}{3}\right) - 1
+    \end{equation}
+    The factored form is:
+    \begin{equation}
+        d_o = 4^p \left[ r(2^{\alpha + 6p} - 3) + \frac{5}{3} \right] - \frac{8}{3}
+    \end{equation}
+\end{itemize}
+
 For any orbit terminating at the root 1, the \textit{Total Magnitude Consumption} is the summation of these discrete velocities:
 \begin{equation}
     \sum_{i=0}^{|W|-1} 2d_i = x_{start} - 1
@@ -880,43 +904,95 @@ This ensures that:
 \end{enumerate}
 This modular rigidity proves that the Collatz map is not a chaotic process, but a deterministic finite state machine operating on a 6-period 2-adic lattice.
 
-\subsection{Unified Drift Equations with $4^p$ Scaling}
+%\subsection{The Unified Metric: Parity-Free Drift and Magnitude Consumption}
+\subsection{Synthesis: Analytical Unification and the Collatz Metric}
 
-By substituting the cumulative 2-adic exponent $s = \alpha + 6p$ and the closed-form recurrence solution $q_p = \frac{4^p - 1}{3}$, the orbital velocity $d$ is shown to be a geometrically scaled affine transformation.
+While the experimental data for the E-Array and O-Array are presented through distinct modular residue classes, they are governed by a single analytical engine. By defining the orbital velocity $d$ as a function of the landing integer $x$ and the 2nd-order 2-adic exponent $s$, we arrive at the \textbf{Master Drift Identity}:
 
-\begin{itemize}
-    \item \textbf{E-Array Drift ($x \equiv 1 \pmod 6$):}
-    \begin{equation}
-        d_e = r(2^{\alpha + 6p} - 3)4^p + 2\left(\frac{4^p - 1}{3}\right)
-    \end{equation}
-    Factoring out $4^p$ reveals the scaling engine:
-    \begin{equation}
-        d_e = 4^p \left[ r(2^{\alpha + 6p} - 3) + \frac{2}{3} \right] - \frac{2}{3}
-    \end{equation}
-
-    \item \textbf{O-Array Drift ($x \equiv 5 \pmod 6$):}
-    \begin{equation}
-        d_o = r(2^{\alpha + 6p} - 3)4^p + 5\left(\frac{4^p - 1}{3}\right) - 1
-    \end{equation}
-    The factored form is:
-    \begin{equation}
-        d_o = 4^p \left[ r(2^{\alpha + 6p} - 3) + \frac{5}{3} \right] - \frac{8}{3}
-    \end{equation}
-\end{itemize}
-
-\subsection{The Collatz Metric and the 2-adic Manifold}
-
-We formally define a non-Euclidean metric on the set of odd integers $\mathbb{O}$, where the distance $D(x, 1)$ is determined by the cumulative magnitude consumption of the automaton. Utilizing the factored drift identities:
 \begin{equation}
-    d = 4^p \left[ r(2^s - 3) + C \right] - K
+    d(x, s) = \frac{x(2^s - 3) - 1}{6}
 \end{equation}
-where $s = \alpha + 6p$, we establish the Fundamental Identity:
-\begin{equation}
-    \sum_{i=0}^{k} 2d_i = x_{start} - 1
-\end{equation}
-This identity demonstrates that the $3x+1$ map is a conservative displacement engine. Every odd integer $x$ is uniquely addressed by the coordinate triplet $(r, s, p)$, and the forward orbit represents a deterministic descent through this 2-adic manifold.
 
-The structural rigidity of this metric proves that the system is space-filling and prevents the existence of divergent paths or non-trivial cycles. The "noise" traditionally associated with Collatz trajectories is revealed to be the deterministic movement of coordinates within this machine-checked 2-adic framework.
+This identity serves as the unified kernel for the magnitude consumption of the system. It demonstrates that the Collatz map is a \textbf{parity-free displacement engine} in $s$-space.
+
+\subsubsection{The Magnitude Consumption Summation}
+The resolution of the Collatz reachability problem lies in the telescoping nature of the drift. For an orbit $x_0 \xrightarrow{s_1} x_1 \xrightarrow{s_2} \dots \xrightarrow{s_k} 1$, the total work performed by the automaton is:
+
+\begin{equation}
+    \sum_{i=1}^{k} 2d_i = \sum_{i=1}^{k} \frac{x_i(2^{s_i} - 3) - 1}{3}
+\end{equation}
+
+By substituting the preimage relation $x_{i-1} = \frac{2^{s_i}x_i - 1}{3}$, the terms within the summation simplify to the stepwise magnitude difference $x_{i-1} - x_i$. The summation therefore telescopes:
+
+\begin{equation}
+    (x_0 - x_1) + (x_1 - x_2) + \dots + (x_{k-1} - 1) = x_{start} - 1
+\end{equation}
+
+This \textbf{Magnitude Consumption Identity} $\sum 2d = x-1$ provides the conservative arithmetic basis for the conjecture. It confirms that the orbit is not a random walk, but a deterministic exhaustion of the initial 2-adic potential.
+
+\subsubsection{Universal Scaling of the $4n+1$ Recurrence}
+Finally, this master formula explains the $4n+1$ recurrence identified in our preimage arrays. Because $d$ scales linearly with $x$, any 2nd-order shift in the exponent ($s \to s+2$) results in a geometrically scaled drift:
+
+\begin{equation}
+    d(x, s+2) = 4d(x, s) + \frac{3x + 1}{2}
+\end{equation}
+
+The universal recurrence $j_{n+1} = 4j_n + 1$ is thus revealed to be the "gear ratio" of the 2-adic manifold. It ensures that the space-filling properties of the tree are maintained across all rows and columns, independent of the modular starting point.
+
+We establish a unified analytical framework for the orbital velocity (drift) $d$ that eliminates the distinction between residue classes mod 6. For any odd integer $x$ resulting from a 2-adic step with exponent $s$, the magnitude displacement $\Delta$ and the corresponding drift $d$ are defined as:
+
+\begin{equation}
+    \Delta = x_{preimage} - x = \frac{x(2^s - 3) - 1}{3}, \quad d = \frac{\Delta}{2} = \frac{x(2^s - 3) - 1}{6}
+\end{equation}
+
+This single identity governs every cell in both the E-Array and O-Array datasets.
+
+\paragraph{The Fundamental Telescoping Identity}
+
+The global convergence of the Collatz orbit is a direct consequence of the telescoping nature of the magnitude displacement. For an orbit $x_0 \to x_1 \to \dots \to x_k$, where $x_k = 1$, the sum of the drift velocities satisfies:
+
+\begin{equation}
+    \sum_{i=1}^{k} 2d_i = \sum_{i=1}^{k} (x_{i-1} - x_i) = (x_0 - x_1) + (x_1 - x_2) + \dots + (x_{k-1} - 1)
+\end{equation}
+
+Canceling the intermediate terms, we arrive at the \textbf{Magnitude Consumption Identity}:
+\begin{equation}
+    \sum_{i=1}^{k} 2d_i = x_{start} - 1
+\end{equation}
+
+This identity proves that the total displacement $d$ required to reach the ground state is an invariant property of the initial magnitude $x$.
+
+\subsubsection{The Universal Scaling Law of the $4n+1$ Recurrence}
+
+The recurrence $j_{n+1} = 4j_n + 1$ observed in the Preimage Arrays is the "gear ratio" of the 2-adic space. By increasing the 2-adic exponent $s$ by 2 (moving one column in the dataset), the displacement $\Delta$ scales according to:
+
+\begin{equation}
+    \Delta(x, s+2) = 4\Delta(x, s) + (3x + 1)
+\end{equation}
+
+Dividing by 2 yields the recurrence for the drift $d$:
+\begin{equation}
+    d(x, s+2) = 4d(x, s) + \frac{3x + 1}{2}
+\end{equation}
+
+This derivation explains why the "Even" and "Odd" difference tables appear structurally similar: they are sampling the same $4n$ scaling engine, with the constant term $\frac{3x+1}{2}$ serving as the modular friction specific to each target $x$. The $4n+1$ columnar lift is therefore a universal scaling law that ensures the space-filling nature of the 2-adic tree.
+
+\subsubsection{Note on Geometric Scaling and Asymptotic Stability}
+
+The relationship between a target integer $x$ and its preimage $x'$ can be characterized by the ratio of their magnitudes. From the inverse identity $x' = (2^s x - 1)/3$, the expansion ratio is given by:
+
+\begin{equation}
+    \frac{x'}{x} = \frac{2^s}{3} - \frac{1}{3x}
+\end{equation}
+
+This ratio provides three critical insights into the system's dynamics:
+
+\begin{enumerate}
+    \item \textbf{Asymptotic Linearity:} As $x \to \infty$, the term $1/3x$ vanishes, and the map converges to a pure linear scaling of $2^s/3$. This explains why the 2nd-order 2-adic structure becomes increasingly dominant as the magnitude grows.
+    \item \textbf{Relative Displacement:} The relative drift $d/x$ (the "percentage" of magnitude consumed per step) stabilizes toward $(2^s - 3)/6$. This proves that the Collatz map is a \textbf{logarithmic consumer}; it removes a fixed fraction of the remaining potential in each step, determined solely by the 2-adic exponent $s$.
+    \item \textbf{Vanishing Noise:} The "noise" traditionally associated with the $+1$ in $3x+1$ is strictly confined to the $1/3x$ term. Since this term is inversely proportional to $x$, the deterministic 2-adic scaling laws become "cleaner" the further the orbit is from the ground state at 1.
+\end{enumerate}
+
 
 \subsection{Deterministic vs. Stochastic Models}
 Standard heuristics often treat the Collatz map as a random walk, predicting that orbits contract because the geometric mean of the multipliers $(3/2$ and $3/4)$ is less than 1. Our calculation of the Lyapunov exponent $\lambda \approx 1.77$ (Section \ref{subsec:probability}) refines this view. We show that the "randomness" is actually the result of ergodic mixing on a finite state automaton. The map is globally expansive ($\Lambda \approx 3.51$), which seems to contradict the "Descent to 1."
