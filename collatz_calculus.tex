@@ -24,7 +24,8 @@
 \newtheorem{assumption}{Assumption}
 
 % --- METADATA ---
-\title{A Constructive Automata-Theoretic Framework for the Inverse Collatz Map}
+\title{A Constructive Automata-Theoretic Framework for the Inverse Collatz Map: \\
+\large{Deterministic Pathfinding and Magnitude Consumption on a 2-adic Manifold}}
 \author{Agola Kisira Odero \\
 \textit{Department of Computer Science, University of the West Indies} \\
 \textit{kisira.odero@sta.uwi.edu}}
@@ -32,46 +33,26 @@
 
 \begin{document}
 
-% -----------------------------------------------------------
-% 1. TITLE PAGE
-% -----------------------------------------------------------
 \maketitle
-\thispagestyle{empty} % No page number on title page
+\thispagestyle{empty}
 \newpage
 
-% -----------------------------------------------------------
-% 2. ABSTRACT
-% -----------------------------------------------------------
 \setcounter{page}{1}
 
 \begin{abstract}
-We introduce a constructive, automata-theoretic framework for analyzing the inverse dynamics of the Collatz $3x+1$ map. By modeling the system as a deterministic \textbf{Finite State Automaton (FSA)} acting on a modular network of 2-adic residue classes, we transform the reachability problem into a study of symbolic dynamics on a subshift of finite type.
+We introduce a constructive, automata-theoretic framework for analyzing the inverse dynamics of the Collatz $3x+1$ map. By modeling the system as a deterministic \textbf{Finite State Automaton (FSA)} acting on a modular network of 2nd-order 2-adic residue classes, we transform the reachability problem into a study of deterministic pathfinding on a rigid 2-adic manifold. First, we derive the \textbf{Unified $p$-lift Formula}, a deterministic mechanism that generates certified preimages while maintaining modular synchronization between target residues and step-count parity. We prove that this lifting mechanism is governed by an invariant \textbf{$4n+1$ Index Gear}, establishing a fundamental topological symmetry across the inverse tree.
 
-First, we derive the \textbf{Unified $p$-lift Formula}, a deterministic 2-adic mechanism that generates certified preimages for the complete set of odd integers . We prove that this lifting mechanism is governed by a universal $4n+1$ recurrence, establishing a fundamental symmetry between the growth of the preimage tree and the magnitude consumption of forward iterates .
+Second, we implement \textbf{Algebraic Steering}, an algorithmic technique utilizing monotone padding sequences to satisfy arbitrary 2-adic linear constraints, facilitating a constructive proof of \textbf{Exact Reachability}. We establish that for every odd integer $x$, there exists an explicit, finite symbolic program connecting the root 1 to $x$. Within this framework, the Collatz map is shown to be a \textbf{deterministic magnitude consumer}, governed by a \textbf{Master Drift Identity} where the total arithmetic work required to reach the ground state is exactly $x-1$.
 
-
-
-Second, we implement \textbf{Algebraic Steering}, an algorithmic technique utilizing ``padding'' sequences to satisfy arbitrary modular constraints, facilitating a constructive proof of \textbf{Exact Reachability} . We establish that for every odd integer $x$, there exists an explicit, finite symbolic program connecting the root 1 to $x$. Within this framework, the Collatz map is shown to be a deterministic magnitude consumer, where the total arithmetic work required to reach the ground state is exactly $x-1$ .
-
-
-
-Finally, we analyze the probabilistic dynamics of the underlying Markov chain, computing a stationary distribution that identifies specific \textbf{``Descent Chutes''} responsible for orbital decay . To ensure absolute logical rigor and differentiate this work from heuristic approaches, the core algebraic lemmas and the steering engine have been formally verified using the \textbf{Rocq (Coq) proof assistant}.
+Finally, we analyze the probabilistic dynamics of the underlying Markov chain, computing a stationary distribution that identifies specific \textbf{``Descent Chutes''} responsible for orbital decay. To ensure absolute logical rigor and differentiate this work from heuristic approaches, the core algebraic lemmas, the steering engine , and the \textbf{Master Inverse Generator} have been formally verified using the \textbf{Rocq (Coq) proof assistant}.
 \end{abstract}
 
-
-
-% -----------------------------------------------------------
-% 3. KEYWORDS
-% -----------------------------------------------------------
 \bigskip
-\noindent \textbf{Keywords:} Collatz Conjecture; Finite State Automata; Symbolic Dynamics; 2-adic Integers; Inverse Dynamics.
-
+\noindent \textbf{Keywords:} Collatz Conjecture; Finite State Automata; 2-adic Integers; Inverse Dynamics; Reachability; Formal Verification.
 \medskip
-%word count commandline: texcount -total collatz_calculus_v15.tex
-%\noindent \textbf{Word Count:} Approx. 4,100
 \newpage
 
-\newpage
+
 
 % -----------------------------------------------------------
 % 4. MAIN TEXT (Restructured for IMRAD)
@@ -675,7 +656,7 @@ The Collatz conjecture has historically been difficult to attack because the fun
 %The specificity of the modulo 9 partition arises from the alignment between the accelerated map $3x+1$ and the 2-adic cycles of the digital root %$dr(n)$. As shown in \cite{mod9_source}, the digital roots of $2^n$ cycle through $\{1, 2, 4, 8, 7, 5\}$ with periodicity 6. The pre-image equation %$2^\beta x = 3y + 1$ is solvable if and only if the product $dr(2^\beta) \cdot dr(x)$ lands in the residue set $\{1, 4, 7\}$, which corresponds to %integers $x \not\equiv 0 \pmod 3$. This rigid arithmetic constraint defines the transition boundaries of the Collatz Automaton.
 
 \subsection{Modulo 9 Periodicity and the 2nd-Order Lift}
-The structural integrity of the Unified p-lifted form relies on the specific cyclic behavior of powers of 2 within the modular residue system $\mathbb{Z}/9\mathbb{Z}$ . The residues of $2^n$ modulo 9 follow a deterministic sequence of period $k=6$ :
+The structural integrity of the Master Inverse Generator relies on the specific cyclic behavior of powers of 2 within the modular residue system $\mathbb{Z}/9\mathbb{Z}$ . The residues of $2^n$ modulo 9 follow a deterministic sequence of period $k=6$ :
 \[ 2^n \equiv \{1, 2, 4, 8, 7, 5\} \pmod 9 \quad \text{for } n \in \{0, 1, 2, 3, 4, 5\} \]
 
 \begin{lemma}[Modulo 9 Periodicity]
