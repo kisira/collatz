@@ -186,8 +186,12 @@
 \makeatother
 % ==== End compact layout block ====
 
-\title{An Inverse Calculus for the Odd Layer of the Collatz Map}
+%\title{An Inverse Calculus for the Odd Layer of the Collatz Map}
+%\author[Odero]{Agola Kisira Odero}
+
+\title[Inverse Calculus for Collatz]{An Inverse Calculus for the Odd Layer of the Collatz Map}
 \author{Agola Kisira Odero}
+\thanks{Funding: The author received no external funding for this work.}
 \date{\today}
 
 \begin{document}
@@ -1950,16 +1954,6 @@ source of nonlinearity beyond the affine operator projection.
 A practical picture is the $(\alpha,p)$ grid colored by $u=\log A$ (gain), with two dots per cell at the corresponding $v$ (families).
 Routing problems become: \emph{pick a dot in a cell} (choose $\varepsilon$) and \emph{pick a cell} (choose $(\alpha,p)$) to meet a congruence (Lemma~\ref{lem:last-row-p}) and a drift band (Cor.~\ref{cor:drift-bounds}).
 
-\begin{figure}[t]
-\centering
-% (Placeholder) Replace with a real plot of (u,v) per (\alpha,p) if desired.
-\fbox{\parbox{0.9\linewidth}{\centering
-Schematic: gain $u=\log A$ over $(\alpha,p)$; for each cell, two fixed-point values $v$ (families $\varepsilon\in\{1,5\}$).
-}}
-\caption{Operator-layer portrait of the parameter space. Each $(\alpha,p)$ yields a gain $u$ and two fixed points $v$.}
-\label{fig:param-geometry-0}
-\end{figure}
-
 \paragraph{Layered workflow.}
 (i) Project to $(u,v)$ for composition, bounds, and optimization;
 (ii) check the discrete fiber for residue targeting and admissibility;
@@ -1994,8 +1988,10 @@ Schematic: gain $u=\log A$ over $(\alpha,p)$; for each cell, two fixed-point val
   \centering
   % \includegraphics{param_geometry.png}
   \fbox{\includegraphics[width=0.9\linewidth]{figure_operator_geometry.png}}
-  %\fbox{\parbox{0.9\linewidth}{\centering TODO: Parameter portrait (u heatmap + family markers)}}
-  \caption{Operator-layer portrait of the parameter space.}
+  \fbox{\parbox{0.9\linewidth}{\centering
+  Schematic: gain $u=\log A$ over $(\alpha,p)$; for each cell, two fixed-point values $v$ (families $\varepsilon\in\{1,5\}$).
+  }}
+  \caption{Operator-layer portrait of the parameter space. Each $(\alpha,p)$ yields a gain $u$ and two fixed points $v$.}
   \label{fig:operator_geometry}
 \end{figure}
 
