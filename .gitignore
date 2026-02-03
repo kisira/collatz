@@ -8,3 +8,13 @@
 *.run.xml
 *.synctex.gz _minted*
 *.toc
+
+# Coq build artifacts
+*.vo
+*.vok
+*.vos
+*.glob
+.*.aux
+CoqMakefile
+CoqMakefile.conf
+.CoqMakefile.d
