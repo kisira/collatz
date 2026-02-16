@@ -7,9 +7,12 @@
 
 \usepackage[utf8]{inputenc}  % (or none if Lua/XeLaTeX)
 \usepackage{lmodern}
-\usepackage{geometry}
-\geometry{margin=1in}
-%\geometry{left=1in, right=1in, top=1in, bottom=1.5in}
+\usepackage[letterpaper]{geometry}
+\geometry{
+  textwidth=5in,
+  textheight=8in,
+  centering
+}
 
 \usepackage{amsmath,amssymb,mathtools}
 \usepackage{mathrsfs} % Ralph Smith’s Formal Script
@@ -26,6 +29,8 @@
 \usepackage{needspace}
 \usepackage{cleveref}
 \usepackage{float}
+\usepackage{adjustbox}
+%\usepackage{rotating} % for sidewaystable
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta, positioning, automata}
 \usepackage[T1]{fontenc}
@@ -383,6 +388,9 @@ $\alpha$ & Table constant & The \textbf{Base Valuation}. The minimal power of 2 
 \end{tabularx}
 \end{table}
 
+We use the symbol $\sigma$ for a $2$-adic valuation exponent; its precise meaning (e.g. $\sigma=v_2(A_W)$, $\sigma=v_2(3x'+1)$ or $\sigma = \alpha + 6p$) will be specified locally when used.
+
+
 \section{The Unified Inverse Table}
 \label{sec:unified-table}
 
@@ -468,7 +476,7 @@ Having defined the unified parameter table and the lifted transform, we now veri
 \subsection{The Forward Identity}
 \label{subsec:forward-identity}
 
-We first prove that the row design constraints derived in Section~\ref{sec:unified-table} guarantee the forward identity \(3x'+1 = 2^k x\) for all \(p \ge 0\).
+We first prove that the row design constraints derived in Section~\ref{sec:unified-table} guarantee the forward identity \(3x'+1 = 2^{\sigma} x\) for all \(p \ge 0\) where \(\sigma:=\alpha+6p\).
 
 \begin{lemma}[Row Correctness]
 \label{lem:row-correctness}
@@ -553,7 +561,7 @@ $x_A$ is ghost iff $A\equiv a_{\mathrm{bad}}(s,j)\pmod 6$.
 \noindent\textbf{(ii) The row table selects exactly the two non-ghost classes.}
 Let $\mathcal A(s,j)$ be the pair of $\alpha$-values appearing in
 Table~\ref{tab:parameters-abc} for the two rows with key $(s,j)$
-(e.g.\ for $(\mathrm e,0)$ the rows are $\Psi_0$ and $\psi_0$, etc.).
+(e.g.\ for $(\mathrm e,0)$ the rows are $\Psi_0$ and $\psi_0$, etc.)
 Interpreting $\alpha=6$ as $\alpha\equiv 0\pmod 6$, the set $\mathcal A(s,j)$
 is precisely the set of admissible classes \emph{excluding} $a_{\mathrm{bad}}(s,j)$.
 Equivalently, for each $(s,j)$ the table contains exactly the two classes
@@ -707,6 +715,43 @@ Consider $\Psi_0$ at $p=1$ applied to $x=1$.
 \end{itemize}
 A single step at $p=1$ multiplied the value by roughly $2^8/3 \approx 85$.
 \end{example}
+
+
+\section{Lifted control summaries for $p\ge 0$}
+\label{sec:lifted-control-tables}
+
+Row correctness shows that each branch row admits the affine form
+\[
+x' \equiv 6F(p,u) + \delta \pmod{M_K},\qquad M_K=3\cdot 2^K,
+\]
+with $F(p,u)$ linear in the free index $u$.  For control arguments it is convenient to reorganize the row parameters
+into derived quantities that depend on the lift level $p\ge 0$ and directly govern pinning and solvability.
+
+\paragraph{Lifted affine form.}
+For a fixed row with parameters $(\alpha,\beta,c,\delta)$ define
+\[
+\alpha_p := \alpha + 6p,
+\qquad
+k^{(p)} := \frac{\beta\,64^p + c}{9}\in\mathbb Z.
+\]
+Using $64^p=2^{6p}$, the row map can be written as
+\begin{equation}
+\label{eq:lifted-affine-form}
+x' \equiv 6\bigl(2^{\alpha_p}u + k^{(p)}\bigr)+\delta \pmod{M_K}.
+\end{equation}
+Thus pinning and solving depend only on the comparison of $\alpha_p$ with $K$, and the constant term $k^{(p)}$.
+
+\paragraph{Router transitions are $p$-invariant.}
+Reducing \eqref{eq:lifted-affine-form} modulo $3$ shows that the router transition triple $j'(r=0,1,2)$ depends only on the base row,
+not on $p$: since $64^p\equiv 1\pmod 3$ and $6p$ is even, both $k^{(p)}\bmod 3$ and $2^{\alpha_p}\bmod 3$ are independent of $p$.
+
+Table~\ref{tab:control-transitions-general-p} records, for each input state $(s,j)$, the two available choices $s'=e$ or $s'=o$
+together with the lifted parameters needed in the last-step congruence.
+In practice, we use Table~\ref{tab:control-transitions-general-p} to select a branch consistent with the desired output family $s'$
+(and, in the solving regime, solvability), and then apply the one-shot inversion procedure to compute a compatible input class.
+
+
+
 
 
 % =============================================================================
@@ -1115,6 +1160,17 @@ a^{(p)} u \;\equiv\; r^{(p)} \pmod{M_K},
 \end{equation}
 where the coefficient is $a^{(p)} = 6 \cdot 2^{\alpha_p} = 3 \cdot 2^{\alpha_p+1}$, and the target remainder is $r^{(p)} = x_{\mathrm{tar}} - (6k^{(p)} + \delta_T)$.
 
+\paragraph{Notation.}
+We use $m$ for the global integer input to a word evaluation $x_W(m)=6(A_W m+B_W)+\delta_W$.
+In the residue-targeting (last-step) analysis we instead parametrize the current residue class by
+\[
+u:=\left\lfloor \frac{x}{18}\right\rfloor,
+\]
+so that fixing the router state $(s,j)$ determines $x$ from $u$ via $x=18u+6j+\delta_s$.
+Thus $m$ and $u$ play the same role (a free integer index), but are attached to different stages of the construction.
+We retain $k^{(p)}$ for the lifted constant in the last-step unified form to match Table~\ref{tab:parameters-abc}.
+
+
 \begin{lemma}[Solvability Criterion]
 \label{lem:last-row-p}
 The congruence \eqref{eq:last-row-cong} is solvable for $u$ if and only if
@@ -1131,7 +1187,8 @@ Depending on the magnitude of the 2-adic lift $\alpha_p$ relative to the target 
 \label{prop:pin-vs-solve}
 \begin{enumerate}
     \item \textbf{The Pinning Regime ($\alpha_p + 1 \ge K$):}
-    In this case, $M_K$ divides $a^{(p)}$. The term $a^{(p)}u$ vanishes modulo $M_K$.
+    In this case, $M_K$ divides $a^{(p)}$. The term $a^{(p)}u$ vanishes modulo $M_K$
+    (Indeed, $2^{\alpha_p+1}\equiv 0\pmod{2^K}$ once $\alpha_p+1\ge K$, cf.\ Lemma~\ref{lem:2adic-pinning}.)
     Consequently, the output residue is \textbf{fixed} (pinned) by the token parameters alone:
     \[
     x' \;\equiv\; 6k^{(p)} + \delta_T \pmod{M_K},
@@ -1142,7 +1199,7 @@ Depending on the magnitude of the 2-adic lift $\alpha_p$ relative to the target 
     In this case, the coefficient $a^{(p)}$ retains information about $u$. The congruence has a unique solution class for $u$ modulo $2^{K-(\alpha_p+1)}$:
     \[
     u \;\equiv\; \frac{r^{(p)}}{3 \cdot 2^{\alpha_p+1}} \pmod{2^{K-(\alpha_p+1)}}.
-    \]
+    \] This is exactly the $2$-adic cancellation phenomenon (Lemma~\ref{lem:2adic-cancellation}).
 \end{enumerate}
 \end{proposition}
 
@@ -1185,6 +1242,495 @@ u \;\equiv\; \frac{3060}{12} \;=\; 255 \pmod{256}.
 \]
 Thus, any input $u \equiv 255 \pmod{256}$ will map to the target.
 \end{example}
+
+\paragraph{Summary tables (for $p=0$).}
+To streamline the control arguments, we summarize the last-step data in two complementary tables.
+Table~\ref{tab:j-output-classification} is a branch-by-branch \emph{output classifier} at $p=0$: for each row (i.e.\ inverse branch) it records the parameters $(\alpha,\beta,c,\delta)$, the derived constant $k^{(0)}=(\beta+c)/9$, and the induced output classifiers $(s',j')$ and $m'$ as functions of the residue class $r\equiv m\pmod 3$ (equivalently $u\bmod 3$ in the control normal form).
+This makes it immediate, once a branch is chosen, to read off the output family $s'$ (via $\delta$), the router class $j'$, and the next-index update.
+Table~\ref{tab:control-transitions-p0} reorganizes the same information by \emph{input state} $(s,j)$: each state offers exactly two branch choices corresponding to $s'=e$ or $s'=o$, and the table lists the associated $(\alpha,q,\delta)$ together with the router transition triple $j'(0,1,2)$.
+In practice, Table~\ref{tab:control-transitions-p0} is used first to select a row consistent with the desired output family (and, in the solving regime, modular solvability), while Table~\ref{tab:j-output-classification} is used to record the resulting output classification and index update.
+
+
+\begin{table}[H]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.10}
+
+\caption{$p=0$ output classification derived from the row parameters. Write $m=3M+r$ with $r\in\{0,1,2\}$, and $k^{(0)}=(\beta+c)/9$, $\kappa = k^{(0)}\bmod 3$. Then
+$j'=(r+\kappa)\bmod 3$ and $m'=2^\alpha M + t_r$ with $t_r=\left\lfloor(2^\alpha r+k^{(0)})/3\right\rfloor$.}
+\label{tab:j-output-classification}
+
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{llccccccccll}
+\toprule
+Row & $(s,j)$ & Type & $\alpha$ & $\beta$ & $c$ & $\delta$ & $s'$ & $k^{(0)}=(\beta+c)/9$ & $\kappa=k^{(0)}\bmod 3$ & $j'(r=0,1,2)$ & $m' = 2^\alpha M + (t_0,t_1,t_2)$\\
+\midrule
+$\Psi_{0}$ & $(e,0)$ & ee & 2 & 2   & $-2$ & 1 & $e$ & 0  & 0 & $(0,1,2)$ & $4M + (0,1,2)$ \\
+$\Psi_{1}$ & $(e,1)$ & ee & 4 & 56  & $-2$ & 1 & $e$ & 6  & 0 & $(0,1,2)$ & $16M + (2,7,12)$ \\
+$\Psi_{2}$ & $(e,2)$ & ee & 6 & 416 & $-2$ & 1 & $e$ & 46 & 1 & $(1,2,0)$ & $64M + (15,36,58)$ \\
+$\omega_{0}$ & $(o,0)$ & oe & 3 & 20  & $-2$ & 1 & $e$ & 2  & 2 & $(2,0,1)$ & $8M + (0,3,6)$ \\
+$\omega_{1}$ & $(o,1)$ & oe & 1 & 11  & $-2$ & 1 & $e$ & 1  & 1 & $(1,2,0)$ & $2M + (0,1,1)$ \\
+$\omega_{2}$ & $(o,2)$ & oe & 5 & 272 & $-2$ & 1 & $e$ & 30 & 0 & $(0,1,2)$ & $32M + (10,20,31)$ \\
+$\psi_{0}$ & $(e,0)$ & eo & 4 & 8   & $-8$ & 5 & $o$ & 0  & 0 & $(0,1,2)$ & $16M + (0,5,10)$ \\
+$\psi_{1}$ & $(e,1)$ & eo & 6 & 224 & $-8$ & 5 & $o$ & 24 & 0 & $(0,1,2)$ & $64M + (8,29,50)$ \\
+$\psi_{2}$ & $(e,2)$ & eo & 2 & 26  & $-8$ & 5 & $o$ & 2  & 2 & $(2,0,1)$ & $4M + (0,2,3)$ \\
+$\Omega_{0}$ & $(o,0)$ & oo & 5 & 80  & $-8$ & 5 & $o$ & 8  & 2 & $(2,0,1)$ & $32M + (2,13,24)$ \\
+$\Omega_{1}$ & $(o,1)$ & oo & 3 & 44  & $-8$ & 5 & $o$ & 4  & 1 & $(1,2,0)$ & $8M + (1,4,6)$ \\
+$\Omega_{2}$ & $(o,2)$ & oo & 1 & 17  & $-8$ & 5 & $o$ & 1  & 1 & $(1,2,0)$ & $2M + (0,1,1)$ \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+
+\end{table}
+
+
+\begin{table}[H]
+\centering
+\small
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.12}
+
+\caption{Control transition table at $p=0$, grouped by input state $(s,j)$.
+Each input state admits two branch choices: $s'=e$ or $s'=o$ (equivalently Type \texttt{*e} or \texttt{*o}).
+For each chosen row, we list $(\alpha,k^{(0)},\delta)$ with $k^{(0)}=(\beta+c)/9$, and the router transition triple
+$j'(0,1,2)$, where $r:=u\bmod 3$ and $j'(r)\equiv 2^\alpha u+k^{(0)}\pmod 3$.}
+\label{tab:control-transitions-p0}
+
+\begin{tabular}{lllccl}
+\toprule
+Input $(s,j)$ & Choice & Row & Type & $(\alpha,k^{(0)},\delta)$ & $j'(0,1,2)$ \\
+\midrule
+$(e,0)$ & $s'=e$ & $\Psi_{0}$ & \texttt{ee} & $(2,0,1)$  & $(0,1,2)$ \\
+$(e,0)$ & $s'=o$ & $\psi_{0}$ & \texttt{eo} & $(4,0,5)$  & $(0,1,2)$ \\
+\midrule
+$(e,1)$ & $s'=e$ & $\Psi_{1}$ & \texttt{ee} & $(4,6,1)$  & $(0,1,2)$ \\
+$(e,1)$ & $s'=o$ & $\psi_{1}$ & \texttt{eo} & $(6,24,5)$ & $(0,1,2)$ \\
+\midrule
+$(e,2)$ & $s'=e$ & $\Psi_{2}$ & \texttt{ee} & $(6,46,1)$ & $(1,2,0)$ \\
+$(e,2)$ & $s'=o$ & $\psi_{2}$ & \texttt{eo} & $(2,2,5)$  & $(2,0,1)$ \\
+\midrule
+$(o,0)$ & $s'=e$ & $\omega_{0}$ & \texttt{oe} & $(3,2,1)$  & $(2,1,0)$ \\
+$(o,0)$ & $s'=o$ & $\Omega_{0}$ & \texttt{oo} & $(5,8,5)$  & $(2,1,0)$ \\
+\midrule
+$(o,1)$ & $s'=e$ & $\omega_{1}$ & \texttt{oe} & $(1,1,1)$  & $(1,0,2)$ \\
+$(o,1)$ & $s'=o$ & $\Omega_{1}$ & \texttt{oo} & $(3,4,5)$  & $(1,0,2)$ \\
+\midrule
+$(o,2)$ & $s'=e$ & $\omega_{2}$ & \texttt{oe} & $(5,30,1)$ & $(0,2,1)$ \\
+$(o,2)$ & $s'=o$ & $\Omega_{2}$ & \texttt{oo} & $(1,1,5)$  & $(1,0,2)$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{example}[Solving at $K=5$ ($M_{5}=96$) with row-selection via the control-transition table]
+Target: $x_{\mathrm{tar}} \equiv 91 \pmod{96}$.
+
+\smallskip
+\noindent\textbf{Step 1 (Infer the required output family $s'$).}
+Since $96\equiv 0\pmod 6$, reducing the target modulo $6$ is immediate:
+\[
+91 \equiv 1 \pmod 6.
+\]
+Hence the target lies in the $e$--family, so we must have $s'=e$, equivalently $\delta=1$ in the final-step normal form
+\[
+x' = 6\bigl(2^\alpha u + q\bigr)+\delta.
+\]
+
+\smallskip
+\noindent\textbf{Step 2 (Use the control-transition table to select a candidate row).}
+In the $p=0$ control-transition table, the constraint $s'=e$ means we must choose a row of type \texttt{*e}.
+Testing the six \texttt{*e} options, the only row that admits solutions for this target is
+\[
+\omega_1\quad\text{(type \texttt{oe})},
+\]
+which occurs under input state $(s,j)=(o,1)$ and has parameters
+\[
+(\alpha,q,\delta)=(1,1,1).
+\]
+
+\smallskip
+\noindent\textbf{Step 3 (Pinning vs.\ Solving).}
+Here $K=5$ and $\alpha+1=2<5$, so we are in the \textbf{Solving} regime.
+
+\smallskip
+\noindent\textbf{Step 4 (Solve the congruence for $u$).}
+Impose $x'\equiv 91\pmod{96}$ in the row formula $x'=6(2^\alpha u+k^{(0)})+\delta$:
+\[
+6(2^1u+1)+1 \equiv 91 \pmod{96}.
+\]
+Rearranging gives
+\[
+6(2u+1)\equiv 90 \pmod{96}.
+\]
+Divide by $6$ (valid since $6\mid 96$):
+\[
+2u+1 \equiv 15 \pmod{16}
+\quad\Longrightarrow\quad
+2u \equiv 14 \pmod{16}
+\quad\Longrightarrow\quad
+u \equiv 7 \pmod{8}.
+\]
+Thus, any input with $u\equiv 7\pmod 8$ maps to the target residue class.
+
+\smallskip
+\noindent\textbf{Step 5 (Extrapolate a compatible starting input $x$).}
+The input decomposition is
+\[
+x = 18u + 6j + \delta_s,
+\qquad
+\delta_s=\begin{cases}
+1,& s=e,\\
+5,& s=o.
+\end{cases}
+\]
+From the chosen row we have the required input state $(s,j)=(o,1)$, hence $\delta_s=5$ and $j=1$. Therefore
+\[
+x = 18u + 6\cdot 1 + 5 = 18u+11.
+\]
+Taking the smallest solution $u=7$ yields the explicit starting value
+\[
+x=18\cdot 7 + 11 = 137.
+\]
+More generally, writing $u=7+8t$ gives the full congruence class
+\[
+x = 18(7+8t)+11 = 137 + 144t,
+\quad\text{i.e.}\quad
+x \equiv 137 \pmod{144}.
+\]
+
+\smallskip
+\noindent\textbf{Step 6 (Verification).}
+For row $\omega_1$ at $p=0$ we have
+\[
+x' = 6(2u+1)+1 = 12u+7.
+\]
+With $u=7$ this gives $x'=12\cdot 7 + 7 = 91$, and if $u\equiv 7\pmod 8$ then
+\[
+x' = 12u+7 \equiv 12\cdot 7 + 7 = 91 \pmod{96},
+\]
+since $12\cdot 8=96$.
+\end{example}
+
+\begin{example}[Solving at $K=10$ ($M_{10}=3072$) via the one-shot reduction]
+Target: $x_{\mathrm{tar}} \equiv 3071 \pmod{3072}$.
+Choose the row $\Omega_2$ (type \texttt{oo}) at $p=0$, with parameters
+\[
+(\alpha,q,\delta)=(1,1,5),
+\qquad k^{(0)}=\frac{\beta+c}{9}.
+\]
+
+\smallskip
+\noindent\textbf{Step 1 (Consistency and one-shot reduction).}
+Since $3071\equiv 5\pmod 6$, the target is compatible with $\delta=5$.
+Define the reduced target
+\[
+T:=\frac{x_{\mathrm{tar}}-\delta}{6}=\frac{3071-5}{6}=511,
+\qquad
+v:=T-k^{(0)}=511-1=510.
+\]
+The row congruence
+\[
+x' \equiv 6(2^\alpha u+k^{(0)})+\delta \pmod{M_{10}}
+\]
+is equivalent to the single $2$-adic congruence
+\[
+2^\alpha u \equiv v \pmod{2^{10}},
+\qquad\text{i.e.}\qquad
+2u \equiv 510 \pmod{1024}.
+\]
+
+\smallskip
+\noindent\textbf{Step 2 (Solving regime and maximal division).}
+Here $\alpha<10$, so we are in the \textbf{Solving} regime.  Since $510$ is divisible by $2^\alpha=2$, we may divide by $2$:
+\[
+u \equiv 255 \pmod{512}.
+\]
+To present the \emph{coarser} (but often more convenient) family obtained by dividing the original congruence by the full factor
+$6\cdot 2^\alpha=12$, note that the original condition is
+\[
+6\cdot 2^\alpha u \equiv x_{\mathrm{tar}}-(6q+\delta) \pmod{3\cdot 2^{10}}
+\quad\Longleftrightarrow\quad
+12u \equiv 3060 \pmod{3072},
+\]
+and since $\gcd(12,3072)=12$ we can divide by $12$ to obtain
+\[
+u \equiv 255 \pmod{256}.
+\]
+Thus, any input $u\equiv 255\pmod{256}$ maps to $x_{\mathrm{tar}}$ modulo $M_{10}$ under this row.
+
+\smallskip
+\noindent\textbf{(Optional) Reconstruct a compatible starting input $x$.}
+For the row $\Omega_2$ the input state is $(s,j)=(o,2)$, hence
+\[
+x = 18u + 6j + \delta_s = 18u + 12 + 5 = 18u+17.
+\]
+Taking the smallest representative $u=255$ gives $x=18\cdot 255+17=4607$, and in general
+\[
+u\equiv 255\pmod{256}\quad\Longrightarrow\quad x\equiv 4607 \pmod{4608}.
+\]
+\end{example}
+
+\begin{example}[Pinning at $K=10$ ($M_{10}=3072$) by lifting]
+Fix $K=10$, so $M_{10}=3\cdot 2^{10}=3072$.  Choose the row $\Omega_2$ (type \texttt{oo}) and lift to $p=2$.
+For this row one has $(\alpha,\beta,c,\delta)=(1,17,-8,5)$, hence
+\[
+\alpha_p=\alpha+6p = 1+12 = 13 \ge 10,
+\qquad
+k^{(p)}=\frac{\beta 64^p + c}{9}=\frac{17\cdot 64^2 - 8}{9}=7736.
+\]
+Therefore we are in the \textbf{Pinning} regime: since $\alpha_p\ge K$, the term $2^{\alpha_p}u$ vanishes modulo $2^K$ and the output is independent of the input index $u$.
+Indeed, the lifted row map is
+\[
+x' \equiv 6\bigl(2^{\alpha_p}u+k^{(p)}\bigr)+\delta \pmod{M_{10}},
+\]
+and reducing modulo $M_{10}$ gives
+\[
+x' \equiv 6k^{(p)}+\delta \pmod{3072}.
+\]
+Substituting $k^{(2)}=7736$ and $\delta=5$ yields
+\[
+x' \equiv 6\cdot 7736 + 5 = 46421 \equiv 341 \pmod{3072}.
+\]
+Thus, \emph{every} input in the state $(s,j)=(o,2)$ (i.e.\ every $x=18u+6\cdot 2+5$ with arbitrary $u$) is mapped, under the $(\Omega_2,p=2)$ branch, to the \emph{same} residue class
+\[
+x' \equiv 341 \pmod{3072}.
+\]
+In particular, at $K=10$ the branch $\Omega_2$ becomes pinned as soon as $p\ge 2$, since $\alpha+6p\ge K$.
+\end{example}
+
+
+
+\subsection{One-shot inversion at $p=0$: solving for a compatible input $x$ from a prescribed output $x'$.}
+Fix $K\ge 1$ and write
+\[
+M_K := 3\cdot 2^K.
+\]
+Assume we are given a target output residue class
+\[
+x' \equiv x_{\mathrm{tar}} \pmod{M_K},
+\]
+and we choose a specific row (branch) with parameters $(s,j)$, type $s\to s'$, and
+\[
+(\alpha,\beta,c,\delta)\qquad\text{(at $p=0$)},
+\]
+so that $s'$ is determined by $\delta\in\{1,5\}$ and
+\[
+q := k^{(0)} := \frac{\beta+c}{9}\in\mathbb Z.
+\]
+In the $p=0$ normal form, this row maps an input index $u$ to an output $x'$ by
+\begin{equation}\label{eq:p0-row-map}
+x' \equiv 6\bigl(2^\alpha u + q\bigr)+\delta \pmod{M_K}.
+\end{equation}
+We now describe a direct procedure to compute a compatible input $x$ (if one exists).
+
+\smallskip
+\noindent\textbf{Step 1 (Consistency with the output family).}
+First check that the target is compatible with the chosen row's output family:
+\[
+x_{\mathrm{tar}} \equiv \delta \pmod 6.
+\]
+If not, then \eqref{eq:p0-row-map} has no solutions for this row.
+
+\smallskip
+\noindent\textbf{Step 2 (Reduce to a congruence for $u$).}
+Define the reduced target
+\[
+T := \frac{x_{\mathrm{tar}}-\delta}{6}\in\mathbb Z,
+\]
+and set
+\[
+v := T-q.
+\]
+Reducing \eqref{eq:p0-row-map} and dividing by $6$ yields the equivalent congruence
+\begin{equation}\label{eq:u-cong}
+2^\alpha u \equiv v \pmod{2^K}.
+\end{equation}
+
+\smallskip
+\noindent\textbf{Step 3 (Pinning vs.\ solving).}
+\begin{enumerate}
+\item[\emph{(Pinning)}] If $\alpha\ge K$, then $2^\alpha u \equiv 0\pmod{2^K}$ for every $u$, and \eqref{eq:u-cong} is solvable iff
+\[
+v \equiv 0 \pmod{2^K}.
+\]
+In this case, \eqref{eq:u-cong} places no restriction on $u$ modulo $2^K$ (any $u$ works).
+\item[\emph{(Solving)}] If $\alpha< K$, then \eqref{eq:u-cong} is solvable iff
+\[
+v \equiv 0 \pmod{2^\alpha}.
+\]
+When solvable, divide \eqref{eq:u-cong} by $2^\alpha$ to obtain the explicit solution class
+\begin{equation}\label{eq:u-solution}
+u \equiv \frac{v}{2^\alpha} \pmod{2^{K-\alpha}}.
+\end{equation}
+\end{enumerate}
+
+\smallskip
+\noindent\textbf{Step 4 (Reconstruct the input $x$).}
+Once a solution class for $u$ is obtained (either arbitrary $u$ in the pinning case, or the class \eqref{eq:u-solution} in the solving case), reconstruct a compatible input integer $x$ in the chosen input state $(s,j)$ via
+\begin{equation}\label{eq:x-from-u}
+x \;=\; 18u + 6j + \delta_s,
+\qquad
+\delta_s :=
+\begin{cases}
+1,& s=e,\\
+5,& s=o.
+\end{cases}
+\end{equation}
+In particular, if \eqref{eq:u-solution} yields $u\equiv u_0 \pmod{2^{K-\alpha}}$, then \eqref{eq:x-from-u} gives the congruence class
+\[
+x \equiv 18u_0 + 6j + \delta_s \pmod{18\cdot 2^{K-\alpha}}.
+\]
+
+\smallskip
+\noindent\textbf{Step 5 (Optional: router class of the target).}
+Since $\delta$ fixes $s'$, the output router class is read off directly from the target by
+\[
+j' \equiv \left\lfloor\frac{x'}{6}\right\rfloor \equiv \frac{x_{\mathrm{tar}}-\delta}{6} = T \pmod 3,
+\]
+so $j'$ can be computed without solving for $u$.
+
+\subsection{One-shot inversion for general $p\ge 0$: solving for a compatible input $x$ from a prescribed output $x'$.}
+
+\begin{table}[H]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.12}
+
+\caption{General $p\ge 0$ control-transition table (lifted parameters).  Each input state $(s,j)$ admits two choices
+corresponding to $s'=e$ or $s'=o$ (Type \texttt{*e} or \texttt{*o}).  For each branch (row) we list the lifted exponent
+$\alpha_p=\alpha+6p$ and the lifted constant $k^{(p)}=(\beta 64^p + c)/9$ so that
+$x'\equiv 6(2^{\alpha_p}u+k^{(p)})+\delta \pmod{M_K}$ with $M_K=3\cdot 2^K$.
+The router transition triple $j'(0,1,2)$ (where $r:=u\bmod 3$) is independent of $p$ since $64^p\equiv 1\pmod 3$ and $6p$ is even.}
+\label{tab:control-transitions-general-p}
+
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{lllccll}
+\toprule
+Input $(s,j)$ & Choice & Row & Type & $\delta$ & $(\alpha_p,\ k^{(p)})$ & $j'(0,1,2)$ \\
+\midrule
+$(e,0)$ & $s'=e$ & $\Psi_{0}$ & \texttt{ee} & 1 & $(2+6p,\ (2\cdot 64^p-2)/9)$   & $(0,1,2)$ \\
+$(e,0)$ & $s'=o$ & $\psi_{0}$ & \texttt{eo} & 5 & $(4+6p,\ (8\cdot 64^p-8)/9)$   & $(0,1,2)$ \\
+\midrule
+$(e,1)$ & $s'=e$ & $\Psi_{1}$ & \texttt{ee} & 1 & $(4+6p,\ (56\cdot 64^p-2)/9)$  & $(0,1,2)$ \\
+$(e,1)$ & $s'=o$ & $\psi_{1}$ & \texttt{eo} & 5 & $(6+6p,\ (224\cdot 64^p-8)/9)$ & $(0,1,2)$ \\
+\midrule
+$(e,2)$ & $s'=e$ & $\Psi_{2}$ & \texttt{ee} & 1 & $(6+6p,\ (416\cdot 64^p-2)/9)$ & $(1,2,0)$ \\
+$(e,2)$ & $s'=o$ & $\psi_{2}$ & \texttt{eo} & 5 & $(2+6p,\ (26\cdot 64^p-8)/9)$  & $(2,0,1)$ \\
+\midrule
+$(o,0)$ & $s'=e$ & $\omega_{0}$ & \texttt{oe} & 1 & $(3+6p,\ (20\cdot 64^p-2)/9)$  & $(2,1,0)$ \\
+$(o,0)$ & $s'=o$ & $\Omega_{0}$ & \texttt{oo} & 5 & $(5+6p,\ (80\cdot 64^p-8)/9)$  & $(2,1,0)$ \\
+\midrule
+$(o,1)$ & $s'=e$ & $\omega_{1}$ & \texttt{oe} & 1 & $(1+6p,\ (11\cdot 64^p-2)/9)$  & $(1,0,2)$ \\
+$(o,1)$ & $s'=o$ & $\Omega_{1}$ & \texttt{oo} & 5 & $(3+6p,\ (44\cdot 64^p-8)/9)$  & $(1,0,2)$ \\
+\midrule
+$(o,2)$ & $s'=e$ & $\omega_{2}$ & \texttt{oe} & 1 & $(5+6p,\ (272\cdot 64^p-2)/9)$ & $(0,2,1)$ \\
+$(o,2)$ & $s'=o$ & $\Omega_{2}$ & \texttt{oo} & 5 & $(1+6p,\ (17\cdot 64^p-8)/9)$  & $(1,0,2)$ \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+Fix $K\ge 1$ and set
+\[
+M_K := 3\cdot 2^K.
+\]
+Assume we are given a target output residue class
+\[
+x' \equiv x_{\mathrm{tar}} \pmod{M_K},
+\]
+and we choose a specific row (branch) with input state $(s,j)$, type $s\to s'$, and parameters
+\[
+(\alpha,\beta,c,\delta),
+\qquad \delta\in\{1,5\}.
+\]
+For each $p\ge 0$, recall
+\[
+F(p,u) := \frac{(9u2^\alpha+\beta)\,64^p + c}{9},
+\qquad
+x' = 6F(p,u)+\delta,
+\]
+and define
+\[
+\alpha_p := \alpha + 6p,
+\qquad
+k^{(p)} := \frac{\beta\,64^p + c}{9}.
+\]
+(For the rows in the parameter table, $k^{(p)}\in\mathbb Z$ for all $p\ge 0$.)  Using $64^p=2^{6p}$, one has the affine form
+\begin{equation}\label{eq:row-map-general-p}
+F(p,u)=u\,2^{\alpha_p}+k^{(p)},
+\qquad
+x' \equiv 6\bigl(u\,2^{\alpha_p}+k^{(p)}\bigr)+\delta \pmod{M_K}.
+\end{equation}
+We now describe a direct procedure to compute a compatible input $x$ (if one exists), at a fixed choice of $(\text{row},p,K)$.
+
+\smallskip
+\noindent\textbf{Step 1 (Consistency with the output family).}
+First check that the target is compatible with the chosen row's output family:
+\[
+x_{\mathrm{tar}} \equiv \delta \pmod 6.
+\]
+If not, then \eqref{eq:row-map-general-p} has no solutions for this row.
+
+\smallskip
+\noindent\textbf{Step 2 (Reduce to a congruence for $u$).}
+Define the reduced target
+\[
+T := \frac{x_{\mathrm{tar}}-\delta}{6}\in\mathbb Z,
+\]
+and set
+\[
+v := T-k^{(p)}.
+\]
+Dividing \eqref{eq:row-map-general-p} by $6$ and reducing modulo $2^K$ yields the equivalent congruence
+\begin{equation}\label{eq:u-cong-general-p}
+2^{\alpha_p}u \equiv v \pmod{2^K}.
+\end{equation}
+
+\smallskip
+\noindent\textbf{Step 3 (Pinning vs.\ solving).}
+\begin{enumerate}
+\item[\emph{(Pinning)}] If $\alpha_p\ge K$, then $2^{\alpha_p}u \equiv 0\pmod{2^K}$ for every $u$, and \eqref{eq:u-cong-general-p} is solvable iff
+\[
+v \equiv 0 \pmod{2^K}.
+\]
+In this case, \eqref{eq:u-cong-general-p} places no restriction on $u$ modulo $2^K$ (any $u$ works).
+\item[\emph{(Solving)}] If $\alpha_p< K$, then \eqref{eq:u-cong-general-p} is solvable iff
+\[
+v \equiv 0 \pmod{2^{\alpha_p}}.
+\]
+When solvable, divide \eqref{eq:u-cong-general-p} by $2^{\alpha_p}$ to obtain the explicit solution class
+\begin{equation}\label{eq:u-solution-general-p}
+u \equiv \frac{v}{2^{\alpha_p}} \pmod{2^{K-\alpha_p}}.
+\end{equation}
+\end{enumerate}
+
+\smallskip
+\noindent\textbf{Step 4 (Reconstruct the input $x$).}
+Once a solution class for $u$ is obtained (either arbitrary $u$ in the pinning case, or the class \eqref{eq:u-solution-general-p} in the solving case), reconstruct a compatible input integer $x$ in the chosen input state $(s,j)$ via
+\begin{equation}\label{eq:x-from-u-general-p}
+x \;=\; 18u + 6j + \delta_s,
+\qquad
+\delta_s :=
+\begin{cases}
+1,& s=e,\\
+5,& s=o.
+\end{cases}
+\end{equation}
+In particular, if \eqref{eq:u-solution-general-p} yields $u\equiv u_0 \pmod{2^{K-\alpha_p}}$, then \eqref{eq:x-from-u-general-p} gives the congruence class
+\[
+x \equiv 18u_0 + 6j + \delta_s \pmod{18\cdot 2^{K-\alpha_p}}.
+\]
+
+\smallskip
+\noindent\textbf{Step 5 (Optional: router class of the target).}
+Since $\delta$ fixes $s'$, the output router class is read off directly from the target by
+\[
+j' \equiv \left\lfloor\frac{x'}{6}\right\rfloor \equiv \frac{x_{\mathrm{tar}}-\delta}{6} = T \pmod 3,
+\]
+so $j'$ can be computed without solving for $u$.
+
+
 
 
 \section{Base Witnesses (Mod 24)}
@@ -1306,10 +1852,10 @@ Let $r' \in \{0, \dots, M_{K+1}-1\}$ be the target odd residue.
     A_{W'} m \;\equiv\; \frac{r'-\delta_W}{6} - B_{W'} \pmod{2^K}
     \]
     is solvable. Choose $m'$ to be the \emph{least nonnegative} solution in its congruence class.
-    More precisely, writing $s:=v_2(A_{W'})$ and $A_{W'}=2^s u$ with $u$ odd, the congruence
-    determines $m'$ uniquely modulo $2^{K-s}$; take the representative
+    More precisely, writing $\sigma:=v_2(A_{W'})$ and $A_{W'}=2^\sigma v$ with $v$ odd, the congruence
+    determines $m'$ uniquely modulo $2^{K-\sigma}$; take the representative
     \[
-    0 \le m' < 2^{K-s}.
+    0 \le m' < 2^{K-\sigma}.
     \]
     By Lemma~\ref{lem:prefix-compatibility}, this canonical choice lies in the stable routing
     class ensured by step~4.
@@ -1333,9 +1879,9 @@ and an integer $m\ge 0$ such that
 x_W(m)\equiv r \pmod{M_K}.
 \]
 Moreover, in the terminal solve step one may choose $m$ canonically (least nonnegative
-representative in its congruence class), so that if $s:=v_2(A_W)$ then
+representative in its congruence class), so that if $\sigma:=v_2(A_W)$ then
 \[
-0\le m < 2^{K-s}.
+0\le m < 2^{K-\sigma}.
 \]
 In addition, when the theorem is applied to a fixed odd target $x$, the inductive
 construction may be carried out inside the router class
@@ -1375,8 +1921,8 @@ x_{W'}(m') \equiv r' \pmod{M_{K+1}}.
 When the target is a fixed odd integer $x$, we may execute the lifting step inside the
 router class $j(x)=\lfloor x/6\rfloor\bmod 3$ (Lemma~\ref{lem:router-locking}).
 In the terminal congruence solve step inside Lemma~\ref{lem:lifting}, choose $m'$ as the
-least nonnegative solution in its congruence class. Writing $s:=v_2(A_{W'})$, this yields
-the canonical bound $0\le m' < 2^{K+1-s}$.
+least nonnegative solution in its congruence class. Writing $\sigma:=v_2(A_{W'})$, this yields
+the canonical bound $0\le m' < 2^{K+1-\sigma}$.
 
 Thus every $r'\in\mathcal R_{K+1}$ is reachable. By induction, reachability holds for all
 $K\ge 3$.
@@ -1460,6 +2006,76 @@ A_W m \;=\; \frac{x_{\mathrm{tar}} - \delta_W}{6} - B_W.
 \end{equation}
 Since $A_W = 3 \cdot 2^{\alpha(W)}$, this is a linear equation over the 2-adic integers.
 
+\paragraph{Reusable $2$-adic tools.}
+We will repeatedly reduce control and lifting statements to elementary congruences modulo powers of $2$.
+For convenience, we isolate three standard facts that will be used throughout without further comment:
+Lemma~\ref{lem:2adic-cancellation} formalizes cancellation of an odd factor and yields the resulting solution class modulo a power of two;
+Lemma~\ref{lem:2adic-pinning} records the ``pinning'' phenomenon that occurs once the $2$-power exceeds the modulus;
+and Lemma~\ref{lem:router-from-target} observes that, once the family digit $\delta\in\{1,5\}$ is fixed, the router digit $j'$
+is read off directly from the target output via $\lfloor x'/6\rfloor\bmod 3$.
+These lemmas are the basic arithmetic engine behind both the pinning/solving dichotomy and the congruence-class descriptions of solution sets.
+
+
+\begin{lemma}[2-adic cancellation and classes]
+\label{lem:2adic-cancellation}
+Let $K\ge 1$, let $\sigma \ge 0$, and write $A=2^{\sigma} v$ with $v$ odd.
+For any integers $m,m'$, if $K\ge \sigma$ then
+\[
+A m \equiv A m' \pmod{2^K}
+\quad\Longleftrightarrow\quad
+m \equiv m' \pmod{2^{K-\sigma}}.
+\]
+Equivalently, for fixed $c$ the congruence
+\[
+A m \equiv A c \pmod{2^K}
+\]
+has solution set the unique residue class $m\equiv c \pmod{2^{K-\sigma}}$.
+\end{lemma}
+
+\begin{proof}
+Assume $K\ge \sigma$. From $2^{\sigma} v m \equiv 2^{\sigma} v m' \pmod{2^K}$ we may cancel $2^{\sigma}$ to get
+$v m \equiv v m' \pmod{2^{K-\sigma}}$.
+Since $v$ is odd, it is invertible modulo $2^{K-\sigma}$, hence $m\equiv m' \pmod{2^{K-\sigma}}$.
+The converse is immediate by multiplying a congruence $m\equiv m' \pmod{2^{K-\sigma}}$ by $2^{\sigma} v$.
+\end{proof}
+
+
+\begin{lemma}[2-adic pinning]
+\label{lem:2adic-pinning}
+Let $K\ge 1$ and $\sigma\ge K$.  Then for every integer $m$,
+\[
+2^{\sigma} m \equiv 0 \pmod{2^K}.
+\]
+More generally, if $A=2^{\sigma} v$ with $v$ odd and $\sigma\ge K$, then $A m \equiv 0 \pmod{2^K}$ for all $m$.
+\end{lemma}
+
+\begin{proof}
+If $\sigma\ge K$ then $2^K \mid 2^{\sigma}$, hence $2^K\mid 2^{\sigma} m$ for all $m$.
+The general case follows since $v$ is an integer.
+\end{proof}
+
+
+\begin{lemma}[Router digit from the target]
+\label{lem:router-from-target}
+Let $\delta\in\{1,5\}$ and let $x'$ be an integer with $x'\equiv \delta\pmod 6$.
+Define
+\[
+F:=\frac{x'-\delta}{6}\in\mathbb Z.
+\]
+Then the router digit of $x'$ satisfies
+\[
+\left\lfloor\frac{x'}{6}\right\rfloor \equiv F \pmod 3.
+\]
+In particular, the router class $j'=\left\lfloor x'/6\right\rfloor\bmod 3$ is determined by $x'\bmod 18$ once $\delta$ is fixed.
+\end{lemma}
+
+\begin{proof}
+Since $x'=6F+\delta$ with $0<\delta<6$, we have $\lfloor x'/6\rfloor = F$. Reducing modulo $3$ gives the claim.
+\end{proof}
+
+
+
+
 \begin{lemma}[2-adic Completeness]
 \label{lem:linear-hensel}
 Let $W$ be a fixed certified word, with affine evaluation
@@ -1479,27 +2095,27 @@ an integer in the application), there is a fixed integer $\mathrm{RHS}$ such tha
 \label{eq:AW-congruence}
 A_W\, m_K \equiv \mathrm{RHS}\pmod{2^K}\qquad\text{for all }K\ge K_0.
 \end{equation}
-Let $s:=v_2(A_W)$ and write $A_W=2^s u$ with $u$ odd.
+Let $\sigma:=v_2(A_W)$ and write $A_W=2^\sigma v$ with $v$ odd.
 
 If the solutions are chosen compatibly, i.e.
 \[
-m_{K+1}\equiv m_K \pmod{2^{K-s}}\qquad (K\ge \max\{K_0,s+1\}),
+m_{K+1}\equiv m_K \pmod{2^{K-\sigma}}\qquad (K\ge \max\{K_0,\sigma+1\}),
 \]
 then $(m_K)_K$ is a Cauchy sequence in $\mathbb Z_2$ and converges to a unique
 $m\in\mathbb Z_2$ satisfying $A_W m=\mathrm{RHS}$ in $\mathbb Z_2$, hence
 $x_W(m)=x_{\mathrm{tar}}$ in $\mathbb Z_2$.
 
-Moreover, if $u$ divides $\mathrm{RHS}/2^s$ as an ordinary integer (in particular,
+Moreover, if $u$ divides $\mathrm{RHS}/2^{\sigma}$ as an ordinary integer (in particular,
 if $u=1$, i.e.\ $A_W$ is a power of two), then $m\in\mathbb Z$ and the equality is exact in
 $\mathbb Z$: $x_W(m)=x_{\mathrm{tar}}$.
 \end{lemma}
 
 \begin{proof}
-From \eqref{eq:AW-congruence} and $v_2(A_W)=s$, it follows that for each $K>s$ the
-congruence class of $m_K$ is unique modulo $2^{K-s}$: if $A_W m\equiv A_W m'\pmod{2^K}$,
-then $2^s u(m-m')\equiv 0\pmod{2^K}$ and since $u$ is odd (hence invertible modulo $2^{K-s}$),
-we get $m\equiv m'\pmod{2^{K-s}}$.
-Thus compatibility means precisely that each $m_{K+1}$ refines $m_K$ modulo $2^{K-s}$,
+From \eqref{eq:AW-congruence} and $v_2(A_W)=\sigma$, it follows that for each $K>\sigma$ the
+congruence class of $m_K$ is unique modulo $2^{K-\sigma}$: if $A_W m\equiv A_W m'\pmod{2^K}$,
+then $2^\sigma v(m-m')\equiv 0\pmod{2^K}$ and since $v$ is odd (hence invertible modulo $2^{K-\sigma}$),
+we get $m\equiv m'\pmod{2^{K-\sigma}}$.
+Thus compatibility means precisely that each $m_{K+1}$ refines $m_K$ modulo $2^{K-\sigma}$,
 so $(m_K)_K$ defines an element of the inverse limit $\varprojlim \mathbb Z/2^n\mathbb Z=\mathbb Z_2$.
 Hence $(m_K)_K$ is Cauchy and converges to some $m\in\mathbb Z_2$.
 
@@ -1507,9 +2123,9 @@ Passing to the limit in \eqref{eq:AW-congruence} (multiplication by the fixed in
 is continuous in the $2$-adic metric) yields $A_W m=\mathrm{RHS}$ in $\mathbb Z_2$.
 Therefore $x_W(m)=x_{\mathrm{tar}}$ in $\mathbb Z_2$.
 
-To obtain an ordinary integer, reduce \eqref{eq:AW-congruence} modulo $2^s$.
-Since $A_W m_K\equiv 0\pmod{2^s}$ for every $K$, we obtain $\mathrm{RHS}\equiv 0\pmod{2^s}$,
-so $\mathrm{RHS}=2^s r$ for some $r\in\mathbb Z$.
+To obtain an ordinary integer, reduce \eqref{eq:AW-congruence} modulo $2^{\sigma}$.
+Since $A_W m_K\equiv 0\pmod{2^\sigma}$ for every $K$, we obtain $\mathrm{RHS}\equiv 0\pmod{2^{\sigma}}$,
+so $\mathrm{RHS}=2^{\sigma} r$ for some $r\in\mathbb Z$.
 Then the $2$-adic equation becomes
 \[
 u\,m=r \qquad\text{in }\mathbb Z_2,
@@ -1522,18 +2138,18 @@ and substituting back into $x_W(m)$ gives $x_W(m)=x_{\mathrm{tar}}$ as an equali
 
 \begin{lemma}[Power-of-two linear lifting yields an integer solution]
 \label{lem:pow2-integer}
-Let $s\ge 0$ and let $\mathrm{RHS}\in\mathbb Z$. If there exists $m\in\mathbb Z_2$ such that
+Let $\sigma\ge 0$ and let $\mathrm{RHS}\in\mathbb Z$. If there exists $m\in\mathbb Z_2$ such that
 \[
-2^s m \equiv \mathrm{RHS}\pmod{2^K}\quad\text{for all }K>s,
+2^{\sigma} m \equiv \mathrm{RHS}\pmod{2^K}\quad\text{for all }K>\sigma,
 \]
-then $v_2(\mathrm{RHS})\ge s$ and $m=\mathrm{RHS}/2^s\in\mathbb Z$.
+then $v_2(\mathrm{RHS})\ge \sigma$ and $m=\mathrm{RHS}/2^{\sigma}\in\mathbb Z$.
 \end{lemma}
 
 \begin{proof}
-Reducing the congruence modulo $2^s$ gives $\mathrm{RHS}\equiv 0\pmod{2^s}$, hence
-$v_2(\mathrm{RHS})\ge s$. In $\mathbb Z_2$, division by $2^s$ is well-defined, so
-$m=\mathrm{RHS}/2^s$. Since $\mathrm{RHS}$ is an integer divisible by $2^s$, the quotient
-$\mathrm{RHS}/2^s$ is an ordinary integer.
+Reducing the congruence modulo $2^{\sigma}$ gives $\mathrm{RHS}\equiv 0\pmod{2^{\sigma}}$, hence
+$v_2(\mathrm{RHS})\ge \sigma$. In $\mathbb Z_2$, division by $2^[\sigma]$ is well-defined, so
+$m=\mathrm{RHS}/2^{\sigma}$. Since $\mathrm{RHS}$ is an integer divisible by $2^{\sigma}$, the quotient
+$\mathrm{RHS}/2^{\sigma}$ is an ordinary integer.
 \end{proof}
 
 \begin{lemma}[Finite hit from canonical representatives]
@@ -1664,13 +2280,13 @@ x_K = 18m_K + 6j + \delta_{6}
 \]
 for the (necessarily integral) quotient $m_K\in\mathbb Z_{\ge 0}$.
 
-Let $s:=v_2(A_W)$ for the witness word $W$ producing $x_K$. By the canonical choice in
+Let $\sigma:=v_2(A_W)$ for the witness word $W$ producing $x_K$. By the canonical choice in
 the terminal solve step (Lemma~\ref{lem:lifting}, Step~5), $m_K$ is determined modulo
-$2^{K-s}$ and we may choose it as the least nonnegative representative, so that
+$2^{K-\sigma}$ and we may choose it as the least nonnegative representative, so that
 \[
-0 \le m_K < 2^{K-s}.
+0 \le m_K < 2^{K-\sigma}.
 \]
-Choose $K$ large enough so that $K-s \ge K_0$ (equivalently $2^{K-s}\ge 2^{K_0}$).
+Choose $K$ large enough so that $K-\sigma \ge K_0$ (equivalently $2^{K-\sigma}\ge 2^{K_0}$).
 Then the congruence $x_K\equiv x\pmod{M_K}$ implies $x_K\equiv x\pmod{M_{K_0+1}}$, and
 Lemma~\ref{lem:quotient-congruence} (with $y=x_K$ and $K-1=K_0$) yields
 \[
@@ -1853,8 +2469,8 @@ affine-plus-carry decomposition along $W$:
 x_{k+1} \;=\; A_k x_k + B_k + \eta_k,\qquad \eta_k\in\mathbb Z,
 \]
 where $(A_k,B_k)$ are the operator-layer parameters of the $k$th step and $\eta_k$
-is the associated carry error (cf.\ the affine-plus-carry decomposition in
-Section~\ref{sec:parameter-geometry}).
+is the associated carry error.
+(cf.\ the affine-plus-carry decomposition in Section~\ref{sec:param-geometry})
 Composing these relations yields
 \[
 x_n \;=\; A_W x_0 + B_W + \sum_{k=0}^{n-1}\eta_k\prod_{\ell=k+1}^{n-1}A_\ell,
@@ -2085,7 +2701,6 @@ The sequence \(\gamma = (-11, 7)\) characterizes the "turbulence" of this trajec
 
 % =========================================================================
 % NEW PART V: GLOBAL NETWORK TOPOLOGY
-% Insert this AFTER Part IV and BEFORE the Conclusion Part.
 % =========================================================================
 
 \part{Global Network Topology}
@@ -2486,7 +3101,7 @@ Modulo $3$ we have $2^\alpha\equiv 2$ for all three, and $k\equiv 2,1,1$, respec
 \[
 \phi_1(B)=2B+1,\qquad \phi_2(B)=2B+2\qquad (\bmod 3).
 \]
-The subgroup of affine maps of $\mathbb{Z}/3\mathbb{Z}$ generated by $\{\phi_1,\phi_2\}$ is all of $\operatorname{AGL}_1(\mathbb{F}_3)$; concretely, from any starting $B\bmod 3$ one reaches any target residue in at most two steps (e.g.\ $\phi_1\circ\phi_1(B)=B$, $\phi_2\circ\phi_1(B)=B+1$, etc.). Each \texttt{oo} step multiplies $A$ by $2^{\alpha}\ge 2$, so $v_2(A)$ strictly increases.
+The subgroup of affine maps of $\mathbb{Z}/3\mathbb{Z}$ generated by $\{\phi_1,\phi_2\}$ is all of $\operatorname{AGL}_1(\mathbb{F}_3)$; concretely, from any starting $B\bmod 3$ one reaches any target residue in at most two steps (e.g.\ $\phi_1\circ\phi_1(B)=B$, $\phi_2\circ\phi_1(B)=B+1$, etc.) Each \texttt{oo} step multiplies $A$ by $2^{\alpha}\ge 2$, so $v_2(A)$ strictly increases.
 
 \smallskip
 Combining the family–wise controls gives the claim: in family $\mathrm e$ use at most two \texttt{ee} steps; in family $\mathrm o$ use at most two \texttt{oo} steps (choosing which \texttt{oo} row to realize $\phi_1$ or $\phi_2$). In all cases the terminal family (hence $\delta_W$) is preserved and $v_2(A)$ increases.
