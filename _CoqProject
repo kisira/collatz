@@ -1,0 +1,6 @@
+-R coq CollatzProofs
+
+coq/CollatzBasics.v
+coq/CollatzRows.v
+coq/CollatzLifting.v
+coq/CollatzExamples.v
